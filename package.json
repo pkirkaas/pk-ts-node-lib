@@ -1,0 +1,38 @@
+{
+  "name": "pk-ts-node-lib",
+  "version": "l.0.1",
+  "author": "Paul Kirkaas",
+  "license": "UNLICENSED",
+  "description": "TS/JS Utilities for node apps",
+  "exports": {
+    ".":"./dist/index"
+  },
+  "type": "commonjs",
+  "engines": {
+    "node": ">= 18.0.0"
+  },
+  "scripts": {
+    "xpostinstall" : "tsc",
+    "clean": "rm -rf ./dist ./node_modules package-lock.json"
+  },
+  "dependencies": {
+    "pk-ts-common-lib": "git+https://github.com/pkirkaas/pk-ts-common-lib.git#working",
+    "stack-trace": "*",
+    "stacktracey": "*",
+    "ts-node": "*",
+    "tsconfig-paths": "*",
+    "uuid": "*"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^1.0.1",
+    "@types/lodash": "*",
+    "@types/node": "*",
+    "@typescript-eslint/eslint-plugin": "*",
+    "@typescript-eslint/parser": "*",
+    "eslint": "*",
+    "eslint-config-prettier": "*",
+    "eslint-plugin-prettier": "*",
+    "prettier": "*",
+    "typescript": "*"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "extends":"@tsconfig/node18/tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "declaration": true,
+    "strict": false,
+    "sourceMap": true,
+    "checkJs": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowUmdGlobalAccess": true,
+    "allowJs": true,
+    "newLine": "lf",
+  },
+  "ts-node": {
+    "require": [
+      "tsconfig-paths/register"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "dist/**/*",
+    "*.d.ts"
+  ],
+  "include": [
+    "./src/**/*",
+  ],
+   "typeRoots": [
+      "node_modules/@types",
+    //  "src/custom_types/"
+  ]
+}
