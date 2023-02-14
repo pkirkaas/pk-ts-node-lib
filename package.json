@@ -9,7 +9,7 @@
   "main":"dist/index",
   "exports": {
     ".": "./dist/index.js",
-    "tst-exports": {
+    "./tst-exports": {
       "import" : "./dist/tst-exports.js",
       "require" : "./dist/tst-exports.js"
     }
