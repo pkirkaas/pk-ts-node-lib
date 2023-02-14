@@ -16,6 +16,8 @@
   "dependencies": {
     "pk-ts-common-lib": "git+https://github.com/pkirkaas/pk-ts-common-lib.git#working",
     "stack-trace": "*",
+    "fs-path": "*",
+    "fs-extra": "*",
     "dotenv": "*",
     "stacktracey": "*",
     "ts-node": "*",
