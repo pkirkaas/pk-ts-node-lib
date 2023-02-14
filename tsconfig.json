@@ -1,22 +1,7 @@
 {
-  "extends":"@tsconfig/node18/tsconfig.json",
+  "extends":"pk-ts-common-lib/tsconfig.json",
   "compilerOptions": {
-    "esModuleInterop": true,
-    "outDir": "./dist",
-    "baseUrl": ".",
-    "declaration": true,
-    "strict": false,
-    "sourceMap": true,
-    "checkJs": true,
-    "skipLibCheck": true,
-    "moduleResolution": "nodenext",
-    "noImplicitAny": false,
-    "allowSyntheticDefaultImports": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowUmdGlobalAccess": true,
-    "allowJs": true,
-    "newLine": "lf",
+    "outDir": "./dist"
   },
   "ts-node": {
     "require": [
