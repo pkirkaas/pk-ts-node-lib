@@ -3,7 +3,8 @@
   "version": "l.0.1",
   "author": "Paul Kirkaas",
   "license": "UNLICENSED",
-  "description": "TS/JS Utilities for node apps",
+  "description": "TS/JS Utilities for node apps, including common JS functions",
+  "main":"dist/index",
   "exports": {
     ".":"./dist/index"
   },
@@ -12,7 +13,7 @@
     "node": ">= 18.0.0"
   },
   "scripts": {
-    "xpostinstall" : "tsc",
+    "postinstall" : "tsc",
     "clean": "rm -rf ./dist ./node_modules package-lock.json"
   },
   "dependencies": {
