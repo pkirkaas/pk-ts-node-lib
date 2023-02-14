@@ -7,7 +7,7 @@
   "main":"dist/index",
   "exports": {
     ".": "./dist/index.js",
-    "./tst-exports": "./dist/tst-exports.js"
+    "tst-exports": "./dist/tst-exports.js"
   },
   "type": "commonjs",
   "engines": {
