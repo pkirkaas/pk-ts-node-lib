@@ -5,8 +5,9 @@
   "license": "UNLICENSED",
   "description": "TS/JS Utilities for node apps, including common JS functions",
   "comments" : {
-  },
   "main":"dist/index",
+  "end":"end"
+  },
   "exports": {
     ".": "./dist/index.js",
     "./tst-exports": {
