@@ -9,7 +9,10 @@
   "end":"end"
   },
   "exports": {
-    ".": "./dist/index.js",
+    ".": {
+      "import" : "./dist/index.js",
+      "require" : "./dist/index.js"
+      },
     "./tst-exports": {
       "import" : "./dist/tst-exports.js",
       "require" : "./dist/tst-exports.js"
