@@ -17,8 +17,4 @@
   "include": [
     "./src/**/*",
   ],
-   "typeRoots": [
-      "node_modules/@types",
-    //  "src/custom_types/"
-  ]
 }
