@@ -5,9 +5,6 @@
   "license": "UNLICENSED",
   "description": "TS/JS Utilities for node apps, including common JS functions",
   "main":"dist/index",
-  "exports": {
-    ".":"./dist/index"
-  },
   "type": "commonjs",
   "engines": {
     "node": ">= 18.0.0"
