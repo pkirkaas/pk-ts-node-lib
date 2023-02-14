@@ -9,7 +9,7 @@
     "sourceMap": true,
     "checkJs": true,
     "skipLibCheck": true,
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
