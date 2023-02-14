@@ -6,6 +6,7 @@
   "description": "TS/JS Utilities for node apps, including common JS functions",
   "main":"dist/index",
   "exports": {
+    ".": "./dist/index.js",
     "./tst-exports": "./dist/tst-exports"
   },
   "type": "commonjs",
