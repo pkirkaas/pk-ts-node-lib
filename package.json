@@ -18,7 +18,8 @@
       "types": "./dist/tst-exports.d.ts",
       "import": "./dist/tst-exports.js",
       "require": "./dist/tst-exports.js"
-    }
+    },
+    "./tsconfig.json": "./tsconfig.json"
   },
   "type": "commonjs",
   "engines": {

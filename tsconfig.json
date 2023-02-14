@@ -1,19 +1,9 @@
 {
   "extends":"pk-ts-common-lib/tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "baseUrl": "."
   },
-  "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ]
-  },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "dist/**/*",
-    "*.d.ts"
-  ],
   "include": [
     "./src/**/*",
   ],
