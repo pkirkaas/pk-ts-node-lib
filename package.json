@@ -4,11 +4,8 @@
   "author": "Paul Kirkaas",
   "license": "UNLICENSED",
   "description": "TS/JS Utilities for node apps, including common JS functions",
-  "comments": {
-    "main": "dist/index",
-    "end": "end"
-  },
   "main": "dist/index",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -35,6 +32,7 @@
   "dependencies": {
     "pk-ts-common-lib": "git+https://github.com/pkirkaas/pk-ts-common-lib.git#working",
     "inquirer": "latest",
+    "typescript":"*",
     "yargs": "latest",
     "stack-trace": "*",
     "fs-path": "*",
@@ -54,7 +52,6 @@
     "eslint": "*",
     "eslint-config-prettier": "*",
     "eslint-plugin-prettier": "*",
-    "prettier": "*",
-    "typescript": "*"
+    "prettier": "*"
   }
 }
