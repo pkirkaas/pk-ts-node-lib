@@ -8,15 +8,18 @@
     "main": "dist/index",
     "end": "end"
   },
+  "main": "dist/index",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
+      "default": "./dist/index.js",
       "require": "./dist/index.js"
     },
     "./tst-exports": {
       "types": "./dist/tst-exports.d.ts",
       "import": "./dist/tst-exports.js",
+      "default": "./dist/tst-exports.js",
       "require": "./dist/tst-exports.js"
     },
     "./tsconfig.json": "./tsconfig.json"
