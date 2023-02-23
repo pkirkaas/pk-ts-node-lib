@@ -14,5 +14,6 @@ exec 1>&2
 echo "The script dir: [$SCRIPT_DIR]; called from: [$BASEDIR]"
 tsc
 STAT=$?
+git add ./dist
 echo "Exit status of tsc was: [$STAT]"
 exit $?
