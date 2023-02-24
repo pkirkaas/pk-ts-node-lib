@@ -40,9 +40,7 @@
     "stacktracey": "*",
     "ts-node": "*",
     "tsconfig-paths": "*",
-    "uuid": "*"
-  },
-  "devDependencies": {
+    "uuid": "*",
     "@tsconfig/node18": "^1.0.1",
     "@types/lodash": "*",
     "@types/node": "*",

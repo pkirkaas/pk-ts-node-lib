@@ -6,40 +6,17 @@
  * @email pkirkaas@gmail.com
  *
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.catchErr = exports.logMsg = exports.getFrameAfterFunction = exports.writeFile = exports.writeData = exports.compareArrays = exports.dbgPath = exports.utilInspect = exports.stdOut = exports.convertParamsToCliArgs = exports.asyncSpawn = exports.getProcess = exports.stamp = exports.stackParse = exports.isDirectory = exports.slashPath = exports.objInspect = exports.cwd = exports.allSkips = exports.fnSkips = exports.excludeFncs = exports.path = void 0;
-const fs = require("fs-extra");
+var fs = require("fs-extra");
 exports.path = require('path');
-const util = require('util');
-const os = require("os");
-const { spawn } = require("child_process");
-const ESP = __importStar(require("error-stack-parser"));
-const date_fns_1 = require("date-fns");
-const uuid_1 = require("uuid");
-const pk_ts_common_lib_1 = require("pk-ts-common-lib");
+var util = require('util');
+var os = require("os");
+var spawn = require("child_process").spawn;
+var ESP = require("error-stack-parser");
+var date_fns_1 = require("date-fns");
+var uuid_1 = require("uuid");
+var pk_ts_common_lib_1 = require("pk-ts-common-lib");
 util.inspect.defaultOptions.maxArrayLength = null;
 util.inspect.defaultOptions.depth = null;
 util.inspect.defaultOptions.breakLength = 200;
@@ -57,11 +34,11 @@ exports.cwd = process.cwd();
  * @return string representation
  */
 function objInspect(arg, opts) {
-    let defOpts = {
+    var defOpts = {
         showHidden: true,
         depth: 20,
         showProxy: true,
-        getters: true,
+        getters: true
     };
     if (opts && typeof opts === 'object') {
         Object.assign(defOpts, opts);
@@ -71,8 +48,12 @@ function objInspect(arg, opts) {
 exports.objInspect = objInspect;
 //Moded to combine path.join & slashPath - should be compatible
 // What about spaces???
-function slashPath(...parts) {
-    let apath = exports.path.join(...parts);
+function slashPath() {
+    var parts = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        parts[_i] = arguments[_i];
+    }
+    var apath = exports.path.join.apply(exports.path, parts);
     return apath.split(exports.path.sep).join(exports.path.posix.sep);
 }
 exports.slashPath = slashPath;
@@ -81,13 +62,14 @@ function isDirectory(apath) {
 }
 exports.isDirectory = isDirectory;
 function stackParse() {
-    let stack = ESP.parse(new Error());
-    let ret = [];
-    for (let info of stack) {
-        let res = {
+    var stack = ESP.parse(new Error());
+    var ret = [];
+    for (var _i = 0, stack_1 = stack; _i < stack_1.length; _i++) {
+        var info = stack_1[_i];
+        var res = {
             fileName: exports.path.basename(info.fileName),
             lineNumber: info.lineNumber,
-            functionName: info.functionName,
+            functionName: info.functionName
         };
         ret.push(res);
     }
@@ -96,25 +78,25 @@ function stackParse() {
 exports.stackParse = stackParse;
 /** Basic info for console logging */
 function stamp(entry, frameAfter) {
-    let entId = "";
+    var entId = "";
     //console.log({ entry });
     if (!(0, pk_ts_common_lib_1.isEmpty)(entry) && typeof entry === "object") {
         if (entry.id) {
             entId = entry.id;
         }
     }
-    let frame = getFrameAfterFunction(frameAfter, true);
+    var frame = getFrameAfterFunction(frameAfter, true);
     //let frame = getFrameAfterFunction2(frameAfter, true);
     //let frame = getFrameAfterFunction(frameAfter, true);
-    let src = "";
+    var src = "";
     if (frame) {
-        src = `:${exports.path.basename(frame.fileName)}:${frame.functionName}:${frame.lineNumber}:`;
+        src = ":".concat(exports.path.basename(frame.fileName), ":").concat(frame.functionName, ":").concat(frame.lineNumber, ":");
         //console.log({ frame });
     }
-    let now = new Date();
-    let pe = process.env.PROCESS_ENV;
-    let ds = (0, date_fns_1.format)(now, "y-LL-dd H:m:s");
-    return `${ds}-${pe}${src}: ${entId} `;
+    var now = new Date();
+    var pe = process.env.PROCESS_ENV;
+    var ds = (0, date_fns_1.format)(now, "y-LL-dd H:m:s");
+    return "".concat(ds, "-").concat(pe).concat(src, ": ").concat(entId, " ");
 }
 exports.stamp = stamp;
 function getProcess() {
@@ -122,61 +104,71 @@ function getProcess() {
     return process.env;
 }
 exports.getProcess = getProcess;
-function asyncSpawn(cmd, ...params) {
+function asyncSpawn(cmd) {
+    var params = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        params[_i - 1] = arguments[_i];
+    }
     try {
-        let args = convertParamsToCliArgs(params);
-        let cwd = process.cwd();
-        let logDir = exports.path.join(cwd, "logs");
-        let stdLog = exports.path.join(logDir, `${cmd}-stdout.log`);
-        let errLog = exports.path.join(logDir, `${cmd}-stderr.log`);
+        var args = convertParamsToCliArgs(params);
+        var cwd_1 = process.cwd();
+        var logDir = exports.path.join(cwd_1, "logs");
+        var stdLog = exports.path.join(logDir, "".concat(cmd, "-stdout.log"));
+        var errLog = exports.path.join(logDir, "".concat(cmd, "-stderr.log"));
         fs.mkdirSync(logDir, { recursive: true });
-        let stdOut = fs.openSync(stdLog, "a");
-        let stdErr = fs.openSync(errLog, "a");
-        let script = exports.path.join(cwd, "dist", "src", `scripts`, `async-jobs.js`);
+        var stdOut_1 = fs.openSync(stdLog, "a");
+        var stdErr = fs.openSync(errLog, "a");
+        var script = exports.path.join(cwd_1, "dist", "src", "scripts", "async-jobs.js");
         if (!fs.existsSync(script)) {
-            console.error(`asyncSpawn couldn't find the script: ${script}`);
+            console.error("asyncSpawn couldn't find the script: ".concat(script));
             return false;
         }
         args.unshift(cmd);
         args.unshift(script);
-        console.log({ __dirname, cwd, cmd, script, args });
-        const subprocess = spawn("node", args, {
-            cwd,
+        console.log({ __dirname: __dirname, cwd: cwd_1, cmd: cmd, script: script, args: args });
+        var subprocess = spawn("node", args, {
+            cwd: cwd_1,
             detached: true,
-            stdio: ["ignore", stdOut, stdErr],
+            stdio: ["ignore", stdOut_1, stdErr]
         });
         subprocess.unref();
-        console.log("Tried to spawn - check:", { args, stdLog, errLog });
+        console.log("Tried to spawn - check:", { args: args, stdLog: stdLog, errLog: errLog });
         return true;
     }
     catch (err) {
-        console.error(`Error executing or parsing asyncSpawn`, { cmd, params, err });
+        console.error("Error executing or parsing asyncSpawn", { cmd: cmd, params: params, err: err });
     }
 }
 exports.asyncSpawn = asyncSpawn;
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */
 function convertParamsToCliArgs(params) {
-    let ret = [];
-    for (let param of params) {
+    var ret = [];
+    for (var _i = 0, params_1 = params; _i < params_1.length; _i++) {
+        var param = params_1[_i];
         if ((0, pk_ts_common_lib_1.isSimpleType)(param)) {
             ret.push(param);
         }
         else if ((0, pk_ts_common_lib_1.isSimpleObject)(param)) {
-            for (let key in param) {
-                ret.push(`--${key}=${param[key]}`);
+            for (var key in param) {
+                ret.push("--".concat(key, "=").concat(param[key]));
             }
         }
         else {
             //throwLog(`Unparsable param`, param);
-            console.error(`Unparsable param`, param);
+            console.error("Unparsable param", param);
         }
     }
     return ret;
 }
 exports.convertParamsToCliArgs = convertParamsToCliArgs;
-function stdOut(...args) {
-    for (let arg of args) {
+function stdOut() {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    for (var _a = 0, args_1 = args; _a < args_1.length; _a++) {
+        var arg = args_1[_a];
         if (typeof arg !== "string") {
             arg = (0, pk_ts_common_lib_1.JSON5Stringify)(arg);
         }
@@ -185,8 +177,8 @@ function stdOut(...args) {
 }
 exports.stdOut = stdOut;
 function utilInspect(obj, opts) {
-    let defOpts = { showHidden: true, depth: null, showProxy: true, maxArrayLength: null, maxStringLength: null, breakLength: 200, getters: true, compact: 7 };
-    defOpts = { showHidden: true, depth: 15, maxArrayLength: 200, maxStringLength: 1000, breakLength: 200, };
+    var defOpts = { showHidden: true, depth: null, showProxy: true, maxArrayLength: null, maxStringLength: null, breakLength: 200, getters: true, compact: 7 };
+    defOpts = { showHidden: true, depth: 15, maxArrayLength: 200, maxStringLength: 1000, breakLength: 200 };
     if (!opts) {
         opts = defOpts;
     }
@@ -198,25 +190,28 @@ function dbgPath(fname) {
 }
 exports.dbgPath = dbgPath;
 function compareArrays(arr1, arr2) {
-    let shared = (0, pk_ts_common_lib_1.intersect)(arr1, arr2);
-    let sharedCnt = shared.length;
-    let onlyArr1 = (0, pk_ts_common_lib_1.inArr1NinArr2)(arr1, arr2);
-    let onlyArr1Cnt = onlyArr1.length;
-    let onlyArr2 = (0, pk_ts_common_lib_1.inArr1NinArr2)(arr2, arr1);
-    let onlyArr2Cnt = onlyArr2.length;
-    let arr1Cnt = arr1.length;
-    let arr2Cnt = arr2.length;
-    return { arr1, arr2, arr1Cnt, arr2Cnt, shared, sharedCnt, onlyArr1, onlyArr1Cnt, onlyArr2, onlyArr2Cnt };
+    var shared = (0, pk_ts_common_lib_1.intersect)(arr1, arr2);
+    var sharedCnt = shared.length;
+    var onlyArr1 = (0, pk_ts_common_lib_1.inArr1NinArr2)(arr1, arr2);
+    var onlyArr1Cnt = onlyArr1.length;
+    var onlyArr2 = (0, pk_ts_common_lib_1.inArr1NinArr2)(arr2, arr1);
+    var onlyArr2Cnt = onlyArr2.length;
+    var arr1Cnt = arr1.length;
+    var arr2Cnt = arr2.length;
+    return { arr1: arr1, arr2: arr2, arr1Cnt: arr1Cnt, arr2Cnt: arr2Cnt, shared: shared, sharedCnt: sharedCnt, onlyArr1: onlyArr1, onlyArr1Cnt: onlyArr1Cnt, onlyArr2: onlyArr2, onlyArr2Cnt: onlyArr2Cnt };
 }
 exports.compareArrays = compareArrays;
 /**
  * Better param order for writeFile
  */
-function writeData(arg, fpath = '.', append = false) {
+function writeData(arg, fpath, append) {
+    if (fpath === void 0) { fpath = '.'; }
+    if (append === void 0) { append = false; }
     return writeFile(fpath, arg, append);
 }
 exports.writeData = writeData;
-function writeFile(fpath, arg, append = false) {
+function writeFile(fpath, arg, append) {
+    if (append === void 0) { append = false; }
     if (arg === undefined) {
         arg = "undefned";
     }
@@ -228,11 +223,11 @@ function writeFile(fpath, arg, append = false) {
         fpath = exports.path.join(fpath, "debug-out.json");
     }
     //let fexists = fs.existsSync(fpath);
-    let flag = 'w';
+    var flag = 'w';
     if (append) {
         flag = 'a';
     }
-    let opts = { flag };
+    var opts = { flag: flag };
     /*
     let fpdname = path.join(__dirname, fpath);
     let fpcwd = path.join(process.cwd(), fpath);
@@ -243,8 +238,8 @@ function writeFile(fpath, arg, append = false) {
       fpcwd: path.join(process.cwd(), fpath),
     };
     */
-    let dir = exports.path.posix.dirname(fpath);
-    let dires = fs.mkdirSync(dir, { recursive: true });
+    var dir = exports.path.posix.dirname(fpath);
+    var dires = fs.mkdirSync(dir, { recursive: true });
     //console.log(`writeFile to ${fpath}`);
     if (!(0, pk_ts_common_lib_1.isPrimitive)(arg)) {
         arg = (0, pk_ts_common_lib_1.JSON5Stringify)(arg);
@@ -264,7 +259,7 @@ function getFrameAfterFunction(fname, forceFunction) {
       fname = [];
     }
     */
-    let stack;
+    var stack;
     try {
         stack = ESP.parse(new Error());
     }
@@ -287,21 +282,21 @@ function getFrameAfterFunction(fname, forceFunction) {
        }
      }
      */
-    let excludeFncs = [
+    var excludeFncs = [
         "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
         "infoLog", "debugLog", "stamp", "fulfilled", "rejected", "processTicksAndRejections", "LogData.log",
         "LogData.out", "LogData.console", "LogData.errLog", "LogData.throw",
     ];
     //let fnSkips = ["__awaiter", "Object.<anonymous>", "undefined", undefined];
-    let fnSkips = ["__awaiter", "undefined", undefined];
-    let allSkips = fnSkips.concat(excludeFncs);
-    let skips = excludeFncs.concat(fname);
-    let uv = (0, uuid_1.v4)();
+    var fnSkips = ["__awaiter", "undefined", undefined];
+    var allSkips = fnSkips.concat(excludeFncs);
+    var skips = excludeFncs.concat(fname);
+    var uv = (0, uuid_1.v4)();
     //writeFile(`../tmp/stack-${uv}.json`, stack);
     //  console.log("Rest of the Stack:", { stack });
-    let lastFrame = stack.shift();
-    let frame;
-    let nextFrame;
+    var lastFrame = stack.shift();
+    var frame;
+    var nextFrame;
     while ((frame = stack.shift())) {
         lastFrame = frame;
         //if (frame.functionName && !skips.includes(frame.functionName)) {
@@ -320,15 +315,15 @@ function getFrameAfterFunction(fname, forceFunction) {
     }
     */
     //  console.log("After break - should have lastFrame!", { lastFrame, frame, stack });
-    let functionName = lastFrame.functionName;
-    let exFns = skips.concat(fnSkips);
+    var functionName = lastFrame.functionName;
+    var exFns = skips.concat(fnSkips);
     //if (!functionName || (exFns.includes(functionName) && forceFunction)) {
     if (!functionName || (exFns.includes(functionName) && forceFunction)) {
         //console.log(`Skipping ${functionName}`, { lastFrame });
         // Continue through frames for next function name...
         //'Object.<anonymous>'
         while ((nextFrame = stack.shift())) {
-            let tsFn = nextFrame.functionName;
+            var tsFn = nextFrame.functionName;
             if (tsFn && !exFns.includes(tsFn)) {
                 functionName = nextFrame.functionName;
                 //      console.log(`Returning? tsFn: ${tsFn}, fname: ${functionName} `);
@@ -358,10 +353,10 @@ function logMsg(msg, lpath) {
         }
     }
     //Does lpath exist? Is it a dir?
-    let data = {
+    var data = {
         time: new Date(),
         lstack: stackParse(),
-        stamp: stamp(),
+        stamp: stamp()
     };
     //What to do w. message?
     if (msg instanceof Error) {
@@ -380,21 +375,24 @@ function logMsg(msg, lpath) {
         data.msg = msg;
     }
     try {
-        let res = writeFile(lpath, data, true);
+        var res = writeFile(lpath, data, true);
         return res;
     }
     catch (err) {
-        console.error(`Whoops! Exception logging error!`, { msg, lpath, data, err });
+        console.error("Whoops! Exception logging error!", { msg: msg, lpath: lpath, data: data, err: err });
         return false;
     }
 }
 exports.logMsg = logMsg;
 /** Call from a catch - logs error to file, console.error, & returns false
  */
-function catchErr(err, ...rest) {
-    console.error(`There was an exception:`, { err, rest, stamp: stamp() });
+function catchErr(err) {
+    var rest = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        rest[_i - 1] = arguments[_i];
+    }
+    console.error("There was an exception:", { err: err, rest: rest, stamp: stamp() });
     logMsg(err);
     return false;
 }
 exports.catchErr = catchErr;
-//# sourceMappingURL=node-operations.js.map

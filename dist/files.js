@@ -1,33 +1,34 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.getFilePaths = exports.fs = void 0;
-const urlStatus = require('url-status-code');
-const fsPath = require('fs-path');
-const path = require('path');
-const util = require('util');
-const _ = require("lodash");
-const axios = require("axios");
+var urlStatus = require('url-status-code');
+var fsPath = require('fs-path');
+var path = require('path');
+var util = require('util');
+var _ = require("lodash");
+var axios = require("axios");
 exports.fs = require("fs-extra");
-const os = require("os");
+var os = require("os");
 /**
  * Returns array of file paths found in the
  * paths arg, recursive
  */
 function getFilePaths(paths) {
-    let fpaths = [];
+    var fpaths = [];
     if (typeof paths === 'string') {
         paths = [paths];
     }
-    for (let apath of paths) {
+    for (var _i = 0, paths_1 = paths; _i < paths_1.length; _i++) {
+        var apath = paths_1[_i];
         if (!exports.fs.existsSync(apath)) {
             continue;
         }
-        let fsStat = exports.fs.statSync(apath);
+        var fsStat = exports.fs.statSync(apath);
         if (fsStat.isFile()) {
             fpaths.push(apath);
         }
         else if (fsStat.isDirectory()) {
-            let fspRes = fsPath.findSync(apath);
+            var fspRes = fsPath.findSync(apath);
             fpaths = fpaths.concat(fspRes.files);
         }
         else {
@@ -38,4 +39,3 @@ function getFilePaths(paths) {
     return fpaths;
 }
 exports.getFilePaths = getFilePaths;
-//# sourceMappingURL=files.js.map
