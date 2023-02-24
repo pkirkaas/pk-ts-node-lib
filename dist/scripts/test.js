@@ -1,11 +1,18 @@
 "use strict";
-exports.__esModule = true;
-var __1 = require("..");
+Object.defineProperty(exports, "__esModule", { value: true });
+/*
+import { isEmpty, typeOf } from '..';
+
 console.log("Testing lib");
-var anobj = { a: "b", c: "d" };
-var anarr = [1, 2, 3];
-var astr = "abc";
-var tob = (0, __1.typeOf)(anobj);
-var toa = (0, __1.typeOf)(anarr);
-var tos = (0, __1.typeOf)(astr);
-console.log({ tob: tob, toa: toa, tos: tos });
+
+const anobj = { a: "b", c: "d" };
+const anarr = [1, 2, 3];
+const astr = "abc";
+
+let tob = typeOf(anobj);
+let toa = typeOf(anarr);
+let tos = typeOf(astr);
+
+console.log({ tob, toa, tos });
+*/ 
+//# sourceMappingURL=test.js.map
