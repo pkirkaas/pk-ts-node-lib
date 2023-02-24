@@ -19,3 +19,4 @@ Call from cli with "ts-node <scripts/name.ts testName arg1 arg2"
 
  */
 export declare function runCli(fncs: any, env?: any): Promise<void>;
+//# sourceMappingURL=cliSupport.d.ts.map

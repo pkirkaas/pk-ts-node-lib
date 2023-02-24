@@ -3,3 +3,4 @@ export declare const anexp: {
     obj: string;
 };
 export declare function showExp(): void;
+//# sourceMappingURL=tst-exports.d.ts.map

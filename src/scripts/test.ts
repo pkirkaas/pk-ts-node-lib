@@ -1,4 +1,3 @@
-/*
 import { isEmpty, typeOf } from '..';
 
 console.log("Testing lib");
@@ -12,4 +11,3 @@ let toa = typeOf(anarr);
 let tos = typeOf(astr);
 
 console.log({ tob, toa, tos });
-*/

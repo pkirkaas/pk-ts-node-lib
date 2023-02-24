@@ -20,3 +20,4 @@ export declare function getConfDir(configFile?: string): any;
 export declare function getConfig(cfname: string): any;
 export declare function setConfig(cfname: string, data: GenericObject): GenericObject;
 export declare function setConfDir(confPath: string): any;
+//# sourceMappingURL=configUtils.d.ts.map

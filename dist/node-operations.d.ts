@@ -58,3 +58,4 @@ export declare function logMsg(msg: any, lpath?: string): any;
 /** Call from a catch - logs error to file, console.error, & returns false
  */
 export declare function catchErr(err: any, ...rest: any[]): boolean;
+//# sourceMappingURL=node-operations.d.ts.map

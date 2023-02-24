@@ -5,3 +5,4 @@ import { OptArrStr } from 'pk-ts-common-lib';
  * paths arg, recursive
  */
 export declare function getFilePaths(paths: OptArrStr): any[];
+//# sourceMappingURL=files.d.ts.map
