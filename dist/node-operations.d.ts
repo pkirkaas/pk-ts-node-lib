@@ -6,7 +6,6 @@
  *
  */
 /// <reference types="node" resolution-mode="require"/>
-export declare const path: any;
 import { GenericObject } from 'pk-ts-common-lib';
 export declare const excludeFncs: string[];
 export declare const fnSkips: string[];
@@ -16,8 +15,8 @@ export declare const cwd: string;
  * @param object? opts - to override the default opts
  * @return string representation
  */
-export declare function objInspect(arg: any, opts?: GenericObject): any;
-export declare function slashPath(...parts: any[]): any;
+export declare function objInspect(arg: any, opts?: GenericObject): string;
+export declare function slashPath(...parts: any[]): string;
 export declare function isDirectory(apath: any): any;
 export declare function stackParse(): any[];
 /** Basic info for console logging */
@@ -28,8 +27,8 @@ export declare function asyncSpawn(cmd: string, ...params: any[]): boolean;
  */
 export declare function convertParamsToCliArgs(params: any): any[];
 export declare function stdOut(...args: any[]): void;
-export declare function utilInspect(obj: any, opts?: any): any;
-export declare function dbgPath(fname: any): any;
+export declare function utilInspect(obj: any, opts?: any): string;
+export declare function dbgPath(fname: any): string;
 export declare function compareArrays(arr1: [], arr2: []): {
     arr1: [];
     arr2: [];

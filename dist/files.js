@@ -1,11 +1,6 @@
-const urlStatus = require('url-status-code');
-const fsPath = require('fs-path');
-const path = require('path');
-const util = require('util');
-const _ = require("lodash");
-const axios = require("axios");
-export const fs = require("fs-extra");
-const os = require("os");
+import fsPath from 'fs-path';
+import fs from "fs-extra";
+export { fs };
 /**
  * Returns array of file paths found in the
  * paths arg, recursive

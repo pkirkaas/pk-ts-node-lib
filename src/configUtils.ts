@@ -4,8 +4,8 @@
  */
 //Changed in Hardlink Clone path
 import { GenericObject, OptArrStr,  JSON5,   } from  'pk-ts-common-lib';
-import { fs } from './files';
-const path = require('path');
+import { fs } from './files.js';
+import path from 'path';
 export let defaultConfigs: GenericObject = {};
 export let configPaths: GenericObject = {};
 export function getAppDefaults() {

@@ -1,4 +1,4 @@
-import { typeOf } from '..';
+import { typeOf } from '../index.js';
 console.log("Testing lib");
 const anobj = { a: "b", c: "d" };
 const anarr = [1, 2, 3];

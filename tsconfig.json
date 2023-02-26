@@ -3,8 +3,11 @@
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": ".",
+    "esModuleInterop": true,
     "moduleResolution": "nodenext",
     "declaration": true,
+    "lib" : ["ESNext","ES5", "ES7", "ES6"],
+
   },
   "include": [
     "./src/**/*",
@@ -12,7 +15,9 @@
   "ts-node": {
     "require": [
       "tsconfig-paths/register"
-    ]
+    ],
+
+    "esm":true,
   },
   "exclude": [
     "node_modules",

@@ -6,11 +6,12 @@
  * 
  */
 
-const fs = require("fs-extra");
-export const  path =  require( 'path');
-const util = require('util');
-const os = require("os");
-const { spawn } = require("child_process");
+import fs from "fs-extra";
+//export const  path =  require( 'path');
+import   path from  'path';
+import util from 'util';
+import os from "os";
+import { spawn }  from  "child_process";
 import * as ESP from "error-stack-parser";
 import { format, isValid } from "date-fns";
 import { v4 as uuidv4 } from "uuid";

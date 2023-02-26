@@ -4,8 +4,8 @@
  */
 //Changed in Hardlink Clone path
 import { JSON5, } from 'pk-ts-common-lib';
-import { fs } from './files';
-const path = require('path');
+import { fs } from './files.js';
+import path from 'path';
 export let defaultConfigs = {};
 export let configPaths = {};
 export function getAppDefaults() {

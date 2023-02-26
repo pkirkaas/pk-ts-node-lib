@@ -1,14 +1,17 @@
-const urlStatus = require('url-status-code');
-const fsPath = require('fs-path');
-const path = require('path');
-const util = require('util');
-const _ = require("lodash");
+import urlStatus from 'url-status-code';
+import  fsPath from 'fs-path';
+import path from 'path';
+import util from 'util';
+import _  from "lodash";
 import * as ESP from "error-stack-parser";
-const axios = require("axios");
+//const axios = require("axios.js");
+import axios from "axios";
 import { format, isValid } from "date-fns";
-export const fs = require("fs-extra");
-const os = require("os");
-import { cwd } from '.';
+import fs from  "fs-extra";
+export { fs };
+import os from 'os';
+//const os = require("os");
+import { cwd } from './index.js';
 //import {  OptArrStr, cwd,   bsetpath, appDefaults } from '../../init';
 //import { GenericObject, OptArrStr, cwd, path, JSON5,  bsetpath, appDefaults } from '../common';
 //here changing in cdc

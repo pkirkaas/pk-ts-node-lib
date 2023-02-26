@@ -1,4 +1,4 @@
-import { isEmpty, typeOf } from '..';
+import { isEmpty, typeOf } from '../index.js';
 
 console.log("Testing lib");
 

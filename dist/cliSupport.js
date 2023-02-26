@@ -1,17 +1,19 @@
 /** CLI Support for async scripts */
-const path = require("path");
+//const path = require("path");
+import path from "path";
 const cwd = process.cwd();
-require("dotenv").config(path.join(cwd, ".env"));
-//import { argv } from '../utils/database/init';
-const https = require("https");
-const axios = require("axios");
-const os = require("os");
-const fs = require("fs-extra");
-const util = require("util");
+import * as dotenv from 'dotenv';
+//import  dotenv  from 'dotenv';
+//@ts-ignore
+dotenv.config(path.join(cwd, ".env"));
 //const inquirer = require("inquirer");
 //import { inquirer }  from "inquirer";
+/*
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
+*/
+import yargs from "yargs/yargs";
+import { hideBin } from "yargs/helpers";
 import { trueVal } from 'pk-ts-common-lib';
 export const argv = yargs(hideBin(process.argv)).argv;
 /** Support for CLI commands & tests with ts-node

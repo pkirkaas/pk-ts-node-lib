@@ -1,4 +1,5 @@
-export declare const fs: any;
+import fs from "fs-extra";
+export { fs };
 import { OptArrStr } from 'pk-ts-common-lib';
 /**
  * Returns array of file paths found in the
