@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.runCli = exports.argv = void 0;
 /** CLI Support for async scripts */
 const path = require("path");
 const cwd = process.cwd();
@@ -15,8 +12,8 @@ const util = require("util");
 //import { inquirer }  from "inquirer";
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
-const pk_ts_common_lib_1 = require("pk-ts-common-lib");
-exports.argv = yargs(hideBin(process.argv)).argv;
+import { trueVal } from 'pk-ts-common-lib';
+export const argv = yargs(hideBin(process.argv)).argv;
 /** Support for CLI commands & tests with ts-node
  * From a test script (test.ts) import runTest - define some test functions:
  *
@@ -36,13 +33,13 @@ runTest(fncs,[cli_env]);
 Call from cli with "ts-node <scripts/name.ts testName arg1 arg2"
 
  */
-async function runCli(fncs, env) {
+export async function runCli(fncs, env) {
     console.log("Entering runCli");
-    let largv = exports.argv;
+    let largv = argv;
     const args = largv._;
     delete largv._; //The rest is an object
     delete largv.$0;
-    largv = (0, pk_ts_common_lib_1.trueVal)(largv);
+    largv = trueVal(largv);
     let tofs = typeof fncs;
     let params;
     let cmd;
@@ -81,5 +78,4 @@ async function runCli(fncs, env) {
     }
     process.exit();
 }
-exports.runCli = runCli;
 //# sourceMappingURL=cliSupport.js.map

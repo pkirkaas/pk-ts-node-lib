@@ -1,28 +1,25 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFilePaths = exports.fs = void 0;
 const urlStatus = require('url-status-code');
 const fsPath = require('fs-path');
 const path = require('path');
 const util = require('util');
 const _ = require("lodash");
 const axios = require("axios");
-exports.fs = require("fs-extra");
+export const fs = require("fs-extra");
 const os = require("os");
 /**
  * Returns array of file paths found in the
  * paths arg, recursive
  */
-function getFilePaths(paths) {
+export function getFilePaths(paths) {
     let fpaths = [];
     if (typeof paths === 'string') {
         paths = [paths];
     }
     for (let apath of paths) {
-        if (!exports.fs.existsSync(apath)) {
+        if (!fs.existsSync(apath)) {
             continue;
         }
-        let fsStat = exports.fs.statSync(apath);
+        let fsStat = fs.statSync(apath);
         if (fsStat.isFile()) {
             fpaths.push(apath);
         }
@@ -37,5 +34,4 @@ function getFilePaths(paths) {
     fpaths = Array.from(new Set(fpaths));
     return fpaths;
 }
-exports.getFilePaths = getFilePaths;
 //# sourceMappingURL=files.js.map
