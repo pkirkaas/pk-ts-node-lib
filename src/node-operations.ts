@@ -182,6 +182,11 @@ export function dbgPath(fname) {
   return slashPath(cwd, 'tmp', fname);
 }
 
+export function dbgWrite(fpath, arg: any, append: boolean = false) {
+  let dpath = dbgPath(fpath);
+  return writeFile(dpath, arg, append);
+}
+
 export function compareArrays(arr1: [], arr2: []) {
   let shared = intersect(arr1, arr2);
   let sharedCnt = shared.length;
