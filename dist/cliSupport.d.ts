@@ -1,3 +1,30 @@
+export declare const inqTypes: string[];
+/**
+ * Makes a single inquirer question
+ */
+export declare function makeQuestion(message: string, { name, type, def, choices }: {
+    name?: string;
+    type?: string;
+    def?: any;
+    choices?: any[];
+}): {
+    message: string;
+    type: string;
+    default: any;
+    choices: any[];
+    name: string;
+};
+/**
+ * Uses inquirer for one question, and answer
+ *
+
+ */
+export declare function ask(msg: string, { name, type, def, choices }?: {
+    name?: string;
+    type?: string;
+    def?: any;
+    choices?: any[];
+}): Promise<any>;
 export declare const argv: any;
 /** Support for CLI commands & tests with ts-node
  * From a test script (test.ts) import runTest - define some test functions:

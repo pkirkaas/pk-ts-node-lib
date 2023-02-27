@@ -9,6 +9,7 @@
 import fs from "fs-extra";
 //export const  path =  require( 'path');
 import   path from  'path';
+
 import util from 'util';
 import os from "os";
 import { spawn }  from  "child_process";
@@ -29,7 +30,7 @@ util.inspect.defaultOptions.breakLength = 200;
   export const fnSkips = ["__awaiter", "undefined", undefined];
   export const allSkips = fnSkips.concat(excludeFncs);
 
-   export const cwd = process.cwd();
+   export const cwd = slashPath(process.cwd());
 
 
   /** Uses util.inspect to stringify an arg

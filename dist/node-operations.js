@@ -25,7 +25,7 @@ export const excludeFncs = [
 //let fnSkips = ["__awaiter", "Object.<anonymous>", "undefined", undefined];
 export const fnSkips = ["__awaiter", "undefined", undefined];
 export const allSkips = fnSkips.concat(excludeFncs);
-export const cwd = process.cwd();
+export const cwd = slashPath(process.cwd());
 /** Uses util.inspect to stringify an arg
  * @param object? opts - to override the default opts
  * @return string representation

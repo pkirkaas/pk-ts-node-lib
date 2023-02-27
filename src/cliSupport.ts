@@ -1,8 +1,10 @@
 /** CLI Support for async scripts */
 //const path = require("path");
 import  path  from "path";
-const cwd = process.cwd();
+//const cwd = process.cwd();
+import _  from "lodash";
 import * as dotenv from 'dotenv'
+import { cwd } from './index.js';
 //import  dotenv  from 'dotenv';
 //@ts-ignore
 dotenv.config(path.join(cwd, ".env"));
@@ -18,7 +20,51 @@ import fs from "fs-extra";
 import { v4 as uuidv4 } from "uuid";
 import util from "util";
 //const inquirer = require("inquirer");
-//import { inquirer }  from "inquirer";
+import  inquirer   from "inquirer";
+export const inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expand', 'checkbox', 'password', 'editor'];
+
+/**
+ * Makes a single inquirer question
+ */
+export function makeQuestion(message: string, { name = '', type = '', def = null, choices = [] }) {
+	if (!inqTypes.includes(type)) {
+		throw new Error(`Invalid inquirer question type [${type}]`);
+	}
+	if (!name) {
+		name = _.uniqueId('inc_name_');
+	}
+	if (!type) {
+		if (choices.length) {
+			type = 'checkbox';
+		} else {
+			type = 'input';
+		}
+	}
+	return { message, type, default: def, choices, name, };
+}
+
+/**
+ * Uses inquirer for one question, and answer
+ * 
+
+ */
+export async function ask(msg: string, { name = '', type = '', def = null, choices = [] } = {}) {
+	if (!name) {
+		name = _.uniqueId('inc_name_');
+	}
+	if (!type) {
+		if (choices.length) {
+			type = 'checkbox';
+		} else {
+			type = 'input';
+		}
+	}
+
+	let qArr = [makeQuestion(msg, { name, type, def, choices })];
+	let answers = await inquirer.prompt(qArr);
+	let answer = answers[name];
+	return answer;
+}
 
 /*
 const yargs = require("yargs/yargs");
