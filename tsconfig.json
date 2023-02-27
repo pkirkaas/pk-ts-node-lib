@@ -4,9 +4,11 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "esModuleInterop": true,
-    "moduleResolution": "nodenext",
     "declaration": true,
     "lib" : ["ESNext","ES5", "ES7", "ES6"],
+    "moduleResolution": "Node",
+    "target":"ESNext",
+    "module": "ESNext"
 
   },
   "include": [

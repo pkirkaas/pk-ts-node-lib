@@ -5,7 +5,7 @@
  * @email pkirkaas@gmail.com
  *
  */
-/// <reference types="node" resolution-mode="require"/>
+/// <reference types="node" />
 import { GenericObject } from 'pk-ts-common-lib';
 export declare const excludeFncs: string[];
 export declare const fnSkips: string[];

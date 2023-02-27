@@ -25,9 +25,8 @@ const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 */
 
-import yargs from "yargs/yargs";
-import { hideBin } from "yargs/helpers";
-
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import { trueVal } from  'pk-ts-common-lib';
 export const argv = yargs(hideBin(process.argv)).argv;
 
