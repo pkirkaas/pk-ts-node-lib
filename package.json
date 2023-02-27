@@ -49,6 +49,7 @@
     "tsconfig-paths": "*",
     "typescript": "*",
     "uuid": "*",
+    "valid-filename": "^4.0.0",
     "yargs": "latest"
   }
 }
