@@ -7,11 +7,11 @@ import { slashPath } from './index.js';
  */
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-export function getFilename() {
-    return slashPath(fileURLToPath(import.meta.url));
+export function getFilename(url) {
+    return slashPath(fileURLToPath(url));
 }
-export function getDirname() {
-    return slashPath(dirname(fileURLToPath(import.meta.url)));
+export function getDirname(url) {
+    return slashPath(dirname(fileURLToPath(url)));
 }
 /**
  * Returns array of file paths found in the

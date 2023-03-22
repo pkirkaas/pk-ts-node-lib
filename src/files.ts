@@ -23,11 +23,11 @@ import { slashPath } from './index.js';
  */
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
-export function getFilename() {
-	return slashPath(fileURLToPath(import.meta.url));
+export function getFilename(url:string):string {
+	return slashPath(fileURLToPath(url));
 } 
-export function getDirname() {
-	return slashPath(dirname(fileURLToPath(import.meta.url)));
+export function getDirname(url:string):string {
+	return slashPath(dirname(fileURLToPath(url)));
 } 
 
 
