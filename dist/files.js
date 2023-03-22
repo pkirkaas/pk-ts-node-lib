@@ -1,6 +1,18 @@
 import fsPath from 'fs-path';
 import fs from "fs-extra";
 export { fs };
+import { slashPath } from './index.js';
+/** THIS ASSUMES WE ARE IN A MODULE SYSTEM
+ * Replaces __dirname & __filename
+ */
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+export function getFilename() {
+    return slashPath(fileURLToPath(import.meta.url));
+}
+export function getDirname() {
+    return slashPath(dirname(fileURLToPath(import.meta.url)));
+}
 /**
  * Returns array of file paths found in the
  * paths arg, recursive

@@ -16,6 +16,19 @@ import { cwd } from './index.js';
 //import { GenericObject, OptArrStr, cwd, path, JSON5,  bsetpath, appDefaults } from '../common';
 //here changing in cdc
 import { GenericObject, OptArrStr,  JSON5,   } from  'pk-ts-common-lib';
+import { slashPath } from './index.js';
+
+/** THIS ASSUMES WE ARE IN A MODULE SYSTEM
+ * Replaces __dirname & __filename
+ */
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+export function getFilename() {
+	return slashPath(fileURLToPath(import.meta.url));
+} 
+export function getDirname() {
+	return slashPath(dirname(fileURLToPath(import.meta.url)));
+} 
 
 
 /** 
