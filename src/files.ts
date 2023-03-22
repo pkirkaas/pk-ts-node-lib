@@ -23,11 +23,15 @@ import { slashPath } from './index.js';
  */
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
-export function getFilename(url:string):string {
-	return slashPath(fileURLToPath(url));
+export function getFilename(url:string,...parts):string {
+	let urlPath = fileURLToPath(url);
+	let fpath = slashPath(urlPath, ...parts);
+	//return slashPath(fileURLToPath(url));
+	return fpath;
 } 
-export function getDirname(url:string):string {
-	return slashPath(dirname(fileURLToPath(url)));
+export function getDirname(url:string, ...parts):string {
+	let fpath = getFilename(url, ...parts);
+	return slashPath(dirname(fpath));
 } 
 
 

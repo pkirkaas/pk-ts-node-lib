@@ -7,11 +7,15 @@ import { slashPath } from './index.js';
  */
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-export function getFilename(url) {
-    return slashPath(fileURLToPath(url));
+export function getFilename(url, ...parts) {
+    let urlPath = fileURLToPath(url);
+    let fpath = slashPath(urlPath, ...parts);
+    //return slashPath(fileURLToPath(url));
+    return fpath;
 }
-export function getDirname(url) {
-    return slashPath(dirname(fileURLToPath(url)));
+export function getDirname(url, ...parts) {
+    let fpath = getFilename(url, ...parts);
+    return slashPath(dirname(fpath));
 }
 /**
  * Returns array of file paths found in the
