@@ -180,7 +180,14 @@ export function utilInspect(obj: any, opts?: any) {
 }
 
 export function dbgPath(fname) {
+  fname = `${fname}.json5`;
   return slashPath(cwd, 'tmp', fname);
+
+}
+
+/** Change argument order to make path optional*/
+export function dbgWrt( arg: any, fpath='debug', append: boolean = false) {
+  return dbgWrite(fpath, arg, append);
 }
 
 export function dbgWrite(fpath, arg: any, append: boolean = false) {

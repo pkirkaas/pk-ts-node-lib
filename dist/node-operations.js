@@ -158,7 +158,12 @@ export function utilInspect(obj, opts) {
     return util.inspect(obj, opts);
 }
 export function dbgPath(fname) {
+    fname = `${fname}.json5`;
     return slashPath(cwd, 'tmp', fname);
+}
+/** Change argument order to make path optional*/
+export function dbgWrt(arg, fpath = 'debug', append = false) {
+    return dbgWrite(fpath, arg, append);
 }
 export function dbgWrite(fpath, arg, append = false) {
     let dpath = dbgPath(fpath);

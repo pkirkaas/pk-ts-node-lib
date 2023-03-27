@@ -29,6 +29,8 @@ export declare function convertParamsToCliArgs(params: any): any[];
 export declare function stdOut(...args: any[]): void;
 export declare function utilInspect(obj: any, opts?: any): string;
 export declare function dbgPath(fname: any): string;
+/** Change argument order to make path optional*/
+export declare function dbgWrt(arg: any, fpath?: string, append?: boolean): any;
 export declare function dbgWrite(fpath: any, arg: any, append?: boolean): any;
 export declare function compareArrays(arr1: [], arr2: []): {
     arr1: [];
