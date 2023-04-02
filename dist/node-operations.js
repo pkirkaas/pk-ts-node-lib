@@ -9,14 +9,14 @@ import fs from "fs-extra";
 //export const  path =  require( 'path');
 import path from 'path';
 import util from 'util';
+util.inspect.defaultOptions.maxArrayLength = null;
+util.inspect.defaultOptions.depth = null;
+util.inspect.defaultOptions.breakLength = 200;
 import { spawn } from "child_process";
 import * as ESP from "error-stack-parser";
 import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
-import { isEmpty, isSimpleType, isSimpleObject, JSON5Stringify, isPrimitive, inArr1NinArr2, intersect } from 'pk-ts-common-lib';
-util.inspect.defaultOptions.maxArrayLength = null;
-util.inspect.defaultOptions.depth = null;
-util.inspect.defaultOptions.breakLength = 200;
+import { JSON5, isEmpty, isSimpleType, isSimpleObject, JSON5Stringify, isPrimitive, inArr1NinArr2, intersect } from 'pk-ts-common-lib';
 export const excludeFncs = [
     "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
     "infoLog", "debugLog", "stamp", "fulfilled", "rejected", "processTicksAndRejections", "LogData.log",
@@ -362,5 +362,10 @@ export function catchErr(err, ...rest) {
     console.error(`There was an exception:`, { err, rest, stamp: stamp() });
     logMsg(err);
     return false;
+}
+export function loadJson(afile) {
+    let json = fs.readFileSync(afile, "utf8");
+    let obj = JSON5.parse(json);
+    return obj;
 }
 //# sourceMappingURL=node-operations.js.map
