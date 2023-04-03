@@ -3,7 +3,7 @@
  * but if the map keys are integers, JSON & JSON5 don't like it. So need to convert the sass-export json string
  * to something parsable.
  */
-import { JSON5, GenObj, } from './index.js';
+import { JSON5, JSON5Parse, GenObj, } from './index.js';
 
 export function sassMapStringToJson(str: string):string {
 	let lcVal = str.replaceAll('(', '{').replaceAll(')', '}');
@@ -22,6 +22,6 @@ export function sassMapStringToJson(str: string):string {
 
 export function sassMapStringToObj(str: string): GenObj {
 	let json5str = sassMapStringToJson(str);
-	let obj = JSON5.parse(json5str);
+	let obj = JSON5Parse(json5str);
 	return obj;
 }

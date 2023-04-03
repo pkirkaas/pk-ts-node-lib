@@ -19,7 +19,7 @@ import { spawn }  from  "child_process";
 import * as ESP from "error-stack-parser";
 import { format, isValid } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
-import { JSON5, isEmpty,  isSimpleType,isSimpleObject,JSON5Stringify,isPrimitive,inArr1NinArr2, intersect, GenericObject} from 'pk-ts-common-lib';
+import { JSON5, JSON5Parse, isEmpty,  isSimpleType,isSimpleObject,JSON5Stringify,isPrimitive,inArr1NinArr2, intersect, GenericObject} from 'pk-ts-common-lib';
 
   export const excludeFncs = [
     "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
@@ -402,6 +402,6 @@ export function catchErr(err: any, ...rest) {
 
 export function loadJson(afile) {
   let json = fs.readFileSync(afile, "utf8");
-  let obj = JSON5.parse(json);
+  let obj = JSON5Parse(json);
   return obj;
 }
