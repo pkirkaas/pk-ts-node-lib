@@ -9,7 +9,10 @@ export function sassMapStringToJson(str: string):string {
 	let lcVal = str.replaceAll('(', '{').replaceAll(')', '}');
 	//let keyMatch = /:([^}]*)}/g;
 	let valRe1 = /:\s*([^:},]*)}/g;
-	let valRe2 = /:\s*([^:},]*),/g;
+	// MIGHT HAVE TO RESTORE THE BELOW:
+	//let valRe2 = /:\s*([^:},]*),/g;
+	//NEW VERSION - TO PREVENT quoting obj val after :
+	let valRe2 = /:\s*([^:},{]*),/g;
 	let keyRe1 = /{\s*([0-9]+[^:}]*):/g;
 	let keyRe2 = /,\s*([0-9]+[^:}]*):/g;
 	lcVal = lcVal.replaceAll('-', '_');
