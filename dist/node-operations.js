@@ -9,9 +9,11 @@ import fs from "fs-extra";
 //export const  path =  require( 'path');
 import path from 'path';
 import util from 'util';
-export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200) {
+export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null) {
     util.inspect.defaultOptions.maxArrayLength = maxArrayLength;
     util.inspect.defaultOptions.depth = depth;
+    util.inspect.defaultOptions.colors = colors;
+    util.inspect.defaultOptions.maxStringLength = maxStringLength;
     util.inspect.defaultOptions.breakLength = breakLength;
 }
 util.inspect.defaultOptions.maxArrayLength = null;
@@ -38,7 +40,9 @@ export const cwd = slashPath(process.cwd());
 export function objInspect(arg, opts) {
     let defOpts = {
         showHidden: true,
-        depth: 20,
+        maxArrayLength: null,
+        maxStringLength: null,
+        depth: null,
         showProxy: true,
         getters: true,
     };
