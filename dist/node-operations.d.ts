@@ -6,6 +6,7 @@
  *
  */
 /// <reference types="node" />
+export declare function setInspectLevels(depth?: any, maxArrayLength?: any, breakLength?: number): void;
 import { GenericObject } from 'pk-ts-common-lib';
 export declare const excludeFncs: string[];
 export declare const fnSkips: string[];

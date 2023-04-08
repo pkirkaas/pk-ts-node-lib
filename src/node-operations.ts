@@ -11,6 +11,12 @@ import fs from "fs-extra";
 import   path from  'path';
 
 import util from 'util';
+
+export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200) {
+	util.inspect.defaultOptions.maxArrayLength = maxArrayLength;
+	util.inspect.defaultOptions.depth = depth;
+	util.inspect.defaultOptions.breakLength = breakLength;
+}
 util.inspect.defaultOptions.maxArrayLength = null;
 util.inspect.defaultOptions.depth = null;
 util.inspect.defaultOptions.breakLength = 200;
