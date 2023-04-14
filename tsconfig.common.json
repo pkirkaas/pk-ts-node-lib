@@ -1,7 +1,6 @@
 {
-  "extends":"pk-ts-common-lib/tsconfig.json",
+  "extends":"pk-ts-common-lib/tsconfig.common.json",
   "compilerOptions": {
-    "outDir": "./dist",
     "baseUrl": ".",
     "esModuleInterop": true,
     "declaration": true,

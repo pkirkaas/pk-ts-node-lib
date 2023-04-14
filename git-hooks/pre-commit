@@ -12,7 +12,7 @@ export BASEDIR=`pwd`
 # Redirect output to stderr.
 exec 1>&2
 echo "The script dir: [$SCRIPT_DIR]; called from: [$BASEDIR]"
-tsc
+npm run build
 STAT=$?
 git add ./dist
 echo "Exit status of tsc was: [$STAT]"
