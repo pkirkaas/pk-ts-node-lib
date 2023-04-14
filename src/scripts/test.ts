@@ -1,5 +1,6 @@
-import { isEmpty, typeOf, dbgWrt, ask, runCli,sassMapStringToJson, sassMapStringToObj } from '../index.js';
+import {  dbgWrt, ask, runCli,sassMapStringToJson, sassMapStringToObj } from '../index.js';
 
+import { isEmpty, typeOf } from 'pk-ts-common-lib';
 /*
 console.log("Testing lib");
 
@@ -37,6 +38,7 @@ let tests = {
 	},
 
 	tstAsk: async function () {
+		//@ts-ignore
 		let answer = await ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
 		console.log({ answer });
 	},

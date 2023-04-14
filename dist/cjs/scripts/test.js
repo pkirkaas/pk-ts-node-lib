@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,8 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj } from '../index.js';
-import { typeOf } from 'pk-ts-common-lib';
+Object.defineProperty(exports, "__esModule", { value: true });
+const index_js_1 = require("../index.js");
+const pk_ts_common_lib_1 = require("pk-ts-common-lib");
 /*
 console.log("Testing lib");
 
@@ -29,24 +31,24 @@ let scssMapr = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, 
     */
 let tests = {
     tst: function () {
-        let too = typeOf({});
+        let too = (0, pk_ts_common_lib_1.typeOf)({});
         console.log({ too });
     },
     tstMap: function () {
-        let json = sassMapStringToJson(scssMap);
-        let obj = sassMapStringToObj(scssMap);
+        let json = (0, index_js_1.sassMapStringToJson)(scssMap);
+        let obj = (0, index_js_1.sassMapStringToObj)(scssMap);
         //let json = sassMapStringToJson(scssMapr);
-        dbgWrt(json, 'sassMap');
-        dbgWrt(obj, 'sassMapO');
+        (0, index_js_1.dbgWrt)(json, 'sassMap');
+        (0, index_js_1.dbgWrt)(obj, 'sassMapO');
         console.log({ json, obj });
     },
     tstAsk: function () {
         return __awaiter(this, void 0, void 0, function* () {
             //@ts-ignore
-            let answer = yield ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
+            let answer = yield (0, index_js_1.ask)('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
             console.log({ answer });
         });
     },
 };
-runCli(tests);
+(0, index_js_1.runCli)(tests);
 //# sourceMappingURL=test.js.map

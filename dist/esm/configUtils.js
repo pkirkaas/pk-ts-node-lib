@@ -32,6 +32,7 @@ export function setBsetpath(bsetpath) {
 }
 /** Gets the app settings - like where */
 export function getAppConfig() {
+    var _a;
     //console.log(`in getAppConfig - bsetpath: ${bsetpath}; __dirname: ${__dirname}`);
     let bsetpath = getBsetpath();
     if (!fs.existsSync(bsetpath)) { //Doesn't exist - create in
@@ -40,14 +41,14 @@ export function getAppConfig() {
     }
     //let bsetpath = getBsetpath();
     let appConfig = require(bsetpath);
-    let appDefaults = getAppDefaults() ?? {};
-    appConfig = { ...appConfig, ...appDefaults };
+    let appDefaults = (_a = getAppDefaults()) !== null && _a !== void 0 ? _a : {};
+    appConfig = Object.assign(Object.assign({}, appConfig), appDefaults);
     //console.log(`in getAppConfig - appconfig result:`, { appConfig });
     return appConfig;
 }
 export function setAppConfig(data) {
     let appConfig = getAppConfig();
-    appConfig = { ...appConfig, ...data };
+    appConfig = Object.assign(Object.assign({}, appConfig), data);
     console.log(`in setAppConfig - appconfig:`, { appConfig });
     let j5 = JSON5.stringify(appConfig);
     let bsetpath = getBsetpath();
@@ -94,3 +95,4 @@ export function setConfDir(confPath) {
     let update = { configDir: confPath };
     return setAppConfig(update);
 }
+//# sourceMappingURL=configUtils.js.map

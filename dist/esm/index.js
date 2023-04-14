@@ -10,3 +10,4 @@ let tstObj = { akey: "aval", anotherKey: "anotherVal" };
 let tstSmp = isSimpleObject(tstObj);
 console.log({ tstObj, tstSmp });
 */ 
+//# sourceMappingURL=index.js.map

@@ -1,3 +1,4 @@
+"use strict";
 /**
  * Library of JS/TS functions specifically for Node.js - extends 'pk-ts-common-lib' functions
  * that are pure JS & not browser/node dependent
@@ -5,39 +6,68 @@
  * @email pkirkaas@gmail.com
  *
  */
-import fs from "fs-extra";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.loadJson = exports.catchErr = exports.logMsg = exports.getFrameAfterFunction = exports.writeFile = exports.writeData = exports.compareArrays = exports.dbgWrite = exports.dbgWrt = exports.dbgPath = exports.utilInspect = exports.stdOut = exports.convertParamsToCliArgs = exports.asyncSpawn = exports.getProcess = exports.stamp = exports.stackParse = exports.isDirectory = exports.slashPath = exports.objInspect = exports.cwd = exports.allSkips = exports.fnSkips = exports.excludeFncs = exports.setInspectLevels = void 0;
+const fs_extra_1 = __importDefault(require("fs-extra"));
 //export const  path =  require( 'path');
-import path from 'path';
-import util from 'util';
-export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null) {
-    util.inspect.defaultOptions.maxArrayLength = maxArrayLength;
-    util.inspect.defaultOptions.depth = depth;
-    util.inspect.defaultOptions.colors = colors;
-    util.inspect.defaultOptions.maxStringLength = maxStringLength;
-    util.inspect.defaultOptions.breakLength = breakLength;
+const path_1 = __importDefault(require("path"));
+const util_1 = __importDefault(require("util"));
+function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null) {
+    util_1.default.inspect.defaultOptions.maxArrayLength = maxArrayLength;
+    util_1.default.inspect.defaultOptions.depth = depth;
+    util_1.default.inspect.defaultOptions.colors = colors;
+    util_1.default.inspect.defaultOptions.maxStringLength = maxStringLength;
+    util_1.default.inspect.defaultOptions.breakLength = breakLength;
 }
-util.inspect.defaultOptions.maxArrayLength = null;
-util.inspect.defaultOptions.depth = null;
-util.inspect.defaultOptions.breakLength = 200;
-import { spawn } from "child_process";
-import * as ESP from "error-stack-parser";
-import { format } from "date-fns";
-import { v4 as uuidv4 } from "uuid";
-import { JSON5Parse, isEmpty, isSimpleType, isSimpleObject, JSON5Stringify, isPrimitive, inArr1NinArr2, intersect } from 'pk-ts-common-lib';
-export const excludeFncs = [
+exports.setInspectLevels = setInspectLevels;
+util_1.default.inspect.defaultOptions.maxArrayLength = null;
+util_1.default.inspect.defaultOptions.depth = null;
+util_1.default.inspect.defaultOptions.breakLength = 200;
+const child_process_1 = require("child_process");
+const ESP = __importStar(require("error-stack-parser"));
+const date_fns_1 = require("date-fns");
+const uuid_1 = require("uuid");
+const pk_ts_common_lib_1 = require("pk-ts-common-lib");
+exports.excludeFncs = [
     "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
     "infoLog", "debugLog", "stamp", "fulfilled", "rejected", "processTicksAndRejections", "LogData.log",
     "LogData.out", "LogData.console", "LogData.errLog", "LogData.throw", 'catchErr', 'logMsg',
 ];
 //let fnSkips = ["__awaiter", "Object.<anonymous>", "undefined", undefined];
-export const fnSkips = ["__awaiter", "undefined", undefined];
-export const allSkips = fnSkips.concat(excludeFncs);
-export const cwd = slashPath(process.cwd());
+exports.fnSkips = ["__awaiter", "undefined", undefined];
+exports.allSkips = exports.fnSkips.concat(exports.excludeFncs);
+exports.cwd = slashPath(process.cwd());
 /** Uses util.inspect to stringify an arg
  * @param object? opts - to override the default opts
  * @return string representation
  */
-export function objInspect(arg, opts) {
+function objInspect(arg, opts) {
     let defOpts = {
         showHidden: true,
         maxArrayLength: null,
@@ -49,23 +79,26 @@ export function objInspect(arg, opts) {
     if (opts && typeof opts === 'object') {
         Object.assign(defOpts, opts);
     }
-    return util.inspect(arg, defOpts);
+    return util_1.default.inspect(arg, defOpts);
 }
+exports.objInspect = objInspect;
 //Moded to combine path.join & slashPath - should be compatible
 // What about spaces???
-export function slashPath(...parts) {
-    let apath = path.join(...parts);
-    return apath.split(path.sep).join(path.posix.sep);
+function slashPath(...parts) {
+    let apath = path_1.default.join(...parts);
+    return apath.split(path_1.default.sep).join(path_1.default.posix.sep);
 }
-export function isDirectory(apath) {
-    return fs.existsSync(apath) && fs.lstatSync(apath).isDirectory();
+exports.slashPath = slashPath;
+function isDirectory(apath) {
+    return fs_extra_1.default.existsSync(apath) && fs_extra_1.default.lstatSync(apath).isDirectory();
 }
-export function stackParse() {
+exports.isDirectory = isDirectory;
+function stackParse() {
     let stack = ESP.parse(new Error());
     let ret = [];
     for (let info of stack) {
         let res = {
-            fileName: path.basename(info.fileName),
+            fileName: path_1.default.basename(info.fileName),
             lineNumber: info.lineNumber,
             functionName: info.functionName,
         };
@@ -73,11 +106,12 @@ export function stackParse() {
     }
     return ret;
 }
+exports.stackParse = stackParse;
 /** Basic info for console logging */
-export function stamp(entry, frameAfter) {
+function stamp(entry, frameAfter) {
     let entId = "";
     //console.log({ entry });
-    if (!isEmpty(entry) && typeof entry === "object") {
+    if (!(0, pk_ts_common_lib_1.isEmpty)(entry) && typeof entry === "object") {
         if (entry.id) {
             entId = entry.id;
         }
@@ -87,37 +121,39 @@ export function stamp(entry, frameAfter) {
     //let frame = getFrameAfterFunction(frameAfter, true);
     let src = "";
     if (frame) {
-        src = `:${path.basename(frame.fileName)}:${frame.functionName}:${frame.lineNumber}:`;
+        src = `:${path_1.default.basename(frame.fileName)}:${frame.functionName}:${frame.lineNumber}:`;
         //console.log({ frame });
     }
     let now = new Date();
     let pe = process.env.PROCESS_ENV;
-    let ds = format(now, "y-LL-dd H:m:s");
+    let ds = (0, date_fns_1.format)(now, "y-LL-dd H:m:s");
     return `${ds}-${pe}${src}: ${entId} `;
 }
-export function getProcess() {
+exports.stamp = stamp;
+function getProcess() {
     console.log(process.env);
     return process.env;
 }
-export function asyncSpawn(cmd, ...params) {
+exports.getProcess = getProcess;
+function asyncSpawn(cmd, ...params) {
     try {
         let args = convertParamsToCliArgs(params);
         let cwd = process.cwd();
-        let logDir = path.join(cwd, "logs");
-        let stdLog = path.join(logDir, `${cmd}-stdout.log`);
-        let errLog = path.join(logDir, `${cmd}-stderr.log`);
-        fs.mkdirSync(logDir, { recursive: true });
-        let stdOut = fs.openSync(stdLog, "a");
-        let stdErr = fs.openSync(errLog, "a");
-        let script = path.join(cwd, "dist", "src", `scripts`, `async-jobs.js`);
-        if (!fs.existsSync(script)) {
+        let logDir = path_1.default.join(cwd, "logs");
+        let stdLog = path_1.default.join(logDir, `${cmd}-stdout.log`);
+        let errLog = path_1.default.join(logDir, `${cmd}-stderr.log`);
+        fs_extra_1.default.mkdirSync(logDir, { recursive: true });
+        let stdOut = fs_extra_1.default.openSync(stdLog, "a");
+        let stdErr = fs_extra_1.default.openSync(errLog, "a");
+        let script = path_1.default.join(cwd, "dist", "src", `scripts`, `async-jobs.js`);
+        if (!fs_extra_1.default.existsSync(script)) {
             console.error(`asyncSpawn couldn't find the script: ${script}`);
             return false;
         }
         args.unshift(cmd);
         args.unshift(script);
         console.log({ __dirname, cwd, cmd, script, args });
-        const subprocess = spawn("node", args, {
+        const subprocess = (0, child_process_1.spawn)("node", args, {
             cwd,
             detached: true,
             stdio: ["ignore", stdOut, stdErr],
@@ -130,15 +166,16 @@ export function asyncSpawn(cmd, ...params) {
         console.error(`Error executing or parsing asyncSpawn`, { cmd, params, err });
     }
 }
+exports.asyncSpawn = asyncSpawn;
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */
-export function convertParamsToCliArgs(params) {
+function convertParamsToCliArgs(params) {
     let ret = [];
     for (let param of params) {
-        if (isSimpleType(param)) {
+        if ((0, pk_ts_common_lib_1.isSimpleType)(param)) {
             ret.push(param);
         }
-        else if (isSimpleObject(param)) {
+        else if ((0, pk_ts_common_lib_1.isSimpleObject)(param)) {
             for (let key in param) {
                 ret.push(`--${key}=${param[key]}`);
             }
@@ -150,52 +187,60 @@ export function convertParamsToCliArgs(params) {
     }
     return ret;
 }
-export function stdOut(...args) {
+exports.convertParamsToCliArgs = convertParamsToCliArgs;
+function stdOut(...args) {
     for (let arg of args) {
         if (typeof arg !== "string") {
-            arg = JSON5Stringify(arg);
+            arg = (0, pk_ts_common_lib_1.JSON5Stringify)(arg);
         }
         process.stdout.write(arg);
     }
 }
-export function utilInspect(obj, opts) {
+exports.stdOut = stdOut;
+function utilInspect(obj, opts) {
     let defOpts = { showHidden: true, depth: null, showProxy: true, maxArrayLength: null, maxStringLength: null, breakLength: 200, getters: true, compact: 7 };
     defOpts = { showHidden: true, depth: 15, maxArrayLength: 200, maxStringLength: 1000, breakLength: 200, };
     if (!opts) {
         opts = defOpts;
     }
-    return util.inspect(obj, opts);
+    return util_1.default.inspect(obj, opts);
 }
-export function dbgPath(fname) {
+exports.utilInspect = utilInspect;
+function dbgPath(fname) {
     fname = `${fname}.json5`;
-    return slashPath(cwd, 'tmp', fname);
+    return slashPath(exports.cwd, 'tmp', fname);
 }
+exports.dbgPath = dbgPath;
 /** Change argument order to make path optional*/
-export function dbgWrt(arg, fpath = 'debug', append = false) {
+function dbgWrt(arg, fpath = 'debug', append = false) {
     return dbgWrite(fpath, arg, append);
 }
-export function dbgWrite(fpath, arg, append = false) {
+exports.dbgWrt = dbgWrt;
+function dbgWrite(fpath, arg, append = false) {
     let dpath = dbgPath(fpath);
     return writeFile(dpath, arg, append);
 }
-export function compareArrays(arr1, arr2) {
-    let shared = intersect(arr1, arr2);
+exports.dbgWrite = dbgWrite;
+function compareArrays(arr1, arr2) {
+    let shared = (0, pk_ts_common_lib_1.intersect)(arr1, arr2);
     let sharedCnt = shared.length;
-    let onlyArr1 = inArr1NinArr2(arr1, arr2);
+    let onlyArr1 = (0, pk_ts_common_lib_1.inArr1NinArr2)(arr1, arr2);
     let onlyArr1Cnt = onlyArr1.length;
-    let onlyArr2 = inArr1NinArr2(arr2, arr1);
+    let onlyArr2 = (0, pk_ts_common_lib_1.inArr1NinArr2)(arr2, arr1);
     let onlyArr2Cnt = onlyArr2.length;
     let arr1Cnt = arr1.length;
     let arr2Cnt = arr2.length;
     return { arr1, arr2, arr1Cnt, arr2Cnt, shared, sharedCnt, onlyArr1, onlyArr1Cnt, onlyArr2, onlyArr2Cnt };
 }
+exports.compareArrays = compareArrays;
 /**
  * Better param order for writeFile
  */
-export function writeData(arg, fpath = '.', append = false) {
+function writeData(arg, fpath = '.', append = false) {
     return writeFile(fpath, arg, append);
 }
-export function writeFile(fpath, arg, append = false) {
+exports.writeData = writeData;
+function writeFile(fpath, arg, append = false) {
     if (arg === undefined) {
         arg = "undefned";
     }
@@ -204,7 +249,7 @@ export function writeFile(fpath, arg, append = false) {
     }
     fpath = slashPath(fpath);
     if (isDirectory(fpath)) {
-        fpath = path.join(fpath, "debug-out.json");
+        fpath = path_1.default.join(fpath, "debug-out.json");
     }
     //let fexists = fs.existsSync(fpath);
     let flag = 'w';
@@ -222,15 +267,16 @@ export function writeFile(fpath, arg, append = false) {
       fpcwd: path.join(process.cwd(), fpath),
     };
     */
-    let dir = path.posix.dirname(fpath);
-    let dires = fs.mkdirSync(dir, { recursive: true });
+    let dir = path_1.default.posix.dirname(fpath);
+    let dires = fs_extra_1.default.mkdirSync(dir, { recursive: true });
     //console.log(`writeFile to ${fpath}`);
-    if (!isPrimitive(arg)) {
-        arg = JSON5Stringify(arg);
+    if (!(0, pk_ts_common_lib_1.isPrimitive)(arg)) {
+        arg = (0, pk_ts_common_lib_1.JSON5Stringify)(arg);
     }
-    return fs.writeFileSync(fpath, arg, opts);
+    return fs_extra_1.default.writeFileSync(fpath, arg, opts);
 }
-export function getFrameAfterFunction(fname, forceFunction) {
+exports.writeFile = writeFile;
+function getFrameAfterFunction(fname, forceFunction) {
     if (fname && typeof fname === "string") {
         fname = [fname];
     }
@@ -274,7 +320,7 @@ export function getFrameAfterFunction(fname, forceFunction) {
     let fnSkips = ["__awaiter", "undefined", undefined];
     let allSkips = fnSkips.concat(excludeFncs);
     let skips = excludeFncs.concat(fname);
-    let uv = uuidv4();
+    let uv = (0, uuid_1.v4)();
     //writeFile(`../tmp/stack-${uv}.json`, stack);
     //  console.log("Rest of the Stack:", { stack });
     let lastFrame = stack.shift();
@@ -318,20 +364,21 @@ export function getFrameAfterFunction(fname, forceFunction) {
     }
     return lastFrame;
 }
+exports.getFrameAfterFunction = getFrameAfterFunction;
 /** File based msg logging - when no db...
  * @param any msg - gotta have something...
  * @param string? lpath: some path to the log file,
  * or we make a best guess
  * @return ???
  */
-export function logMsg(msg, lpath) {
+function logMsg(msg, lpath) {
     //Should have a path - is it a file or dir? Does it exist?
     if (!lpath) {
         if (process.env.LOGPATH) {
             lpath = process.env.LOGPATH;
         }
         else {
-            lpath = path.join(process.cwd(), 'logs', 'default.log');
+            lpath = path_1.default.join(process.cwd(), 'logs', 'default.log');
         }
     }
     //Does lpath exist? Is it a dir?
@@ -365,16 +412,19 @@ export function logMsg(msg, lpath) {
         return false;
     }
 }
+exports.logMsg = logMsg;
 /** Call from a catch - logs error to file, console.error, & returns false
  */
-export function catchErr(err, ...rest) {
+function catchErr(err, ...rest) {
     console.error(`There was an exception:`, { err, rest, stamp: stamp() });
     logMsg(err);
     return false;
 }
-export function loadJson(afile) {
-    let json = fs.readFileSync(afile, "utf8");
-    let obj = JSON5Parse(json);
+exports.catchErr = catchErr;
+function loadJson(afile) {
+    let json = fs_extra_1.default.readFileSync(afile, "utf8");
+    let obj = (0, pk_ts_common_lib_1.JSON5Parse)(json);
     return obj;
 }
+exports.loadJson = loadJson;
 //# sourceMappingURL=node-operations.js.map

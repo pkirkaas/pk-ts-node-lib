@@ -45,3 +45,4 @@ export function getFilePaths(paths) {
     fpaths = Array.from(new Set(fpaths));
     return fpaths;
 }
+//# sourceMappingURL=files.js.map

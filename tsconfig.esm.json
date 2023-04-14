@@ -4,4 +4,11 @@
     "outDir": "./dist/esm",
     "module": "ESNext"
   },
+  "ts-node": {
+    "require": [
+      "tsconfig-paths/register"
+    ],
+
+    "esm":true,
+  },
 }

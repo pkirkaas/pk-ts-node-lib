@@ -1,3 +1,27 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,28 +31,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.runCli = exports.argv = exports.ask = exports.makeQuestion = exports.inqTypes = void 0;
 /** CLI Support for async scripts */
 //const path = require("path");
-import path from "path";
+const path_1 = __importDefault(require("path"));
 //const cwd = process.cwd();
-import _ from "lodash";
-import * as dotenv from 'dotenv';
-import { cwd } from './index.js';
+const lodash_1 = __importDefault(require("lodash"));
+const dotenv = __importStar(require("dotenv"));
+const index_js_1 = require("./index.js");
 //import  dotenv  from 'dotenv';
 //@ts-ignore
-dotenv.config(path.join(cwd, ".env"));
+dotenv.config(path_1.default.join(index_js_1.cwd, ".env"));
 //const inquirer = require("inquirer");
-import inquirer from "inquirer";
-export const inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expand', 'checkbox', 'password', 'editor'];
+const inquirer_1 = __importDefault(require("inquirer"));
+exports.inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expand', 'checkbox', 'password', 'editor'];
 /**
  * Makes a single inquirer question
  */
-export function makeQuestion(message, { name = '', type = '', def = null, choices = [] }) {
-    if (!inqTypes.includes(type)) {
+function makeQuestion(message, { name = '', type = '', def = null, choices = [] }) {
+    if (!exports.inqTypes.includes(type)) {
         throw new Error(`Invalid inquirer question type [${type}]`);
     }
     if (!name) {
-        name = _.uniqueId('inc_name_');
+        name = lodash_1.default.uniqueId('inc_name_');
     }
     if (!type) {
         if (choices.length) {
@@ -40,15 +69,16 @@ export function makeQuestion(message, { name = '', type = '', def = null, choice
     }
     return { message, type, default: def, choices, name, };
 }
+exports.makeQuestion = makeQuestion;
 /**
  * Uses inquirer for one question, and answer
  *
 
  */
-export function ask(msg, { name = '', type = '', def = null, choices = [] } = {}) {
+function ask(msg, { name = '', type = '', def = null, choices = [] } = {}) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!name) {
-            name = _.uniqueId('inc_name_');
+            name = lodash_1.default.uniqueId('inc_name_');
         }
         if (!type) {
             if (choices.length) {
@@ -59,19 +89,20 @@ export function ask(msg, { name = '', type = '', def = null, choices = [] } = {}
             }
         }
         let qArr = [makeQuestion(msg, { name, type, def, choices })];
-        let answers = yield inquirer.prompt(qArr);
+        let answers = yield inquirer_1.default.prompt(qArr);
         let answer = answers[name];
         return answer;
     });
 }
+exports.ask = ask;
 /*
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 */
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
-import { trueVal } from 'pk-ts-common-lib';
-export const argv = yargs(hideBin(process.argv)).argv;
+const yargs_1 = __importDefault(require("yargs"));
+const helpers_1 = require("yargs/helpers");
+const pk_ts_common_lib_1 = require("pk-ts-common-lib");
+exports.argv = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv)).argv;
 /** Support for CLI commands & tests with ts-node
  * From a test script (test.ts) import runTest - define some test functions:
  *
@@ -91,14 +122,14 @@ runTest(fncs,[cli_env]);
 Call from cli with "ts-node <scripts/name.ts testName arg1 arg2"
 
  */
-export function runCli(fncs, env) {
+function runCli(fncs, env) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("Entering runCli");
-        let largv = argv;
+        let largv = exports.argv;
         const args = largv._;
         delete largv._; //The rest is an object
         delete largv.$0;
-        largv = trueVal(largv);
+        largv = (0, pk_ts_common_lib_1.trueVal)(largv);
         let tofs = typeof fncs;
         let params;
         let cmd;
@@ -138,4 +169,5 @@ export function runCli(fncs, env) {
         process.exit();
     });
 }
+exports.runCli = runCli;
 //# sourceMappingURL=cliSupport.js.map
