@@ -2,32 +2,5 @@
  * Just for TS-Node...
  */
 {
-  "extends":"pk-ts-common-lib/tsconfig.common.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "esModuleInterop": true,
-    "declaration": true,
-    "moduleResolution": "Node",
-    "target":"ES6",
-    "outDir": "./dist/esm",
-    "module": "ESNext"
-  },
-  "include": [
-    "./src/**/*",
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "dist/**/*",
-    "*.d.ts"
-  ],
-   "typeRoots": [
-      "node_modules/@types",
-  ],
-  "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ],
-    "esm":true,
-  },
+  "extends":"pk-ts-common-lib/tsconfig.json",
 }

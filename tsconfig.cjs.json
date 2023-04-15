@@ -1,13 +1,3 @@
 {
-  "extends":"./tsconfig.common.json",
-  "compilerOptions": {
-    "outDir": "./dist/cjs",
-    "module": "commonjs"
-  },
-  "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ],
-    "esm":false,
-  },
+  "extends":"pk-ts-common-lib/tsconfig.cjs.json",
 }
