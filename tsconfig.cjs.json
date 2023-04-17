@@ -1,3 +1,7 @@
-{
+{ 
   "extends":"pk-ts-common-lib/tsconfig.cjs.json",
+  "compilerOptions": {
+    "outDir": "./dist/cjs",
+    "module": "commonjs"
+  },
 }

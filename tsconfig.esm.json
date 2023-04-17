@@ -1,3 +1,7 @@
 {
   "extends":"pk-ts-common-lib/tsconfig.esm.json",
+    "compilerOptions": {
+    "outDir": "./dist/esm",
+    "module": "ESNext"
+  },
 }
