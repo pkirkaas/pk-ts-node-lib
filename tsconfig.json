@@ -2,9 +2,15 @@
  * Just for TS-Node...
  */
 {
-  "extends":"pk-ts-common-lib/tsconfig.json",
+  "extends": "pk-ts-common-lib/tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist/cjs",
-    "module": "commonjs"
+    "outDir": "./dist/esm",
+    "module": "ESNext"
+  },
+  "ts-node": {
+    "require": [
+      "tsconfig-paths/register"
+    ],
+    "esm": true
   },
 }

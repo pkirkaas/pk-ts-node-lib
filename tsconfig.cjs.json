@@ -4,4 +4,10 @@
     "outDir": "./dist/cjs",
     "module": "commonjs"
   },
+  "ts-node": {
+    "require": [
+      "tsconfig-paths/register"
+    ],
+    "esm": false,
+  },
 }
