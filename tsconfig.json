@@ -4,6 +4,7 @@
 {
   "extends": "pk-ts-common-lib/tsconfig.json",
   "compilerOptions": {
+    "target": "ES6",
     "baseUrl": "./",
     "outDir": "./dist/esm",
     "module": "ESNext"

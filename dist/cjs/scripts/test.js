@@ -49,6 +49,20 @@ let tests = {
             console.log({ answer });
         });
     },
+    tstSlash: function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            //@ts-ignore
+            let answer = (0, index_js_1.slashPath)('.');
+            console.log({ answer });
+        });
+    },
+    tstFPaths: function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            //@ts-ignore
+            let answer = (0, index_js_1.getFilePaths)('.');
+            console.log({ answer });
+        });
+    },
 };
 (0, index_js_1.runCli)(tests);
 //# sourceMappingURL=test.js.map

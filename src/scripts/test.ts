@@ -1,4 +1,4 @@
-import {  dbgWrt, ask, runCli,sassMapStringToJson, sassMapStringToObj } from '../index.js';
+import {  getFilePaths, slashPath, dbgWrt, ask, runCli,sassMapStringToJson, sassMapStringToObj } from '../index.js';
 
 import { isEmpty, typeOf } from 'pk-ts-common-lib';
 /*
@@ -40,6 +40,16 @@ let tests = {
 	tstAsk: async function () {
 		//@ts-ignore
 		let answer = await ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
+		console.log({ answer });
+	},
+	tstSlash: async function () {
+		//@ts-ignore
+		let answer = slashPath('.');
+		console.log({ answer });
+	},
+	tstFPaths: async function () {
+		//@ts-ignore
+		let answer = getFilePaths('.');
 		console.log({ answer });
 	},
 }
