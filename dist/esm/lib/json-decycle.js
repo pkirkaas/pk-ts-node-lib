@@ -65,7 +65,8 @@ export const extend = (JSON) => {
         });
     }
     catch (e) {
-        console.error(`retrocycle & decycle already defined on JSON - Exception:`, e);
+        //TODO: FIX THIS
+        //console.error(`retrocycle & decycle already defined on JSON - Exception:`, e);
     }
 };
 //# sourceMappingURL=json-decycle.js.map
