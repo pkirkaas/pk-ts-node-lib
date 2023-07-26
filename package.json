@@ -4,8 +4,11 @@
   "author": "Paul Kirkaas",
   "license": "UNLICENSED",
   "description": "TS/JS Utilities for node apps, including common JS functions",
-  "type":"module",
-  "module":"./dist/esm/index.js",
+  "engines": {
+    "node": ">= 18.0.0"
+  },
+  "type": "module",
+  "module": "./dist/esm/index.js",
   "main": "./dist/cjs/index.js",
   "exports": {
     ".": {
@@ -18,10 +21,6 @@
     "./tsconfig.esm.json": "./tsconfig.esm.json",
     "./tsconfig.cjs.json": "./tsconfig.cjs.json",
     "./tsconfig.json": "./tsconfig.json"
-
-  },
-  "engines": {
-    "node": ">= 18.0.0"
   },
   "scripts": {
     "build": "tsc -p ./tsconfig.esm.json && tsc -p ./tsconfig.cjs.json",
