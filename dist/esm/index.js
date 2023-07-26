@@ -1,11 +1,13 @@
-/** Init shared by MongoQP-api & MongoQP-client */
-export * from './lib/json-decycle.js';
-//@ts-ignore
-Array.prototype.random = function () {
-    return this[Math.floor((Math.random() * this.length))];
-};
-export * from './common-operations.js';
-export * from './tag-classes.js';
-export * from './object-utils.js';
-export * from './util-classes.js';
+export * from 'pk-ts-common-lib';
+export * from './node-operations.js';
+export * from './files.js';
+export * from './cliSupport.js';
+export * from './configUtils.js';
+export * from './sass-support.js';
+/*
+
+let tstObj = { akey: "aval", anotherKey: "anotherVal" };
+let tstSmp = isSimpleObject(tstObj);
+console.log({ tstObj, tstSmp });
+*/ 
 //# sourceMappingURL=index.js.map

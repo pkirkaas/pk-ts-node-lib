@@ -1,218 +1,66 @@
-import { PkError, typeOf, isEmpty, isObject, classStack, getAllBuiltInProps, objInfo, } from '../index.js';
-import _ from 'lodash';
-import util from 'util';
-util.inspect.defaultOptions.maxArrayLength = null;
-util.inspect.defaultOptions.depth = null;
-util.inspect.defaultOptions.breakLength = 200;
-console.log('In test.ts...');
-function camelCase(str) {
-    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-        return index == 0 ? word.toLowerCase() : word.toUpperCase();
-    }).replace(/\s+/g, '');
-}
-function camelize(str) {
-    return str.replace(/\W+(.)/g, function (match, chr) {
-        return chr.toUpperCase();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-}
-let snakes = [" dog-cat ", ' "tiger-lion" ', " ' horse-cow '",];
-let camels = [" dogMouse ", ' "Dinosaur King" ', " ' NeverKnown '",];
-let strs = ['tag', 'donkey', 'animal', 'plant'];
-/*
-for (let str of strs) {
-    let strpd = stripStray(str);
-    let strpp = stripStray(strpd);
-    let camel = toCamelCase(strpp);
-    console.log({ str, strpd, strpp, camel });
 };
-*/
-let tstObjs = {
-    camelize, camels, empt: {}, Date, Math
-};
-for (let key in tstObjs) {
-    let val = tstObjs[key];
-    let toVal = typeOf(val);
-    let toval = typeof val;
-    let objLike = _.isObjectLike(val);
-    let isemp = isEmpty(val);
-    let isobj = isObject(val);
-    console.log({ key, toVal, toval, objLike, isobj, isemp });
-}
+import { getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj } from '../index.js';
+import { typeOf } from 'pk-ts-common-lib';
 /*
-console.log({ snakes, camels });
-for (let snake of snakes) {
-    let str = stripStray(snake);
-    let cc = camelCase(str);
-    let cmz = camelize(str);
-    let myRes = toCamelCase(snake);
-    console.log({ snake, str, cc, cmz, myRes });
-}
+console.log("Testing lib");
 
-for (let camel of camels) {
-    let stripped = stripStray(camel);
-    //let cc = camelCase(str);
-    //let cmz = camelize(str);
-    let snaked = toSnakeCase(camel);
-    console.log({  camel, stripped, snaked });
-}
+const anobj = { a: "b", c: "d" };
+const anarr = [1, 2, 3];
+const astr = "abc";
+
+let tob = typeOf(anobj);
+let toa = typeOf(anarr);
+let tos = typeOf(astr);
+
+console.log({ tob, toa, tos });
 */
-let tstArr = ['dog', 'cat', 'horse', 'donky', 7, 12, { some: 'obj' }, 'today'];
-class Organ {
-    constructor(age) {
-        this.age = age;
-    }
-}
-;
-class Animal extends Organ {
-    constructor(age, nick) {
-        super(age);
-        this.nick = nick;
-    }
-}
-;
-class Mammal extends Animal {
-}
-class Dog extends Mammal {
-    constructor(age, nick, breed, owner) {
-        super(age, nick);
-        this.breed = breed;
-        this.owner = owner;
-    }
-}
-function tstFnNames(arg) {
-    console.log({ arg });
-}
-let aDog = new Dog(22, 'buck', 'mutt', 'daddy');
-function tstPropsY() {
-    let biProps = getAllBuiltInProps();
-    console.log({ biProps });
-}
-function tstProps() {
-    let anErr = new PkError('tstErr');
-    let bres = {
-        aDog,
-        aDogOI: objInfo(aDog),
-        DogOI: objInfo(Dog),
-        inspP: objInfo(anErr, 'dv'),
-        anErr: objInfo(anErr),
-        PkError: objInfo(PkError),
-        isEmpty: objInfo(isEmpty),
-        emptyObj: objInfo({}),
-        emptyArr: objInfo([]),
-        string: objInfo(' '),
-        //aDogPChain: getPrototypeChain(aDog),
-        //anErrPChain: getPrototypeChain(anErr),
-        aDogCS: classStack(aDog),
-        //DogPChain: getPrototypeChain(Dog),
-        DogCS: classStack(Dog),
-        /*
-        inspP: allProps(anErr, 'dv'),
-        anErr: getObjDets(anErr),
-        PkError: getObjDets(PkError),
-        isEmpty: getObjDets(isEmpty),
-        emptyObj: getObjDets({}),
-        emptyArr: getObjDets([]),
-        string: getObjDets(' '),
-        aDogPChain: getPrototypeChain(aDog),
-        //anErrPChain: getPrototypeChain(anErr),
-        aDogCS: classStack(aDog),
-        //DogPChain: getPrototypeChain(Dog),
-        DogCS: classStack(Dog),
-        //	aDogCChain: getConstructorChain(aDog),
-        */
-    };
-    /*
-    let res = {
-        anErr: { props: allProps(anErr), type: typeof anErr },
-        PkErrorClass: { props: allProps(PkError), type: typeof PkError },
-        //emptyObj: allProps({}),
-        simpleObj: allProps({ d: 'cat' }),
-        emptyArr: allProps([]),
-        //smallArr: allProps([1, 2, 3]),
-        isEmptyFnc: allProps(isEmpty),
-        //null:allProps(null),
-    }
+let scssMap = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (display:flex, flex-direction: column), block: block)), font: (sz: (prop: font-size, vals: (xxs: xx-small, xs: x-small, s: small, m: medium, l: large, xl: x-large, xxl: xx-large, xxxl: xxx-large)), ff: (prop: font-family, vals: (v: verdana, a: arial, c: courier, t: times)), fw: (prop: font-weight, vals: (b: bold)), fs: (prop: font-style, vals: (i: italic)), c: (prop: color, vals: (r: red, b: blue, g: green, y: yellow)), a: (prop: text-align, vals: (l: left, r: right, c: center))), bg: (prop: background, vals: (lr: #fbb, l0: #fbb, lg: #bfb, l1: #bfb, lb: #bbf, l2: #bbf, ly: #fbb, l3: #fbb, ls: #bfb, l4: #bfb, lv: #fbf, l5: #fbf, lo: #ffb, l6: #ffb, dr: #400, d0: #400, dg: #040, d1: #040, db: #004, d2: #004, dy: #440, d3: #440, ds: #444, d4: #444, dv: #404, d5: #404, do: #440, d6: #440)), border: (prop: border, vals: (lr: #fbb, l0: #fbb, lg: #bfb, l1: #bfb, lb: #bbf, l2: #bbf, ly: #fbb, l3: #fbb, ls: #bfb, l4: #bfb, lv: #fbf, l5: #fbf, lo: #ffb, l6: #ffb, dr: #400, d0: #400, dg: #040, d1: #040, db: #004, d2: #004, dy: #440, d3: #440, ds: #444, d4: #444, dv: #404, d5: #404, do: #440, d6: #440)))';
+let scssMapr = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (flex, (flex-direction: column)), block: block))';
+/*
+    , font: (sz: (prop: font-size, vals: (xxs: xx-small, xs: x - small, s: small, m: medium, l: large, xl: x - large, xxl: xx - large, xxxl: xxx - large)), ff: (prop: font-family, vals: (v: verdana, a: arial, c: courier, t: times)), fw: (prop: font-weight, vals: (b: bold)), fs: (prop: font-style, vals: (i: italic)), c: (prop: color, vals: (r: red, b: blue, g: green, y: yellow)), a: (prop: text-align, vals: (l: left, r: right, c: center))), bg: (prop: background, vals: (lr: #fbb, l0: #fbb, lg: #bfb, l1: #bfb, lb: #bbf, l2: #bbf, ly: #fbb, l3: #fbb, ls: #bfb, l4: #bfb, lv: #fbf, l5: #fbf, lo: #ffb, l6: #ffb, dr: #400, d0: #400, dg: #040, d1: #040, db: #004, d2: #004, dy: #440, d3: #440, ds: #444, d4: #444, dv: #404, d5: #404, do: #440, d6: #440)), border: (prop: border, vals: (lr: #fbb, l0: #fbb, lg: #bfb, l1: #bfb, lb: #bbf, l2: #bbf, ly: #fbb, l3: #fbb, ls: #bfb, l4: #bfb, lv: #fbf, l5: #fbf, lo: #ffb, l6: #ffb, dr: #400, d0: #400, dg: #040, d1: #040, db: #004, d2: #004, dy: #440, d3: #440, ds: #444, d4: #444, dv: #404, d5: #404, do: #440, d6: #440))) ';
     */
-    console.log({ bres });
-}
-;
-//tstProps();
-/*
-let tstDtArgs = { null: null, str1: '2023-12-01' };
-let res: GenObj = {};
-for (let key in tstDtArgs) {
-     let orig = tstDtArgs[key];
-     let pkTDRes
-    res[key] = {
-        orig,
-        pkTDRes: pkToDate(orig),
-        dtFmtShort: dtFmt('short', orig),
-        dtFmtDT: dtFmt('dt', orig),
-        dtFmtDTs: dtFmt('dts', orig),
-        dtFmtTs: dtFmt('ts', orig),
-    }
-}
-let dtE = new Date();
-let dtN = new Date(null);
-console.log('todate res:', { res, dtE, dtN });
-let tobj = { a: 8 };
-let isDist = false;
-let j5 = JSON5.stringify(tobj);
-let to = typeOf(tobj);
-let toJ = typeOf(JSON);
-let toJ5 = typeOf(JSON5);
-let arr1 = ['a', 'b', 'c'];
-let arr2 = ['a', 'b'];
-let asub = isSubset(arr2, arr1);
-let tagObj = new TagObj('myData', 'theTag');
-*/
-/*
-function valIsNaN(arg: any) {
-    return arg !== arg;
-}
-
-let tests = { int:5, True:true, False: false, str5:"5", str:"dog", float:2.3, floatStr:"4.7", null:null, emptyStr:'', };
-//let (res = tests.map((el) => filterInt(el));
-for (let key in tests) {
-    let orig = tests[key];
-    let fint = filterInt(orig);
-    let pInt = parseInt(orig);
-    let nanish = Number.isNaN(pInt);
-    let vIsNaN = valIsNaN(pInt);
-    tests[key] = { orig, fint, pInt, nanish, vIsNaN };
-}
-console.log({ tests });
-
-
-
-
-
-console.log("Testing tests", { tobj, to, j5, jsondecycle, toJ5, toJ, asub, tagObj });
-
-let anerr = new PkError('Some Err Msg', { dog: 3, cat: 'What?' }, 'something', 2, 8);
-
-throw anerr;
-
-let a1 = [1, 3, 5, 7];
-let a2 = [1, 'toby', 9, 7];
-let a3 = [5, 'toby', 'tomorrow', 7];
-let u = uniqueVals(a1, a2, a3);
-console.log({ u });
-
-let tobj1 = {
-    a: 1,
-    b: { dog: 5, cat: 'acat', no:9,},
-    c: [5, 7, 'tiger',],
+let tests = {
+    tst: function () {
+        let too = typeOf({});
+        console.log({ too });
+    },
+    tstMap: function () {
+        let json = sassMapStringToJson(scssMap);
+        let obj = sassMapStringToObj(scssMap);
+        //let json = sassMapStringToJson(scssMapr);
+        dbgWrt(json, 'sassMap');
+        dbgWrt(obj, 'sassMapO');
+        console.log({ json, obj });
+    },
+    tstAsk: function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            //@ts-ignore
+            let answer = yield ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
+            console.log({ answer });
+        });
+    },
+    tstSlash: function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            //@ts-ignore
+            let answer = slashPath('.');
+            console.log({ answer });
+        });
+    },
+    tstFPaths: function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            //@ts-ignore
+            let answer = getFilePaths('.');
+            console.log({ answer });
+        });
+    },
 };
-
-let tobj2 = {
-    a: 'oprim',
-    b: { dog: 7, cat: 22, },
-    c: [ 9, 22, 'lion', 5],
-}
-
-let dm = deepMeld(tobj1, tobj2);
-
-console.log({ dm });
-*/ 
+runCli(tests);
 //# sourceMappingURL=test.js.map
