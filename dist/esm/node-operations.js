@@ -230,6 +230,35 @@ export function writeFile(fpath, arg, append = false) {
     }
     return fs.writeFileSync(fpath, arg, opts);
 }
+/**
+ * ANOTHER TRY!! Write data to a file - with better options, defaults & params....
+  //function sayName({first='Bob',last='Smith'}: {first?: string; last?: string}={}){
+    Writes arg data to a file - cpnfirrable with type, path, options, etc.
+    @param any arg - data to write
+
+ */
+export function saveData(arg, { fname = 'dbg-out', fpath = null, type = 'json5', dir = './tmp', append = false } = {}) {
+    // Get/Make the file output path
+    type = (type === 'json5') ? 'json5' : 'json';
+    let fullPath = fpath !== null && fpath !== void 0 ? fpath : slashPath(dir, `${fname}.${type}`);
+    let dirName = path.posix.dirname(fullPath);
+    let dires = fs.mkdirSync(dirName, { recursive: true });
+    if (!isPrimitive(arg)) {
+        if (type === 'json5') {
+            arg = JSON5Stringify(arg);
+        }
+        else {
+            arg = JSON.stringify(arg);
+        }
+    }
+    console.log("Testing new saveData fnc:", { arg, fname, fpath, type, fullPath, dirName, dir, append });
+    let flag = 'w';
+    if (append) {
+        flag = 'a';
+    }
+    let opts = { flag };
+    return fs.writeFileSync(fullPath, arg, opts);
+}
 export function getFrameAfterFunction(fname, forceFunction) {
     if (fname && typeof fname === "string") {
         fname = [fname];

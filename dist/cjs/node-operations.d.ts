@@ -50,6 +50,20 @@ export declare function compareArrays(arr1: [], arr2: []): {
  */
 export declare function writeData(arg: any, fpath?: string, append?: boolean): any;
 export declare function writeFile(fpath: any, arg: any, append?: boolean): any;
+/**
+ * ANOTHER TRY!! Write data to a file - with better options, defaults & params....
+  //function sayName({first='Bob',last='Smith'}: {first?: string; last?: string}={}){
+    Writes arg data to a file - cpnfirrable with type, path, options, etc.
+    @param any arg - data to write
+
+ */
+export declare function saveData(arg: any, { fname, fpath, type, dir, append }?: {
+    fname?: string;
+    fpath?: any;
+    type?: string;
+    dir?: string;
+    append?: boolean;
+}): any;
 export declare function getFrameAfterFunction(fname?: any, forceFunction?: any): any;
 /** File based msg logging - when no db...
  * @param any msg - gotta have something...

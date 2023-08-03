@@ -33,7 +33,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadJson = exports.catchErr = exports.logMsg = exports.getFrameAfterFunction = exports.writeFile = exports.writeData = exports.compareArrays = exports.dbgWrite = exports.dbgWrt = exports.dbgPath = exports.utilInspect = exports.stdOut = exports.convertParamsToCliArgs = exports.asyncSpawn = exports.getProcess = exports.stamp = exports.stackParse = exports.isDirectory = exports.slashPath = exports.objInspect = exports.cwd = exports.allSkips = exports.fnSkips = exports.excludeFncs = exports.setInspectLevels = void 0;
+exports.loadJson = exports.catchErr = exports.logMsg = exports.getFrameAfterFunction = exports.saveData = exports.writeFile = exports.writeData = exports.compareArrays = exports.dbgWrite = exports.dbgWrt = exports.dbgPath = exports.utilInspect = exports.stdOut = exports.convertParamsToCliArgs = exports.asyncSpawn = exports.getProcess = exports.stamp = exports.stackParse = exports.isDirectory = exports.slashPath = exports.objInspect = exports.cwd = exports.allSkips = exports.fnSkips = exports.excludeFncs = exports.setInspectLevels = void 0;
 const fs_extra_1 = __importDefault(require("fs-extra"));
 //export const  path =  require( 'path');
 const path_1 = __importDefault(require("path"));
@@ -276,6 +276,36 @@ function writeFile(fpath, arg, append = false) {
     return fs_extra_1.default.writeFileSync(fpath, arg, opts);
 }
 exports.writeFile = writeFile;
+/**
+ * ANOTHER TRY!! Write data to a file - with better options, defaults & params....
+  //function sayName({first='Bob',last='Smith'}: {first?: string; last?: string}={}){
+    Writes arg data to a file - cpnfirrable with type, path, options, etc.
+    @param any arg - data to write
+
+ */
+function saveData(arg, { fname = 'dbg-out', fpath = null, type = 'json5', dir = './tmp', append = false } = {}) {
+    // Get/Make the file output path
+    type = (type === 'json5') ? 'json5' : 'json';
+    let fullPath = fpath !== null && fpath !== void 0 ? fpath : slashPath(dir, `${fname}.${type}`);
+    let dirName = path_1.default.posix.dirname(fullPath);
+    let dires = fs_extra_1.default.mkdirSync(dirName, { recursive: true });
+    if (!(0, pk_ts_common_lib_1.isPrimitive)(arg)) {
+        if (type === 'json5') {
+            arg = (0, pk_ts_common_lib_1.JSON5Stringify)(arg);
+        }
+        else {
+            arg = JSON.stringify(arg);
+        }
+    }
+    console.log("Testing new saveData fnc:", { arg, fname, fpath, type, fullPath, dirName, dir, append });
+    let flag = 'w';
+    if (append) {
+        flag = 'a';
+    }
+    let opts = { flag };
+    return fs_extra_1.default.writeFileSync(fullPath, arg, opts);
+}
+exports.saveData = saveData;
 function getFrameAfterFunction(fname, forceFunction) {
     if (fname && typeof fname === "string") {
         fname = [fname];
