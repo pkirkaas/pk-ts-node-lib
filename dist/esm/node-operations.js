@@ -251,7 +251,7 @@ export function saveData(arg, { fname = 'dbg-out', fpath = null, type = 'json5',
             arg = JSON.stringify(arg);
         }
     }
-    console.log("Testing new saveData fnc:", { arg, fname, fpath, type, fullPath, dirName, dir, append });
+    //console.log("Testing new saveData fnc:", { arg, fname, fpath,  type, fullPath, dirName, dir, append }); 
     let flag = 'w';
     if (append) {
         flag = 'a';
