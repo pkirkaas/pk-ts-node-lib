@@ -33,7 +33,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadJson = exports.catchErr = exports.logMsg = exports.getFrameAfterFunction = exports.saveData = exports.writeFile = exports.writeData = exports.compareArrays = exports.dbgWrite = exports.dbgWrt = exports.dbgPath = exports.utilInspect = exports.stdOut = exports.convertParamsToCliArgs = exports.asyncSpawn = exports.getProcess = exports.stamp = exports.stackParse = exports.isDirectory = exports.slashPath = exports.objInspect = exports.cwd = exports.allSkips = exports.fnSkips = exports.excludeFncs = exports.setInspectLevels = void 0;
+exports.loadJson = exports.catchErr = exports.logMsg = exports.getFrameAfterFunction = exports.saveData = exports.writeFile = exports.writeData = exports.compareArrays = exports.dbgWrite = exports.dbgWrt = exports.dbgPath = exports.utilInspect = exports.stdOut = exports.convertParamsToCliArgs = exports.asyncSpawn = exports.getProcess = exports.stamp = exports.stackParse = exports.isFile = exports.isDirectory = exports.slashPath = exports.objInspect = exports.cwd = exports.allSkips = exports.fnSkips = exports.excludeFncs = exports.setInspectLevels = void 0;
 const fs_extra_1 = __importDefault(require("fs-extra"));
 //export const  path =  require( 'path');
 const path_1 = __importDefault(require("path"));
@@ -93,6 +93,10 @@ function isDirectory(apath) {
     return fs_extra_1.default.existsSync(apath) && fs_extra_1.default.lstatSync(apath).isDirectory();
 }
 exports.isDirectory = isDirectory;
+function isFile(apath) {
+    return fs_extra_1.default.existsSync(apath) && fs_extra_1.default.lstatSync(apath).isFile();
+}
+exports.isFile = isFile;
 function stackParse() {
     let stack = ESP.parse(new Error());
     let ret = [];

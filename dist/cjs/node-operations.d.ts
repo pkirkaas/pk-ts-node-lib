@@ -19,6 +19,7 @@ export declare const cwd: string;
 export declare function objInspect(arg: any, opts?: GenericObject): string;
 export declare function slashPath(...parts: any[]): string;
 export declare function isDirectory(apath: any): any;
+export declare function isFile(apath: any): any;
 export declare function stackParse(): any[];
 /** Basic info for console logging */
 export declare function stamp(entry?: any, frameAfter?: any): string;

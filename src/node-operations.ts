@@ -72,6 +72,10 @@ export function isDirectory(apath) {
   return fs.existsSync(apath) && fs.lstatSync(apath).isDirectory();
 }
 
+export function isFile(apath) {
+  return fs.existsSync(apath) && fs.lstatSync(apath).isFile();
+}
+
 
 export function stackParse() {
   let stack = ESP.parse(new Error());
