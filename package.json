@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "tsc -p ./tsconfig.json && tsc -p ./tsconfig.cjs.json",
-    "clean": "rm -rf ./dist ./node_modules package-lock.json"
+    "clean": "rm -rf ./dist ./node_modules package-lock.json && npm install"
   },
   "dependencies": {
     "@tsconfig/node18": "^1.0.1",

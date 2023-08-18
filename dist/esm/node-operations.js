@@ -19,11 +19,12 @@ export function setInspectLevels(depth = null, maxArrayLength = null, breakLengt
 util.inspect.defaultOptions.maxArrayLength = null;
 util.inspect.defaultOptions.depth = null;
 util.inspect.defaultOptions.breakLength = 200;
-import { spawn } from "child_process";
+import os from "os";
+import { spawn, spawnSync } from "child_process";
 import * as ESP from "error-stack-parser";
 import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
-import { JSON5Parse, isEmpty, isSimpleType, isSimpleObject, JSON5Stringify, isPrimitive, inArr1NinArr2, intersect } from 'pk-ts-common-lib';
+import { JSON5Parse, isEmpty, isSimpleType, isSimpleObject, JSON5Stringify, isPrimitive, inArr1NinArr2, intersect, arrayToLower } from 'pk-ts-common-lib';
 export const excludeFncs = [
     "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
     "infoLog", "debugLog", "stamp", "fulfilled", "rejected", "processTicksAndRejections", "LogData.log",
@@ -50,6 +51,56 @@ export function objInspect(arg, opts) {
         Object.assign(defOpts, opts);
     }
     return util.inspect(arg, defOpts);
+}
+/** Uses system os to get some os details
+ * On WSL:
+  arch: 'x64',
+  machine: 'x86_64',
+  platform: 'linux',
+  release: '5.15.90.1-microsoft-standard-WSL2',
+  type: 'Linux',
+  version: '#1 SMP Fri Jan 27 02:56:13 UTC 2023'
+
+  Windows:
+  arch: 'x64',
+  machine: 'x86_64',
+  platform: 'win32',
+  release: '10.0.22621',
+  type: 'Windows_NT',
+ *
+ */
+export function getOsDets() {
+    let res = {
+        arch: os.arch(),
+        machine: os.machine(),
+        platform: os.platform(),
+        release: os.release(),
+        type: os.type(),
+        version: os.version(),
+    };
+    return res;
+}
+/**
+ * Returns the OS type - 'windows' or 'linux'
+ */
+export function getOsType() {
+    let dets = getOsDets();
+    let vals = arrayToLower(Object.values(dets));
+    if (vals.includes('linux')) {
+        return 'linux';
+    }
+    let winTypes = arrayToLower(['Windows_NT', 'win32']);
+    let common = intersect(vals, winTypes);
+    if (common.length) {
+        return 'windows';
+    }
+    return false;
+}
+export function isWindows() {
+    return getOsType() === 'windows';
+}
+export function isLinux() {
+    return getOsType() === 'linux';
 }
 //Moded to combine path.join & slashPath - should be compatible
 // What about spaces???
@@ -102,6 +153,11 @@ export function getProcess() {
     console.log(process.env);
     return process.env;
 }
+/**
+ * Starts a separate, external NODE.js script in a child process,
+ * specifies to log the stdout & stderr to files in the logs dir
+ * but returns immediately, without waiting for the child process to complete.
+ */
 export function asyncSpawn(cmd, ...params) {
     try {
         let args = convertParamsToCliArgs(params);
@@ -132,6 +188,19 @@ export function asyncSpawn(cmd, ...params) {
     catch (err) {
         console.error(`Error executing or parsing asyncSpawn`, { cmd, params, err });
     }
+}
+/**
+ * SYNCRONOUSLY Run a (bash) shell command in a child process, await the result & return it
+ * as a string
+ */
+function runCommand(command, args, options) {
+    const child = spawnSync(command, args, options);
+    if (child.error) {
+        console.error(`Error running command: ${command}`);
+        console.error(child.error);
+        return '';
+    }
+    return child.stdout.toString();
 }
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */

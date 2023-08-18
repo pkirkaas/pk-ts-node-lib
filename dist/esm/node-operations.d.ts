@@ -1,10 +1,3 @@
-/**
- * Library of JS/TS functions specifically for Node.js - extends 'pk-ts-common-lib' functions
- * that are pure JS & not browser/node dependent
- * @author Paul Kirkaas
- * @email pkirkaas@gmail.com
- *
- */
 /// <reference types="node" resolution-mode="require"/>
 export declare function setInspectLevels(depth?: any, maxArrayLength?: any, breakLength?: number, colors?: boolean, maxStringLength?: any): void;
 import { GenericObject } from 'pk-ts-common-lib';
@@ -17,6 +10,37 @@ export declare const cwd: string;
  * @return string representation
  */
 export declare function objInspect(arg: any, opts?: GenericObject): string;
+/** Uses system os to get some os details
+ * On WSL:
+  arch: 'x64',
+  machine: 'x86_64',
+  platform: 'linux',
+  release: '5.15.90.1-microsoft-standard-WSL2',
+  type: 'Linux',
+  version: '#1 SMP Fri Jan 27 02:56:13 UTC 2023'
+
+  Windows:
+  arch: 'x64',
+  machine: 'x86_64',
+  platform: 'win32',
+  release: '10.0.22621',
+  type: 'Windows_NT',
+ *
+ */
+export declare function getOsDets(): {
+    arch: string;
+    machine: string;
+    platform: NodeJS.Platform;
+    release: string;
+    type: string;
+    version: string;
+};
+/**
+ * Returns the OS type - 'windows' or 'linux'
+ */
+export declare function getOsType(): false | "linux" | "windows";
+export declare function isWindows(): boolean;
+export declare function isLinux(): boolean;
 export declare function slashPath(...parts: any[]): string;
 export declare function isDirectory(apath: any): any;
 export declare function isFile(apath: any): any;
@@ -24,6 +48,11 @@ export declare function stackParse(): any[];
 /** Basic info for console logging */
 export declare function stamp(entry?: any, frameAfter?: any): string;
 export declare function getProcess(): NodeJS.ProcessEnv;
+/**
+ * Starts a separate, external NODE.js script in a child process,
+ * specifies to log the stdout & stderr to files in the logs dir
+ * but returns immediately, without waiting for the child process to complete.
+ */
 export declare function asyncSpawn(cmd: string, ...params: any[]): boolean;
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */

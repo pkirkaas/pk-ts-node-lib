@@ -40,6 +40,23 @@ let tests = {
         let too = (0, pk_ts_common_lib_1.typeOf)({});
         console.log({ too });
     },
+    tstSlash: function () {
+        console.log("Testing path functions...");
+        let somePaths = [
+            "a/path/with//double/slashes",
+            "/a/path/with/preceding/path",
+            "/a/path/with a/ space//path",
+            "./a/path/dot",
+            "a/path/nodot",
+            "a//path//fnameext.anext",
+            "a//path/fnoext",
+        ];
+        for (let apath of somePaths) {
+            let res = (0, index_js_1.slashPath)(apath);
+            console.log({ apath, res });
+        }
+        console.log("Done testing path functions...");
+    },
     tstMap: function () {
         let json = (0, index_js_1.sassMapStringToJson)(scssMap);
         let obj = (0, index_js_1.sassMapStringToObj)(scssMap);
@@ -55,7 +72,7 @@ let tests = {
             console.log({ answer });
         });
     },
-    tstSlash: function () {
+    tstSlashOrig: function () {
         return __awaiter(this, void 0, void 0, function* () {
             //@ts-ignore
             let answer = (0, index_js_1.slashPath)('.');

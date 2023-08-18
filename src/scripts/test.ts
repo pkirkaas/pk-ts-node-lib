@@ -1,4 +1,4 @@
-import {  getFilePaths, slashPath, dbgWrt, ask, runCli,sassMapStringToJson, sassMapStringToObj, saveData } from '../index.js';
+import {  getFilePaths, slashPath, dbgWrt, ask, runCli,sassMapStringToJson, sassMapStringToObj, saveData,  isFile, getOsType, isWindows, isLinux } from '../index.js';
 
 import { isEmpty, typeOf } from 'pk-ts-common-lib';
 /*
@@ -34,6 +34,28 @@ let tests = {
 		let too = typeOf({});
 		console.log({ too });
 	},
+	tstSlash: function () {
+		console.log("Testing path functions...");
+		let somePaths = [
+			"a/path/with//double/slashes",
+			"/a/path/with/preceding/path",
+			"/a/path/with a/ space//path",
+			"./a/path/dot",
+			"a/path/nodot",
+			"a//path//fnameext.anext",
+			"a//path/fnoext",
+		];
+
+		for (let apath of somePaths) {
+			let res = slashPath(apath);
+			console.log({ apath, res });
+		}
+		console.log("Done testing path functions...");
+
+	},
+
+
+
 	tstMap: function () {
 		let json = sassMapStringToJson(scssMap);
 		let obj = sassMapStringToObj(scssMap);
@@ -48,7 +70,8 @@ let tests = {
 		let answer = await ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
 		console.log({ answer });
 	},
-	tstSlash: async function () {
+	
+	tstSlashOrig: async function () {
 		//@ts-ignore
 		let answer = slashPath('.');
 		console.log({ answer });
