@@ -1,6 +1,6 @@
 /// <reference types="node" resolution-mode="require"/>
 export declare function setInspectLevels(depth?: any, maxArrayLength?: any, breakLength?: number, colors?: boolean, maxStringLength?: any): void;
-import { GenericObject } from 'pk-ts-common-lib';
+import { GenericObject, GenObj } from 'pk-ts-common-lib';
 export declare const excludeFncs: string[];
 export declare const fnSkips: string[];
 export declare const allSkips: string[];
@@ -54,9 +54,14 @@ export declare function getProcess(): NodeJS.ProcessEnv;
  * but returns immediately, without waiting for the child process to complete.
  */
 export declare function asyncSpawn(cmd: string, ...params: any[]): boolean;
+/**
+ * SYNCRONOUSLY Run a (bash) shell command in a child process, await the result & return it
+ * as a string. Original from chatGPT, modified for our use.
+ */
+export declare function runCommand(command: string, args?: string | string[], options?: GenObj): string | boolean;
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */
-export declare function convertParamsToCliArgs(params: any): any[];
+export declare function convertParamsToCliArgs(params: string | string[] | GenObj | GenObj[]): any[];
 export declare function stdOut(...args: any[]): void;
 export declare function utilInspect(obj: any, opts?: any): string;
 export declare function dbgPath(fname: any): string;

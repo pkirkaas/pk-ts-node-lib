@@ -191,9 +191,39 @@ export function asyncSpawn(cmd, ...params) {
 }
 /**
  * SYNCRONOUSLY Run a (bash) shell command in a child process, await the result & return it
- * as a string
+ * as a string. Original from chatGPT, modified for our use.
  */
-function runCommand(command, args, options) {
+export function runCommand(command, args, options) {
+    var _a;
+    args = convertParamsToCliArgs(args);
+    if (!options) {
+        options = {};
+    }
+    if (isWindows()) {
+        let defshell = 'bash';
+        let bashKeys = ['bash', 'wsl', 'cygwin', 'git'];
+        let winshells = ['cmd', 'powershell', 'pwsh'];
+        let optshell = (_a = options.shell) !== null && _a !== void 0 ? _a : defshell;
+        if (bashKeys.includes(optshell)) { //Look for bashes in WIndows
+            let c1 = spawnSync('where', ['bash'], { shell: true, encoding: 'utf8' });
+            if (c1.error) {
+                console.error(`Error running command: [cmd, where, bash]`);
+                console.error(c1.error);
+                return '';
+            }
+            let bashesStr = c1.stdout.toString();
+            console.log({ command, optshell, args });
+            return bashesStr;
+        }
+        else {
+            console.log(`In windows - but no search for bash with [${optshell}}]`);
+        }
+    }
+    else {
+        console.log("Not in windows - no need to look for bash");
+        return false;
+    }
+    let defOpts = { shell: true, encoding: 'utf8' };
     const child = spawnSync(command, args, options);
     if (child.error) {
         console.error(`Error running command: ${command}`);
@@ -202,10 +232,19 @@ function runCommand(command, args, options) {
     }
     return child.stdout.toString();
 }
+/*
+//Suggested test of runCommand from chatGPT:
+let output = runCommand('ls', ['-l', '/path/to/directory'], { shell: true });
+console.log(output);
+*/
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */
 export function convertParamsToCliArgs(params) {
+    if (!Array.isArray(params)) {
+        params = [params];
+    }
     let ret = [];
+    //@ts-ignore
     for (let param of params) {
         if (isSimpleType(param)) {
             ret.push(param);

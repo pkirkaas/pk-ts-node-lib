@@ -42,7 +42,6 @@ function setBsetpath(bsetpath) {
 exports.setBsetpath = setBsetpath;
 /** Gets the app settings - like where */
 function getAppConfig() {
-    var _a;
     //console.log(`in getAppConfig - bsetpath: ${bsetpath}; __dirname: ${__dirname}`);
     let bsetpath = getBsetpath();
     if (!files_js_1.fs.existsSync(bsetpath)) { //Doesn't exist - create in
@@ -51,15 +50,15 @@ function getAppConfig() {
     }
     //let bsetpath = getBsetpath();
     let appConfig = require(bsetpath);
-    let appDefaults = (_a = getAppDefaults()) !== null && _a !== void 0 ? _a : {};
-    appConfig = Object.assign(Object.assign({}, appConfig), appDefaults);
+    let appDefaults = getAppDefaults() ?? {};
+    appConfig = { ...appConfig, ...appDefaults };
     //console.log(`in getAppConfig - appconfig result:`, { appConfig });
     return appConfig;
 }
 exports.getAppConfig = getAppConfig;
 function setAppConfig(data) {
     let appConfig = getAppConfig();
-    appConfig = Object.assign(Object.assign({}, appConfig), data);
+    appConfig = { ...appConfig, ...data };
     console.log(`in setAppConfig - appconfig:`, { appConfig });
     let j5 = pk_ts_common_lib_1.JSON5.stringify(appConfig);
     let bsetpath = getBsetpath();

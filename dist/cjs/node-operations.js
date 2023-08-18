@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadJson = exports.catchErr = exports.logMsg = exports.getFrameAfterFunction = exports.saveData = exports.writeFile = exports.writeData = exports.compareArrays = exports.dbgWrite = exports.dbgWrt = exports.dbgPath = exports.utilInspect = exports.stdOut = exports.convertParamsToCliArgs = exports.asyncSpawn = exports.getProcess = exports.stamp = exports.stackParse = exports.isFile = exports.isDirectory = exports.slashPath = exports.isLinux = exports.isWindows = exports.getOsType = exports.getOsDets = exports.objInspect = exports.cwd = exports.allSkips = exports.fnSkips = exports.excludeFncs = exports.setInspectLevels = void 0;
+exports.loadJson = exports.catchErr = exports.logMsg = exports.getFrameAfterFunction = exports.saveData = exports.writeFile = exports.writeData = exports.compareArrays = exports.dbgWrite = exports.dbgWrt = exports.dbgPath = exports.utilInspect = exports.stdOut = exports.convertParamsToCliArgs = exports.runCommand = exports.asyncSpawn = exports.getProcess = exports.stamp = exports.stackParse = exports.isFile = exports.isDirectory = exports.slashPath = exports.isLinux = exports.isWindows = exports.getOsType = exports.getOsDets = exports.objInspect = exports.cwd = exports.allSkips = exports.fnSkips = exports.excludeFncs = exports.setInspectLevels = void 0;
 /**
  * Library of JS/TS functions specifically for Node.js - extends 'pk-ts-common-lib' functions
  * that are pure JS & not browser/node dependent
@@ -233,9 +233,38 @@ function asyncSpawn(cmd, ...params) {
 exports.asyncSpawn = asyncSpawn;
 /**
  * SYNCRONOUSLY Run a (bash) shell command in a child process, await the result & return it
- * as a string
+ * as a string. Original from chatGPT, modified for our use.
  */
 function runCommand(command, args, options) {
+    args = convertParamsToCliArgs(args);
+    if (!options) {
+        options = {};
+    }
+    if (isWindows()) {
+        let defshell = 'bash';
+        let bashKeys = ['bash', 'wsl', 'cygwin', 'git'];
+        let winshells = ['cmd', 'powershell', 'pwsh'];
+        let optshell = options.shell ?? defshell;
+        if (bashKeys.includes(optshell)) { //Look for bashes in WIndows
+            let c1 = (0, child_process_1.spawnSync)('where', ['bash'], { shell: true, encoding: 'utf8' });
+            if (c1.error) {
+                console.error(`Error running command: [cmd, where, bash]`);
+                console.error(c1.error);
+                return '';
+            }
+            let bashesStr = c1.stdout.toString();
+            console.log({ command, optshell, args });
+            return bashesStr;
+        }
+        else {
+            console.log(`In windows - but no search for bash with [${optshell}}]`);
+        }
+    }
+    else {
+        console.log("Not in windows - no need to look for bash");
+        return false;
+    }
+    let defOpts = { shell: true, encoding: 'utf8' };
     const child = (0, child_process_1.spawnSync)(command, args, options);
     if (child.error) {
         console.error(`Error running command: ${command}`);
@@ -244,10 +273,20 @@ function runCommand(command, args, options) {
     }
     return child.stdout.toString();
 }
+exports.runCommand = runCommand;
+/*
+//Suggested test of runCommand from chatGPT:
+let output = runCommand('ls', ['-l', '/path/to/directory'], { shell: true });
+console.log(output);
+*/
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */
 function convertParamsToCliArgs(params) {
+    if (!Array.isArray(params)) {
+        params = [params];
+    }
     let ret = [];
+    //@ts-ignore
     for (let param of params) {
         if ((0, pk_ts_common_lib_1.isSimpleType)(param)) {
             ret.push(param);
@@ -363,7 +402,7 @@ exports.writeFile = writeFile;
 function saveData(arg, { fname = 'dbg-out', fpath = null, type = 'json5', dir = './tmp', append = false } = {}) {
     // Get/Make the file output path
     type = (type === 'json5') ? 'json5' : 'json';
-    let fullPath = fpath !== null && fpath !== void 0 ? fpath : slashPath(dir, `${fname}.${type}`);
+    let fullPath = fpath ?? slashPath(dir, `${fname}.${type}`);
     let dirName = path_1.default.posix.dirname(fullPath);
     let dires = fs_extra_1.default.mkdirSync(dirName, { recursive: true });
     if (!(0, pk_ts_common_lib_1.isPrimitive)(arg)) {
