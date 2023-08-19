@@ -7,48 +7,48 @@
  */
 import fs from "fs-extra";
 //export const  path =  require( 'path');
-import   path from  'path';
+import path from 'path';
 
 import util from 'util';
 
-export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors=true, maxStringLength=null, ) {
+export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null,) {
   util.inspect.defaultOptions.maxArrayLength = maxArrayLength;
-	util.inspect.defaultOptions.depth = depth;
-	util.inspect.defaultOptions.colors = colors;
-	util.inspect.defaultOptions.maxStringLength = maxStringLength;
-	util.inspect.defaultOptions.breakLength = breakLength;
+  util.inspect.defaultOptions.depth = depth;
+  util.inspect.defaultOptions.colors = colors;
+  util.inspect.defaultOptions.maxStringLength = maxStringLength;
+  util.inspect.defaultOptions.breakLength = breakLength;
 }
 util.inspect.defaultOptions.maxArrayLength = null;
 util.inspect.defaultOptions.depth = null;
 util.inspect.defaultOptions.breakLength = 200;
 import os from "os";
-import { spawn, spawnSync }  from  "child_process";
+import { spawn, spawnSync } from "child_process";
 import * as ESP from "error-stack-parser";
 import { format, isValid } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
-import { JSON5, JSON5Parse, isEmpty,  isSimpleType,isSimpleObject,JSON5Stringify,isPrimitive,inArr1NinArr2, intersect, GenericObject, arrayToLower,GenObj} from 'pk-ts-common-lib';
+import { JSON5, JSON5Parse, isEmpty, isSimpleType, isSimpleObject, JSON5Stringify, isPrimitive, inArr1NinArr2, intersect, GenericObject, arrayToLower, GenObj } from 'pk-ts-common-lib';
 
-  export const excludeFncs = [
-    "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
-    "infoLog", "debugLog", "stamp", "fulfilled", "rejected", "processTicksAndRejections", "LogData.log",
-    "LogData.out", "LogData.console", "LogData.errLog", "LogData.throw", 'catchErr', 'logMsg',
-  ];
-  //let fnSkips = ["__awaiter", "Object.<anonymous>", "undefined", undefined];
-  export const fnSkips = ["__awaiter", "undefined", undefined];
-  export const allSkips = fnSkips.concat(excludeFncs);
+export const excludeFncs = [
+  "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
+  "infoLog", "debugLog", "stamp", "fulfilled", "rejected", "processTicksAndRejections", "LogData.log",
+  "LogData.out", "LogData.console", "LogData.errLog", "LogData.throw", 'catchErr', 'logMsg',
+];
+//let fnSkips = ["__awaiter", "Object.<anonymous>", "undefined", undefined];
+export const fnSkips = ["__awaiter", "undefined", undefined];
+export const allSkips = fnSkips.concat(excludeFncs);
 
-   export const cwd = slashPath(process.cwd());
+export const cwd = slashPath(process.cwd());
 
 
-  /** Uses util.inspect to stringify an arg
-   * @param object? opts - to override the default opts 
-   * @return string representation
-   */
+/** Uses util.inspect to stringify an arg
+ * @param object? opts - to override the default opts 
+ * @return string representation
+ */
 export function objInspect(arg, opts?: GenericObject) {
   let defOpts: GenericObject = {
     showHidden: true,
-    maxArrayLength:null,
-    maxStringLength:null,
+    maxArrayLength: null,
+    maxStringLength: null,
     depth: null,
     showProxy: true,
     getters: true,
@@ -78,12 +78,12 @@ export function objInspect(arg, opts?: GenericObject) {
  */
 export function getOsDets() {
   let res = {
-	arch: os.arch(),
-	machine: os.machine(),
-	platform: os.platform(),
-	release: os.release(),
-	type: os.type(),
-	version: os.version(),
+    arch: os.arch(),
+    machine: os.machine(),
+    platform: os.platform(),
+    release: os.release(),
+    type: os.type(),
+    version: os.version(),
   };
   return res;
 }
@@ -107,11 +107,11 @@ export function getOsType() {
 }
 
 export function isWindows() {
-  return  getOsType() === 'windows';
+  return getOsType() === 'windows';
 }
 
 export function isLinux() {
-  return  getOsType() === 'linux';
+  return getOsType() === 'linux';
 }
 
 //Moded to combine path.join & slashPath - should be compatible
@@ -170,8 +170,8 @@ export function stamp(entry?: any, frameAfter?: any) {
 }
 
 export function getProcess() {
-	console.log(process.env);
-	return process.env
+  console.log(process.env);
+  return process.env
 }
 
 
@@ -213,48 +213,111 @@ export function asyncSpawn(cmd: string, ...params) {
 }
 
 /**
- * SYNCRONOUSLY Run a (bash) shell command in a child process, await the result & return it
- * as a string. Original from chatGPT, modified for our use.
+ * If windows, returns array of all bash shells found IN WINDOWS path format
+ * 
+ * 
  */
-export function runCommand(command: string, args?: string|string[], options?: GenObj): string|boolean {  
-  args = convertParamsToCliArgs(args);
-    if (!options) {  
-        options = {};  
-    }
-  if (isWindows()) {
-    let defshell = 'bash';
-
-    let bashKeys = ['bash', 'wsl', 'cygwin', 'git'];
-    let winshells = ['cmd', 'powershell', 'pwsh'];
-    let optshell = options.shell ?? defshell;
-    if (bashKeys.includes(optshell)) { //Look for bashes in WIndows
-      let c1 = spawnSync('where', ['bash'], { shell: true, encoding: 'utf8' });
-      if (c1.error) {
-        console.error(`Error running command: [cmd, where, bash]`)
-        console.error(c1.error);
-        return '';
-      }
-      let bashesStr = c1.stdout.toString();
-      console.log({ command, optshell, args });
-      return bashesStr;
-    } else {
-      console.log(`In windows - but no search for bash with [${optshell}}]`);
-    }
-  } else {
-    console.log("Not in windows - no need to look for bash");
+export function winBashes() {
+  if (!isWindows()) {
     return false;
   }
-    let defOpts = { shell: true, encoding: 'utf8' };
+  let c1 = spawnSync('where', ['bash'], { shell: true, encoding: 'utf8' });
+  if (c1.error) {
+    console.error(`Error running command: [cmd, where, bash]`)
+    console.error(c1.error);
+    return false;
+  }
+  let bashesStr = c1.stdout.toString();
+  let bashes = bashesStr.split('\n');
+  return bashes;
+}
 
-    const child = spawnSync(command, args, options);  
-    if (child.error) {  
-        console.error(`Error running command: ${command}`);  
-        console.error(child.error);  
-        return '';  
-    }  
-  
-    return child.stdout.toString();  
-}  
+/**
+ * SYNCRONOUSLY Run a (bash) shell command in a child process, await the result & return it
+ * as a string. Original from chatGPT, modified for our use.
+ * @param string command - the command to run
+ * @param any|any[] args - the arguments to pass to the command - flexible format by convertParamsToCliArgs
+ * @param GenObj options - has keys both for this function, and to pass to pass to spawnSync
+ * In particular on Windows, the shell option can be used to specify a shell to use.
+ * The default is bash - but windows can have multiple bashes, so you can specify one 
+ * cygwin, git, bash, wsl, as well as windows shells - powershell, pwsh, cmd
+ * 
+ */
+export function runCommand(command: string, args: any | any[] = [], options: GenObj = {}): string | boolean {
+  args = convertParamsToCliArgs(args);
+  let localOpts = { // Default options for this function
+    debug: true,
+    split: false, // Split the output text into 
+    shellKey: 'cygwin', // cygwin, git, bash, wsl, powershell, pwsh, cmd
+  };
+
+  for (let key in localOpts) {
+    if (key in options) {
+      localOpts[key] = options[key];
+      delete options[key];
+    }
+  }
+
+  for (let key in localOpts) {
+    if (key in options) {
+      localOpts[key] = options[key];
+      delete options[key];
+    }
+  }
+
+  let defSpawnOpts = {
+    shell: 'bash',
+    encoding: 'utf8'
+  };
+
+  let spawnOpts = {...defSpawnOpts,  ...options};
+
+
+
+
+
+  let shellPath = 'bash';
+  if (isWindows()) {
+    let shellKey = options.shell ?? 'cygwin';
+    let winshells = ['cmd', 'powershell', 'pwsh'];
+    if (winshells.includes(shellKey)) {
+      shellPath = shellKey;
+    } else { // Look for a bash
+      let bashKeyPatterns = {
+        cygwin: ['cygwin'],
+        wsl: ['System32', 'WindowsApps'],
+        git: ['Git', 'git', 'mingw64', 'mingw32'],
+      };
+      let keySrchArr = bashKeyPatterns[shellKey];
+      if (!isEmpty(keySrchArr)) {
+        let bshells = winBashes();
+        if (bshells) {
+          for (let keyPattern of keySrchArr) {
+            keyPattern = keyPattern.toLowerCase();
+            for (let apath of bshells) {
+              if (apath.toLowerCase().includes(keyPattern)) {
+                shellPath = apath;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  console.log(`In runCommand debug: `,{command, args, spawnOpts, shellPath});
+    // If we didn't find a particular bash path, just use "bash" as path
+
+    //@ts-ignore
+  const child = spawnSync(command, args, spawnOpts);
+  if (child.error) {
+    console.error(`Error running command: ${command}`);
+    console.error(child.error);
+    return '';
+  }
+
+  return child.stdout.toString();
+}
 
 /*
 //Suggested test of runCommand from chatGPT:
@@ -264,7 +327,7 @@ console.log(output);
 
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */
-export function convertParamsToCliArgs(params:string|string[]|GenObj|GenObj[]) {
+export function convertParamsToCliArgs(params: string | string[] | GenObj | GenObj[]) {
   if (!Array.isArray(params)) {
     params = [params];
   }
@@ -312,7 +375,7 @@ export function dbgPath(fname) {
 }
 
 /** Change argument order to make path optional*/
-export function dbgWrt( arg: any, fpath='debug', append: boolean = false) {
+export function dbgWrt(arg: any, fpath = 'debug', append: boolean = false) {
   return dbgWrite(fpath, arg, append);
 }
 
@@ -336,10 +399,10 @@ export function compareArrays(arr1: [], arr2: []) {
 /**
  * Better param order for writeFile
  */
-export function writeData(arg:any, fpath='.',  append: boolean = false) {
+export function writeData(arg: any, fpath = '.', append: boolean = false) {
   return writeFile(fpath, arg, append);
 }
-export function writeFile(fpath, arg: any, append:boolean = false) {
+export function writeFile(fpath, arg: any, append: boolean = false) {
   if (arg === undefined) {
     arg = "undefned";
   } else if (arg === null) {
@@ -381,10 +444,10 @@ export function writeFile(fpath, arg: any, append:boolean = false) {
     @param any arg - data to write
 
  */
-export function saveData(arg: any, { fname = 'dbg-out', fpath=null, type = 'json5', dir = './tmp', append = false } = {}) {
+export function saveData(arg: any, { fname = 'dbg-out', fpath = null, type = 'json5', dir = './tmp', append = false } = {}) {
   // Get/Make the file output path
   type = (type === 'json5') ? 'json5' : 'json';
-  let fullPath = fpath ?? slashPath(dir,`${fname}.${type}`);
+  let fullPath = fpath ?? slashPath(dir, `${fname}.${type}`);
   let dirName = path.posix.dirname(fullPath);
   let dires = fs.mkdirSync(dirName, { recursive: true });
   if (!isPrimitive(arg)) {
@@ -552,7 +615,7 @@ export function logMsg(msg: any, lpath?: string) {
 /** Call from a catch - logs error to file, console.error, & returns false
  */
 export function catchErr(err: any, ...rest) {
-  console.error(`There was an exception:`, { err, rest, stamp:stamp() });
+  console.error(`There was an exception:`, { err, rest, stamp: stamp() });
   logMsg(err);
   return false;
 }

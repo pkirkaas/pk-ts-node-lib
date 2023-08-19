@@ -55,10 +55,23 @@ export declare function getProcess(): NodeJS.ProcessEnv;
  */
 export declare function asyncSpawn(cmd: string, ...params: any[]): boolean;
 /**
+ * If windows, returns array of all bash shells found IN WINDOWS path format
+ *
+ *
+ */
+export declare function winBashes(): false | string[];
+/**
  * SYNCRONOUSLY Run a (bash) shell command in a child process, await the result & return it
  * as a string. Original from chatGPT, modified for our use.
+ * @param string command - the command to run
+ * @param any|any[] args - the arguments to pass to the command - flexible format by convertParamsToCliArgs
+ * @param GenObj options - has keys both for this function, and to pass to pass to spawnSync
+ * In particular on Windows, the shell option can be used to specify a shell to use.
+ * The default is bash - but windows can have multiple bashes, so you can specify one
+ * cygwin, git, bash, wsl, as well as windows shells - powershell, pwsh, cmd
+ *
  */
-export declare function runCommand(command: string, args?: string | string[], options?: GenObj): string | boolean;
+export declare function runCommand(command: string, args?: any | any[], options?: GenObj): string | boolean;
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */
 export declare function convertParamsToCliArgs(params: string | string[] | GenObj | GenObj[]): any[];

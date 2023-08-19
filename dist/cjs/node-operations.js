@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadJson = exports.catchErr = exports.logMsg = exports.getFrameAfterFunction = exports.saveData = exports.writeFile = exports.writeData = exports.compareArrays = exports.dbgWrite = exports.dbgWrt = exports.dbgPath = exports.utilInspect = exports.stdOut = exports.convertParamsToCliArgs = exports.runCommand = exports.asyncSpawn = exports.getProcess = exports.stamp = exports.stackParse = exports.isFile = exports.isDirectory = exports.slashPath = exports.isLinux = exports.isWindows = exports.getOsType = exports.getOsDets = exports.objInspect = exports.cwd = exports.allSkips = exports.fnSkips = exports.excludeFncs = exports.setInspectLevels = void 0;
+exports.loadJson = exports.catchErr = exports.logMsg = exports.getFrameAfterFunction = exports.saveData = exports.writeFile = exports.writeData = exports.compareArrays = exports.dbgWrite = exports.dbgWrt = exports.dbgPath = exports.utilInspect = exports.stdOut = exports.convertParamsToCliArgs = exports.runCommand = exports.winBashes = exports.asyncSpawn = exports.getProcess = exports.stamp = exports.stackParse = exports.isFile = exports.isDirectory = exports.slashPath = exports.isLinux = exports.isWindows = exports.getOsType = exports.getOsDets = exports.objInspect = exports.cwd = exports.allSkips = exports.fnSkips = exports.excludeFncs = exports.setInspectLevels = void 0;
 /**
  * Library of JS/TS functions specifically for Node.js - extends 'pk-ts-common-lib' functions
  * that are pure JS & not browser/node dependent
@@ -232,40 +232,94 @@ function asyncSpawn(cmd, ...params) {
 }
 exports.asyncSpawn = asyncSpawn;
 /**
- * SYNCRONOUSLY Run a (bash) shell command in a child process, await the result & return it
- * as a string. Original from chatGPT, modified for our use.
+ * If windows, returns array of all bash shells found IN WINDOWS path format
+ *
+ *
  */
-function runCommand(command, args, options) {
-    args = convertParamsToCliArgs(args);
-    if (!options) {
-        options = {};
-    }
-    if (isWindows()) {
-        let defshell = 'bash';
-        let bashKeys = ['bash', 'wsl', 'cygwin', 'git'];
-        let winshells = ['cmd', 'powershell', 'pwsh'];
-        let optshell = options.shell ?? defshell;
-        if (bashKeys.includes(optshell)) { //Look for bashes in WIndows
-            let c1 = (0, child_process_1.spawnSync)('where', ['bash'], { shell: true, encoding: 'utf8' });
-            if (c1.error) {
-                console.error(`Error running command: [cmd, where, bash]`);
-                console.error(c1.error);
-                return '';
-            }
-            let bashesStr = c1.stdout.toString();
-            console.log({ command, optshell, args });
-            return bashesStr;
-        }
-        else {
-            console.log(`In windows - but no search for bash with [${optshell}}]`);
-        }
-    }
-    else {
-        console.log("Not in windows - no need to look for bash");
+function winBashes() {
+    if (!isWindows()) {
         return false;
     }
-    let defOpts = { shell: true, encoding: 'utf8' };
-    const child = (0, child_process_1.spawnSync)(command, args, options);
+    let c1 = (0, child_process_1.spawnSync)('where', ['bash'], { shell: true, encoding: 'utf8' });
+    if (c1.error) {
+        console.error(`Error running command: [cmd, where, bash]`);
+        console.error(c1.error);
+        return false;
+    }
+    let bashesStr = c1.stdout.toString();
+    let bashes = bashesStr.split('\n');
+    return bashes;
+}
+exports.winBashes = winBashes;
+/**
+ * SYNCRONOUSLY Run a (bash) shell command in a child process, await the result & return it
+ * as a string. Original from chatGPT, modified for our use.
+ * @param string command - the command to run
+ * @param any|any[] args - the arguments to pass to the command - flexible format by convertParamsToCliArgs
+ * @param GenObj options - has keys both for this function, and to pass to pass to spawnSync
+ * In particular on Windows, the shell option can be used to specify a shell to use.
+ * The default is bash - but windows can have multiple bashes, so you can specify one
+ * cygwin, git, bash, wsl, as well as windows shells - powershell, pwsh, cmd
+ *
+ */
+function runCommand(command, args = [], options = {}) {
+    args = convertParamsToCliArgs(args);
+    let localOpts = {
+        debug: true,
+        split: false,
+        shellKey: 'cygwin', // cygwin, git, bash, wsl, powershell, pwsh, cmd
+    };
+    for (let key in localOpts) {
+        if (key in options) {
+            localOpts[key] = options[key];
+            delete options[key];
+        }
+    }
+    for (let key in localOpts) {
+        if (key in options) {
+            localOpts[key] = options[key];
+            delete options[key];
+        }
+    }
+    let defSpawnOpts = {
+        shell: 'bash',
+        encoding: 'utf8'
+    };
+    let spawnOpts = { ...defSpawnOpts, ...options };
+    let shellPath = 'bash';
+    if (isWindows()) {
+        let shellKey = options.shell ?? 'cygwin';
+        let winshells = ['cmd', 'powershell', 'pwsh'];
+        if (winshells.includes(shellKey)) {
+            shellPath = shellKey;
+        }
+        else { // Look for a bash
+            let bashKeyPatterns = {
+                cygwin: ['cygwin'],
+                wsl: ['System32', 'WindowsApps'],
+                git: ['Git', 'git', 'mingw64', 'mingw32'],
+            };
+            let keySrchArr = bashKeyPatterns[shellKey];
+            if (!(0, pk_ts_common_lib_1.isEmpty)(keySrchArr)) {
+                let bshells = winBashes();
+                if (bshells) {
+                    for (let keyPattern of keySrchArr) {
+                        keyPattern = keyPattern.toLowerCase();
+                        for (let apath of bshells) {
+                            if (apath.toLowerCase().includes(keyPattern)) {
+                                shellPath = apath;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    console.log(`In runCommand debug: `, { command, args, spawnOpts, shellPath });
+    // If we didn't find a particular bash path, just use "bash" as path
+    //@ts-ignore
+    const child = (0, child_process_1.spawnSync)(command, args, spawnOpts);
     if (child.error) {
         console.error(`Error running command: ${command}`);
         console.error(child.error);
