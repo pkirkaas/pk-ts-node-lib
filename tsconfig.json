@@ -7,7 +7,6 @@
     "target": "ES6",
     "baseUrl": "./",
     "outDir": "./dist/esm",
-    "module": "ESNext"
   },
   "include": [
     "./src/**/*",

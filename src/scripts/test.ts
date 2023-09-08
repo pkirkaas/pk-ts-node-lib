@@ -21,10 +21,11 @@ let scssMap = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, v
 let scssMapr = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (flex, (flex-direction: column)), block: block))';
 	
 let testsFs = {
-	tstShell: function (cmd = "ls -l", strargs = "-a", shellkey = 'git') {
-		let res = runCommand(cmd, strargs, { shellkey });
+	tstShell: function (cmd = "ls -l", args = "-a", shellkey = 'git') {
+		let res = runCommand(cmd, {args,  shellkey });
 		console.log({ res });
 		stdOut(res);
+		console.error({cmd,  args, shellkey});
 		return res;
 	},
 	newData: function (sdata = "DefData", type = 'json5', fname = 'my-fname') {

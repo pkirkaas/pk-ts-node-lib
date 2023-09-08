@@ -219,8 +219,10 @@ export function winBashes() {
  * cygwin, git, bash, wsl, as well as windows shells - powershell, pwsh, cmd
  *
  */
-export function runCommand(command, args = [], options = {}) {
+//export function runCommand(command: string, args: any | any[] = [], options: GenObj = {}): string | boolean {
+export function runCommand(command, options = {}) {
     var _a;
+    let args = options.args;
     args = convertParamsToCliArgs(args);
     let localOpts = {
         debug: true,
@@ -274,7 +276,7 @@ export function runCommand(command, args = [], options = {}) {
             }
         }
     }
-    console.log(`In runCommand debug: `, { command, args, spawnOpts, shellPath });
+    console.error(`In runCommand debug: `, { command, args, spawnOpts, shellPath });
     // If we didn't find a particular bash path, just use "bash" as path
     //@ts-ignore
     const child = spawnSync(command, args, spawnOpts);
@@ -293,10 +295,14 @@ console.log(output);
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */
 export function convertParamsToCliArgs(params) {
+    let ret = [];
+    if (isEmpty(params)) {
+        console.error(`In convertParamsToCliArgs: params is empty!`);
+        return ret;
+    }
     if (!Array.isArray(params)) {
         params = [params];
     }
-    let ret = [];
     //@ts-ignore
     for (let param of params) {
         if (isSimpleType(param)) {
@@ -312,6 +318,7 @@ export function convertParamsToCliArgs(params) {
             console.error(`Unparsable param`, param);
         }
     }
+    console.error(`In convertParamsToCliArgs:`, { params, ret });
     return ret;
 }
 export function stdOut(...args) {

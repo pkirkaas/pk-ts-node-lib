@@ -71,7 +71,7 @@ export declare function winBashes(): false | string[];
  * cygwin, git, bash, wsl, as well as windows shells - powershell, pwsh, cmd
  *
  */
-export declare function runCommand(command: string, args?: any | any[], options?: GenObj): string | boolean;
+export declare function runCommand(command: string, options?: GenObj): string | boolean;
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */
 export declare function convertParamsToCliArgs(params: string | string[] | GenObj | GenObj[]): any[];
