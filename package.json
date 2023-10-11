@@ -25,10 +25,9 @@
     "clean": "rm -rf ./dist ./node_modules package-lock.json && npm install"
   },
   "dependencies": {
-    "@tsconfig/node18": "^18.2.1",
-    "@types/node": "^20.5.9",
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
+    "@types/node": "^20.8.4",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@typescript-eslint/parser": "^6.7.5",
     "dotenv": "*",
     "fs-extra": "*",
     "fs-path": "*",
