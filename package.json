@@ -26,8 +26,6 @@
   },
   "dependencies": {
     "@types/node": "^20.8.4",
-    "@typescript-eslint/eslint-plugin": "^6.7.5",
-    "@typescript-eslint/parser": "^6.7.5",
     "dotenv": "*",
     "fs-extra": "*",
     "fs-path": "*",
@@ -35,9 +33,7 @@
     "pk-ts-common-lib": "git+https://github.com/pkirkaas/pk-ts-common-lib.git#working",
     "ts-node": "*",
     "tsconfig-paths": "*",
-    "typescript": "^5.2.2",
-    "uuid": "*",
-    "valid-filename": "^4.0.0",
+    "valid-filename": "*",
     "yargs": "latest"
   }
 }

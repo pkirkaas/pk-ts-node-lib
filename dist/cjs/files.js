@@ -10,9 +10,18 @@ exports.fs = fs_extra_1.default;
 const index_js_1 = require("./index.js");
 /** THIS ASSUMES WE ARE IN A MODULE SYSTEM
  * Replaces __dirname & __filename
+ * TODO: Investigate further - like - what is 'import.meta.url'?
  */
 const url_1 = require("url");
 const path_1 = require("path");
+/**
+ * Returns the full filename/path of the calling module/file -
+ * Awkwardly replaces __filename - BUT calling module has to call with:
+ * let __filename = getFilename(import.meta.url)
+ *
+ *
+ * CONSIDER - creating a function that creates a function from a string with th Function constructor, or
+ */
 function getFilename(url, ...parts) {
     let urlPath = (0, url_1.fileURLToPath)(url);
     let fpath = (0, index_js_1.slashPath)(urlPath, ...parts);
@@ -20,6 +29,9 @@ function getFilename(url, ...parts) {
     return fpath;
 }
 exports.getFilename = getFilename;
+/** As above, ONLY for ESM replacing __dirname
+ * const __dirname = getDirname(import.meta.url);
+ */
 function getDirname(url, ...parts) {
     let fpath = getFilename(url, ...parts);
     return (0, index_js_1.slashPath)((0, path_1.dirname)(fpath));

@@ -358,6 +358,9 @@ export function convertParamsToCliArgs(params: string | string[] | GenObj | GenO
 
 
 
+/**
+ * Outputs all args to stdOut, without console processing - but any arg not stringish is stringified  
+ */
 export function stdOut(...args) {
   for (let arg of args) {
     if (typeof arg !== "string") {

@@ -76,6 +76,9 @@ export declare function runCommand(command: string, options?: GenObj): string | 
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */
 export declare function convertParamsToCliArgs(params: string | string[] | GenObj | GenObj[]): any[];
+/**
+ * Outputs all args to stdOut, without console processing - but any arg not stringish is stringified
+ */
 export declare function stdOut(...args: any[]): void;
 export declare function utilInspect(obj: any, opts?: any): string;
 export declare function dbgPath(fname: any): string;

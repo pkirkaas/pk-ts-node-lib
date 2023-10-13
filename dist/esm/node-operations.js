@@ -322,6 +322,9 @@ export function convertParamsToCliArgs(params) {
     console.error(`In convertParamsToCliArgs:`, { params, ret });
     return ret;
 }
+/**
+ * Outputs all args to stdOut, without console processing - but any arg not stringish is stringified
+ */
 export function stdOut(...args) {
     for (let arg of args) {
         if (typeof arg !== "string") {
