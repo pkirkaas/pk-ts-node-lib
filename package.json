@@ -30,6 +30,7 @@
     "fs-extra": "*",
     "fs-path": "*",
     "inquirer": "latest",
+    "cross-env": "*",
     "pk-ts-common-lib": "git+https://github.com/pkirkaas/pk-ts-common-lib.git#working",
     "ts-node": "*",
     "tsconfig-paths": "*",

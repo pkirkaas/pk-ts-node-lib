@@ -23,7 +23,6 @@ import os from "os";
 import { spawn, spawnSync } from "child_process";
 import * as ESP from "error-stack-parser";
 import { format } from "date-fns";
-import { v4 as uuidv4 } from "uuid";
 import { JSON5Parse, isEmpty, isSimpleType, isSimpleObject, JSON5Stringify, isPrimitive, inArr1NinArr2, intersect, arrayToLower } from 'pk-ts-common-lib';
 export const excludeFncs = [
     "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
@@ -478,7 +477,6 @@ export function getFrameAfterFunction(fname, forceFunction) {
     let fnSkips = ["__awaiter", "undefined", undefined];
     let allSkips = fnSkips.concat(excludeFncs);
     let skips = excludeFncs.concat(fname);
-    let uv = uuidv4();
     //writeFile(`../tmp/stack-${uv}.json`, stack);
     //  console.log("Rest of the Stack:", { stack });
     let lastFrame = stack.shift();

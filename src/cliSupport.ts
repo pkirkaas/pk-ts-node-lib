@@ -17,7 +17,6 @@ import  axios  from "axios";
 //const os = require("os");
 import  os from "os";
 import fs from "fs-extra";
-import { v4 as uuidv4 } from "uuid";
 import util from "util";
 //const inquirer = require("inquirer");
 

@@ -53,7 +53,6 @@ const os_1 = __importDefault(require("os"));
 const child_process_1 = require("child_process");
 const ESP = __importStar(require("error-stack-parser"));
 const date_fns_1 = require("date-fns");
-const uuid_1 = require("uuid");
 const pk_ts_common_lib_1 = require("pk-ts-common-lib");
 exports.excludeFncs = [
     "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
@@ -531,7 +530,6 @@ function getFrameAfterFunction(fname, forceFunction) {
     let fnSkips = ["__awaiter", "undefined", undefined];
     let allSkips = fnSkips.concat(excludeFncs);
     let skips = excludeFncs.concat(fname);
-    let uv = (0, uuid_1.v4)();
     //writeFile(`../tmp/stack-${uv}.json`, stack);
     //  console.log("Rest of the Stack:", { stack });
     let lastFrame = stack.shift();

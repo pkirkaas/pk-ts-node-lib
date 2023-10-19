@@ -25,7 +25,6 @@ import os from "os";
 import { spawn, spawnSync } from "child_process";
 import * as ESP from "error-stack-parser";
 import { format, isValid } from "date-fns";
-import { v4 as uuidv4 } from "uuid";
 import { JSON5, JSON5Parse, isEmpty, isSimpleType, isSimpleObject, JSON5Stringify, isPrimitive, inArr1NinArr2, intersect, GenericObject, arrayToLower, GenObj } from 'pk-ts-common-lib';
 
 export const excludeFncs = [
@@ -527,7 +526,6 @@ export function getFrameAfterFunction(fname?: any, forceFunction?: any) {
 
 
   let skips = excludeFncs.concat(fname);
-  let uv = uuidv4();
   //writeFile(`../tmp/stack-${uv}.json`, stack);
   //  console.log("Rest of the Stack:", { stack });
   let lastFrame: any = stack.shift();
