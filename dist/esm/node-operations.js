@@ -221,7 +221,6 @@ export function winBashes() {
  */
 //export function runCommand(command: string, args: any | any[] = [], options: GenObj = {}): string | boolean {
 export function runCommand(command, options = {}) {
-    var _a;
     let args = options.args;
     args = convertParamsToCliArgs(args);
     let localOpts = {
@@ -245,10 +244,10 @@ export function runCommand(command, options = {}) {
         shell: 'bash',
         encoding: 'utf8'
     };
-    let spawnOpts = Object.assign(Object.assign({}, defSpawnOpts), options);
+    let spawnOpts = { ...defSpawnOpts, ...options };
     let shellPath = 'bash';
     if (isWindows()) {
-        let shellKey = (_a = options.shell) !== null && _a !== void 0 ? _a : 'cygwin';
+        let shellKey = options.shell ?? 'cygwin';
         let winshells = ['cmd', 'powershell', 'pwsh'];
         if (winshells.includes(shellKey)) {
             shellPath = shellKey;
@@ -414,7 +413,7 @@ export function writeFile(fpath, arg, append = false) {
 export function saveData(arg, { fname = 'dbg-out', fpath = null, type = 'json5', dir = './tmp', append = false } = {}) {
     // Get/Make the file output path
     type = (type === 'json5') ? 'json5' : 'json';
-    let fullPath = fpath !== null && fpath !== void 0 ? fpath : slashPath(dir, `${fname}.${type}`);
+    let fullPath = fpath ?? slashPath(dir, `${fname}.${type}`);
     let dirName = path.posix.dirname(fullPath);
     let dires = fs.mkdirSync(dirName, { recursive: true });
     if (!isPrimitive(arg)) {

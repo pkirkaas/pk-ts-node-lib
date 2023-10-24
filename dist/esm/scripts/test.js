@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, runCommand, stdOut, winBashes } from '../index.js';
 import { typeOf } from 'pk-ts-common-lib';
 /*
@@ -73,26 +64,20 @@ let testsFs = {
         dbgWrt(obj, 'sassMapO');
         console.log({ json, obj });
     },
-    tstAsk: function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            //@ts-ignore
-            let answer = yield ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
-            console.log({ answer });
-        });
+    tstAsk: async function () {
+        //@ts-ignore
+        let answer = await ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
+        console.log({ answer });
     },
-    tstSlashOrig: function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            //@ts-ignore
-            let answer = slashPath('.');
-            console.log({ answer });
-        });
+    tstSlashOrig: async function () {
+        //@ts-ignore
+        let answer = slashPath('.');
+        console.log({ answer });
     },
-    tstFPaths: function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            //@ts-ignore
-            let answer = getFilePaths('.');
-            console.log({ answer });
-        });
+    tstFPaths: async function () {
+        //@ts-ignore
+        let answer = getFilePaths('.');
+        console.log({ answer });
     },
 };
 runCli(testsFs);
