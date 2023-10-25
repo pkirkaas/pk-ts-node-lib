@@ -1,20 +1,15 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const os_1 = __importDefault(require("os"));
-const child_process_1 = require("child_process");
-const util_1 = __importDefault(require("util"));
-util_1.default.inspect.defaultOptions.maxArrayLength = null;
-util_1.default.inspect.defaultOptions.depth = null;
-util_1.default.inspect.defaultOptions.breakLength = 200;
-util_1.default.inspect.defaultOptions.maxStringLength = null;
-util_1.default.inspect.defaultOptions.depth = null;
-util_1.default.inspect.defaultOptions.colors = true;
+import os from "os";
+import { execSync, spawnSync } from "child_process";
+import util from 'util';
+util.inspect.defaultOptions.maxArrayLength = null;
+util.inspect.defaultOptions.depth = null;
+util.inspect.defaultOptions.breakLength = 200;
+util.inspect.defaultOptions.maxStringLength = null;
+util.inspect.defaultOptions.depth = null;
+util.inspect.defaultOptions.colors = true;
 let env = process.env;
 function tstSpawn(cmd, opts = {}, args = []) {
-    let res = (0, child_process_1.spawnSync)(cmd, args, opts);
+    let res = spawnSync(cmd, args, opts);
     if (res.error) {
         throw res.error;
     }
@@ -24,7 +19,7 @@ function tstSpawn(cmd, opts = {}, args = []) {
     return res.stdout.toString();
 }
 function tstExec(cmd, opts = {}) {
-    return (0, child_process_1.execSync)(cmd, opts).toString();
+    return execSync(cmd, opts).toString();
 }
 let gbash = 'C:\\Program Files\\Git\\usr\\bin\\bash.exe';
 let tsts = {
@@ -62,7 +57,7 @@ let tsts = {
     },
 };
 //let res = { platform: os.platform(), release: os.release(), type: os.type(), version: os.version(), };
-let osType = os_1.default.type();
+let osType = os.type();
 //console.log(osType, "mjs", { env });
 //process.env.COMSPEC = gbash;
 function runTsts(ltsts = tsts) {

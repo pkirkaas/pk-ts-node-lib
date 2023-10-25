@@ -1,32 +1,3 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadJson = exports.catchErr = exports.logMsg = exports.getFrameAfterFunction = exports.saveData = exports.writeFile = exports.writeData = exports.compareArrays = exports.dbgWrite = exports.dbgWrt = exports.dbgPath = exports.utilInspect = exports.stdOut = exports.convertParamsToCliArgs = exports.runCommand = exports.winBashes = exports.asyncSpawn = exports.getProcess = exports.stamp = exports.stackParse = exports.isFile = exports.isDirectory = exports.slashPath = exports.isLinux = exports.isWindows = exports.getOsType = exports.getOsDets = exports.objInspect = exports.cwd = exports.allSkips = exports.fnSkips = exports.excludeFncs = exports.setInspectLevels = void 0;
 /**
  * Library of JS/TS functions specifically for Node.js - extends 'pk-ts-common-lib' functions
  * that are pure JS & not browser/node dependent
@@ -34,40 +5,39 @@ exports.loadJson = exports.catchErr = exports.logMsg = exports.getFrameAfterFunc
  * @email pkirkaas@gmail.com
  *
  */
-const fs_extra_1 = __importDefault(require("fs-extra"));
+import fs from "fs-extra";
 //export const  path =  require( 'path');
-const path_1 = __importDefault(require("path"));
-const util_1 = __importDefault(require("util"));
-function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null) {
-    util_1.default.inspect.defaultOptions.maxArrayLength = maxArrayLength;
-    util_1.default.inspect.defaultOptions.depth = depth;
-    util_1.default.inspect.defaultOptions.colors = colors;
-    util_1.default.inspect.defaultOptions.maxStringLength = maxStringLength;
-    util_1.default.inspect.defaultOptions.breakLength = breakLength;
+import path from 'path';
+import util from 'util';
+export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null) {
+    util.inspect.defaultOptions.maxArrayLength = maxArrayLength;
+    util.inspect.defaultOptions.depth = depth;
+    util.inspect.defaultOptions.colors = colors;
+    util.inspect.defaultOptions.maxStringLength = maxStringLength;
+    util.inspect.defaultOptions.breakLength = breakLength;
 }
-exports.setInspectLevels = setInspectLevels;
-util_1.default.inspect.defaultOptions.maxArrayLength = null;
-util_1.default.inspect.defaultOptions.depth = null;
-util_1.default.inspect.defaultOptions.breakLength = 200;
-const os_1 = __importDefault(require("os"));
-const child_process_1 = require("child_process");
-const ESP = __importStar(require("error-stack-parser"));
-const date_fns_1 = require("date-fns");
-const pk_ts_common_lib_1 = require("pk-ts-common-lib");
-exports.excludeFncs = [
+util.inspect.defaultOptions.maxArrayLength = null;
+util.inspect.defaultOptions.depth = null;
+util.inspect.defaultOptions.breakLength = 200;
+import os from "os";
+import { spawn, spawnSync } from "child_process";
+import * as ESP from "error-stack-parser";
+import { format } from "date-fns";
+import { JSON5Parse, isEmpty, isSimpleType, isSimpleObject, JSON5Stringify, isPrimitive, inArr1NinArr2, intersect, arrayToLower } from 'pk-ts-common-lib';
+export const excludeFncs = [
     "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
     "infoLog", "debugLog", "stamp", "fulfilled", "rejected", "processTicksAndRejections", "LogData.log",
     "LogData.out", "LogData.console", "LogData.errLog", "LogData.throw", 'catchErr', 'logMsg',
 ];
 //let fnSkips = ["__awaiter", "Object.<anonymous>", "undefined", undefined];
-exports.fnSkips = ["__awaiter", "undefined", undefined];
-exports.allSkips = exports.fnSkips.concat(exports.excludeFncs);
-exports.cwd = slashPath(process.cwd());
+export const fnSkips = ["__awaiter", "undefined", undefined];
+export const allSkips = fnSkips.concat(excludeFncs);
+export const cwd = slashPath(process.cwd());
 /** Uses util.inspect to stringify an arg
  * @param object? opts - to override the default opts
  * @return string representation
  */
-function objInspect(arg, opts) {
+export function objInspect(arg, opts) {
     let defOpts = {
         showHidden: true,
         maxArrayLength: null,
@@ -79,9 +49,8 @@ function objInspect(arg, opts) {
     if (opts && typeof opts === 'object') {
         Object.assign(defOpts, opts);
     }
-    return util_1.default.inspect(arg, defOpts);
+    return util.inspect(arg, defOpts);
 }
-exports.objInspect = objInspect;
 /** Uses system os to get some os details
  * On WSL:
   arch: 'x64',
@@ -99,64 +68,57 @@ exports.objInspect = objInspect;
   type: 'Windows_NT',
  *
  */
-function getOsDets() {
+export function getOsDets() {
     let res = {
-        arch: os_1.default.arch(),
-        machine: os_1.default.machine(),
-        platform: os_1.default.platform(),
-        release: os_1.default.release(),
-        type: os_1.default.type(),
-        version: os_1.default.version(),
+        arch: os.arch(),
+        machine: os.machine(),
+        platform: os.platform(),
+        release: os.release(),
+        type: os.type(),
+        version: os.version(),
     };
     return res;
 }
-exports.getOsDets = getOsDets;
 /**
  * Returns the OS type - 'windows' or 'linux'
  */
-function getOsType() {
+export function getOsType() {
     let dets = getOsDets();
-    let vals = (0, pk_ts_common_lib_1.arrayToLower)(Object.values(dets));
+    let vals = arrayToLower(Object.values(dets));
     if (vals.includes('linux')) {
         return 'linux';
     }
-    let winTypes = (0, pk_ts_common_lib_1.arrayToLower)(['Windows_NT', 'win32']);
-    let common = (0, pk_ts_common_lib_1.intersect)(vals, winTypes);
+    let winTypes = arrayToLower(['Windows_NT', 'win32']);
+    let common = intersect(vals, winTypes);
     if (common.length) {
         return 'windows';
     }
     return false;
 }
-exports.getOsType = getOsType;
-function isWindows() {
+export function isWindows() {
     return getOsType() === 'windows';
 }
-exports.isWindows = isWindows;
-function isLinux() {
+export function isLinux() {
     return getOsType() === 'linux';
 }
-exports.isLinux = isLinux;
 //Moded to combine path.join & slashPath - should be compatible
 // What about spaces???
-function slashPath(...parts) {
-    let apath = path_1.default.join(...parts);
-    return apath.split(path_1.default.sep).join(path_1.default.posix.sep);
+export function slashPath(...parts) {
+    let apath = path.join(...parts);
+    return apath.split(path.sep).join(path.posix.sep);
 }
-exports.slashPath = slashPath;
-function isDirectory(apath) {
-    return fs_extra_1.default.existsSync(apath) && fs_extra_1.default.lstatSync(apath).isDirectory();
+export function isDirectory(apath) {
+    return fs.existsSync(apath) && fs.lstatSync(apath).isDirectory();
 }
-exports.isDirectory = isDirectory;
-function isFile(apath) {
-    return fs_extra_1.default.existsSync(apath) && fs_extra_1.default.lstatSync(apath).isFile();
+export function isFile(apath) {
+    return fs.existsSync(apath) && fs.lstatSync(apath).isFile();
 }
-exports.isFile = isFile;
-function stackParse() {
+export function stackParse() {
     let stack = ESP.parse(new Error());
     let ret = [];
     for (let info of stack) {
         let res = {
-            fileName: path_1.default.basename(info.fileName),
+            fileName: path.basename(info.fileName),
             lineNumber: info.lineNumber,
             functionName: info.functionName,
         };
@@ -164,12 +126,11 @@ function stackParse() {
     }
     return ret;
 }
-exports.stackParse = stackParse;
 /** Basic info for console logging */
-function stamp(entry, frameAfter) {
+export function stamp(entry, frameAfter) {
     let entId = "";
     //console.log({ entry });
-    if (!(0, pk_ts_common_lib_1.isEmpty)(entry) && typeof entry === "object") {
+    if (!isEmpty(entry) && typeof entry === "object") {
         if (entry.id) {
             entId = entry.id;
         }
@@ -179,44 +140,42 @@ function stamp(entry, frameAfter) {
     //let frame = getFrameAfterFunction(frameAfter, true);
     let src = "";
     if (frame) {
-        src = `:${path_1.default.basename(frame.fileName)}:${frame.functionName}:${frame.lineNumber}:`;
+        src = `:${path.basename(frame.fileName)}:${frame.functionName}:${frame.lineNumber}:`;
         //console.log({ frame });
     }
     let now = new Date();
     let pe = process.env.PROCESS_ENV;
-    let ds = (0, date_fns_1.format)(now, "y-LL-dd H:m:s");
+    let ds = format(now, "y-LL-dd H:m:s");
     return `${ds}-${pe}${src}: ${entId} `;
 }
-exports.stamp = stamp;
-function getProcess() {
+export function getProcess() {
     console.log(process.env);
     return process.env;
 }
-exports.getProcess = getProcess;
 /**
  * Starts a separate, external NODE.js script in a child process,
  * specifies to log the stdout & stderr to files in the logs dir
  * but returns immediately, without waiting for the child process to complete.
  */
-function asyncSpawn(cmd, ...params) {
+export function asyncSpawn(cmd, ...params) {
     try {
         let args = convertParamsToCliArgs(params);
         let cwd = process.cwd();
-        let logDir = path_1.default.join(cwd, "logs");
-        let stdLog = path_1.default.join(logDir, `${cmd}-stdout.log`);
-        let errLog = path_1.default.join(logDir, `${cmd}-stderr.log`);
-        fs_extra_1.default.mkdirSync(logDir, { recursive: true });
-        let stdOut = fs_extra_1.default.openSync(stdLog, "a");
-        let stdErr = fs_extra_1.default.openSync(errLog, "a");
-        let script = path_1.default.join(cwd, "dist", "src", `scripts`, `async-jobs.js`);
-        if (!fs_extra_1.default.existsSync(script)) {
+        let logDir = path.join(cwd, "logs");
+        let stdLog = path.join(logDir, `${cmd}-stdout.log`);
+        let errLog = path.join(logDir, `${cmd}-stderr.log`);
+        fs.mkdirSync(logDir, { recursive: true });
+        let stdOut = fs.openSync(stdLog, "a");
+        let stdErr = fs.openSync(errLog, "a");
+        let script = path.join(cwd, "dist", "src", `scripts`, `async-jobs.js`);
+        if (!fs.existsSync(script)) {
             console.error(`asyncSpawn couldn't find the script: ${script}`);
             return false;
         }
         args.unshift(cmd);
         args.unshift(script);
         console.log({ __dirname, cwd, cmd, script, args });
-        const subprocess = (0, child_process_1.spawn)("node", args, {
+        const subprocess = spawn("node", args, {
             cwd,
             detached: true,
             stdio: ["ignore", stdOut, stdErr],
@@ -229,17 +188,16 @@ function asyncSpawn(cmd, ...params) {
         console.error(`Error executing or parsing asyncSpawn`, { cmd, params, err });
     }
 }
-exports.asyncSpawn = asyncSpawn;
 /**
  * If windows, returns array of all bash shells found IN WINDOWS path format
  *
  *
  */
-function winBashes() {
+export function winBashes() {
     if (!isWindows()) {
         return false;
     }
-    let c1 = (0, child_process_1.spawnSync)('where', ['bash'], { shell: true, encoding: 'utf8' });
+    let c1 = spawnSync('where', ['bash'], { shell: true, encoding: 'utf8' });
     if (c1.error) {
         console.error(`Error running command: [cmd, where, bash]`);
         console.error(c1.error);
@@ -249,7 +207,6 @@ function winBashes() {
     let bashes = bashesStr.split('\n');
     return bashes;
 }
-exports.winBashes = winBashes;
 /**
  * SYNCRONOUSLY Run a (bash) shell command in a child process, await the result & return it
  * as a string. Original from chatGPT, modified for our use.
@@ -263,7 +220,7 @@ exports.winBashes = winBashes;
  *
  */
 //export function runCommand(command: string, args: any | any[] = [], options: GenObj = {}): string | boolean {
-function runCommand(command, options = {}) {
+export function runCommand(command, options = {}) {
     let args = options.args;
     args = convertParamsToCliArgs(args);
     let localOpts = {
@@ -302,7 +259,7 @@ function runCommand(command, options = {}) {
                 git: ['Git', 'git', 'mingw64', 'mingw32'],
             };
             let keySrchArr = bashKeyPatterns[shellKey];
-            if (!(0, pk_ts_common_lib_1.isEmpty)(keySrchArr)) {
+            if (!isEmpty(keySrchArr)) {
                 let bshells = winBashes();
                 if (bshells) {
                     for (let keyPattern of keySrchArr) {
@@ -321,7 +278,7 @@ function runCommand(command, options = {}) {
     console.error(`In runCommand debug: `, { command, args, spawnOpts, shellPath });
     // If we didn't find a particular bash path, just use "bash" as path
     //@ts-ignore
-    const child = (0, child_process_1.spawnSync)(command, args, spawnOpts);
+    const child = spawnSync(command, args, spawnOpts);
     if (child.error) {
         console.error(`Error running command: ${command}`);
         console.error(child.error);
@@ -329,7 +286,6 @@ function runCommand(command, options = {}) {
     }
     return child.stdout.toString();
 }
-exports.runCommand = runCommand;
 /*
 //Suggested test of runCommand from chatGPT:
 let output = runCommand('ls', ['-l', '/path/to/directory'], { shell: true });
@@ -337,9 +293,9 @@ console.log(output);
 */
 /** Support for asyncSpawn & runCli to build valid CLI arguments from function calls
  */
-function convertParamsToCliArgs(params) {
+export function convertParamsToCliArgs(params) {
     let ret = [];
-    if ((0, pk_ts_common_lib_1.isEmpty)(params)) {
+    if (isEmpty(params)) {
         console.error(`In convertParamsToCliArgs: params is empty!`);
         return ret;
     }
@@ -348,10 +304,10 @@ function convertParamsToCliArgs(params) {
     }
     //@ts-ignore
     for (let param of params) {
-        if ((0, pk_ts_common_lib_1.isSimpleType)(param)) {
+        if (isSimpleType(param)) {
             ret.push(param);
         }
-        else if ((0, pk_ts_common_lib_1.isSimpleObject)(param)) {
+        else if (isSimpleObject(param)) {
             for (let key in param) {
                 ret.push(`--${key}=${param[key]}`);
             }
@@ -364,63 +320,55 @@ function convertParamsToCliArgs(params) {
     console.error(`In convertParamsToCliArgs:`, { params, ret });
     return ret;
 }
-exports.convertParamsToCliArgs = convertParamsToCliArgs;
 /**
  * Outputs all args to stdOut, without console processing - but any arg not stringish is stringified
  */
-function stdOut(...args) {
+export function stdOut(...args) {
     for (let arg of args) {
         if (typeof arg !== "string") {
-            arg = (0, pk_ts_common_lib_1.JSON5Stringify)(arg);
+            arg = JSON5Stringify(arg);
         }
         process.stdout.write(arg);
     }
 }
-exports.stdOut = stdOut;
-function utilInspect(obj, opts) {
+export function utilInspect(obj, opts) {
     let defOpts = { showHidden: true, depth: null, showProxy: true, maxArrayLength: null, maxStringLength: null, breakLength: 200, getters: true, compact: 7 };
     defOpts = { showHidden: true, depth: 15, maxArrayLength: 200, maxStringLength: 1000, breakLength: 200, };
     if (!opts) {
         opts = defOpts;
     }
-    return util_1.default.inspect(obj, opts);
+    return util.inspect(obj, opts);
 }
-exports.utilInspect = utilInspect;
-function dbgPath(fname) {
+export function dbgPath(fname) {
     fname = `${fname}.json5`;
-    return slashPath(exports.cwd, 'tmp', fname);
+    return slashPath(cwd, 'tmp', fname);
 }
-exports.dbgPath = dbgPath;
 /** Change argument order to make path optional*/
-function dbgWrt(arg, fpath = 'debug', append = false) {
+export function dbgWrt(arg, fpath = 'debug', append = false) {
     return dbgWrite(fpath, arg, append);
 }
-exports.dbgWrt = dbgWrt;
-function dbgWrite(fpath, arg, append = false) {
+export function dbgWrite(fpath, arg, append = false) {
     let dpath = dbgPath(fpath);
     return writeFile(dpath, arg, append);
 }
-exports.dbgWrite = dbgWrite;
-function compareArrays(arr1, arr2) {
-    let shared = (0, pk_ts_common_lib_1.intersect)(arr1, arr2);
+export function compareArrays(arr1, arr2) {
+    let shared = intersect(arr1, arr2);
     let sharedCnt = shared.length;
-    let onlyArr1 = (0, pk_ts_common_lib_1.inArr1NinArr2)(arr1, arr2);
+    let onlyArr1 = inArr1NinArr2(arr1, arr2);
     let onlyArr1Cnt = onlyArr1.length;
-    let onlyArr2 = (0, pk_ts_common_lib_1.inArr1NinArr2)(arr2, arr1);
+    let onlyArr2 = inArr1NinArr2(arr2, arr1);
     let onlyArr2Cnt = onlyArr2.length;
     let arr1Cnt = arr1.length;
     let arr2Cnt = arr2.length;
     return { arr1, arr2, arr1Cnt, arr2Cnt, shared, sharedCnt, onlyArr1, onlyArr1Cnt, onlyArr2, onlyArr2Cnt };
 }
-exports.compareArrays = compareArrays;
 /**
  * Better param order for writeFile
  */
-function writeData(arg, fpath = '.', append = false) {
+export function writeData(arg, fpath = '.', append = false) {
     return writeFile(fpath, arg, append);
 }
-exports.writeData = writeData;
-function writeFile(fpath, arg, append = false) {
+export function writeFile(fpath, arg, append = false) {
     if (arg === undefined) {
         arg = "undefned";
     }
@@ -429,7 +377,7 @@ function writeFile(fpath, arg, append = false) {
     }
     fpath = slashPath(fpath);
     if (isDirectory(fpath)) {
-        fpath = path_1.default.join(fpath, "debug-out.json");
+        fpath = path.join(fpath, "debug-out.json");
     }
     //let fexists = fs.existsSync(fpath);
     let flag = 'w';
@@ -447,15 +395,14 @@ function writeFile(fpath, arg, append = false) {
       fpcwd: path.join(process.cwd(), fpath),
     };
     */
-    let dir = path_1.default.posix.dirname(fpath);
-    let dires = fs_extra_1.default.mkdirSync(dir, { recursive: true });
+    let dir = path.posix.dirname(fpath);
+    let dires = fs.mkdirSync(dir, { recursive: true });
     //console.log(`writeFile to ${fpath}`);
-    if (!(0, pk_ts_common_lib_1.isPrimitive)(arg)) {
-        arg = (0, pk_ts_common_lib_1.JSON5Stringify)(arg);
+    if (!isPrimitive(arg)) {
+        arg = JSON5Stringify(arg);
     }
-    return fs_extra_1.default.writeFileSync(fpath, arg, opts);
+    return fs.writeFileSync(fpath, arg, opts);
 }
-exports.writeFile = writeFile;
 /**
  * ANOTHER TRY!! Write data to a file - with better options, defaults & params....
   //function sayName({first='Bob',last='Smith'}: {first?: string; last?: string}={}){
@@ -463,15 +410,15 @@ exports.writeFile = writeFile;
     @param any arg - data to write
 
  */
-function saveData(arg, { fname = 'dbg-out', fpath = null, type = 'json5', dir = './tmp', append = false } = {}) {
+export function saveData(arg, { fname = 'dbg-out', fpath = null, type = 'json5', dir = './tmp', append = false } = {}) {
     // Get/Make the file output path
     type = (type === 'json5') ? 'json5' : 'json';
     let fullPath = fpath ?? slashPath(dir, `${fname}.${type}`);
-    let dirName = path_1.default.posix.dirname(fullPath);
-    let dires = fs_extra_1.default.mkdirSync(dirName, { recursive: true });
-    if (!(0, pk_ts_common_lib_1.isPrimitive)(arg)) {
+    let dirName = path.posix.dirname(fullPath);
+    let dires = fs.mkdirSync(dirName, { recursive: true });
+    if (!isPrimitive(arg)) {
         if (type === 'json5') {
-            arg = (0, pk_ts_common_lib_1.JSON5Stringify)(arg);
+            arg = JSON5Stringify(arg);
         }
         else {
             arg = JSON.stringify(arg);
@@ -483,10 +430,9 @@ function saveData(arg, { fname = 'dbg-out', fpath = null, type = 'json5', dir = 
         flag = 'a';
     }
     let opts = { flag };
-    return fs_extra_1.default.writeFileSync(fullPath, arg, opts);
+    return fs.writeFileSync(fullPath, arg, opts);
 }
-exports.saveData = saveData;
-function getFrameAfterFunction(fname, forceFunction) {
+export function getFrameAfterFunction(fname, forceFunction) {
     if (fname && typeof fname === "string") {
         fname = [fname];
     }
@@ -573,21 +519,20 @@ function getFrameAfterFunction(fname, forceFunction) {
     }
     return lastFrame;
 }
-exports.getFrameAfterFunction = getFrameAfterFunction;
 /** File based msg logging - when no db...
  * @param any msg - gotta have something...
  * @param string? lpath: some path to the log file,
  * or we make a best guess
  * @return ???
  */
-function logMsg(msg, lpath) {
+export function logMsg(msg, lpath) {
     //Should have a path - is it a file or dir? Does it exist?
     if (!lpath) {
         if (process.env.LOGPATH) {
             lpath = process.env.LOGPATH;
         }
         else {
-            lpath = path_1.default.join(process.cwd(), 'logs', 'default.log');
+            lpath = path.join(process.cwd(), 'logs', 'default.log');
         }
     }
     //Does lpath exist? Is it a dir?
@@ -621,19 +566,16 @@ function logMsg(msg, lpath) {
         return false;
     }
 }
-exports.logMsg = logMsg;
 /** Call from a catch - logs error to file, console.error, & returns false
  */
-function catchErr(err, ...rest) {
+export function catchErr(err, ...rest) {
     console.error(`There was an exception:`, { err, rest, stamp: stamp() });
     logMsg(err);
     return false;
 }
-exports.catchErr = catchErr;
-function loadJson(afile) {
-    let json = fs_extra_1.default.readFileSync(afile, "utf8");
-    let obj = (0, pk_ts_common_lib_1.JSON5Parse)(json);
+export function loadJson(afile) {
+    let json = fs.readFileSync(afile, "utf8");
+    let obj = JSON5Parse(json);
     return obj;
 }
-exports.loadJson = loadJson;
 //# sourceMappingURL=node-operations.js.map

@@ -1,19 +1,13 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFilePaths = exports.getDirname = exports.getFilename = exports.fs = void 0;
-const fs_path_1 = __importDefault(require("fs-path"));
-const fs_extra_1 = __importDefault(require("fs-extra"));
-exports.fs = fs_extra_1.default;
-const index_js_1 = require("./index.js");
+import fsPath from 'fs-path';
+import fs from "fs-extra";
+export { fs };
+import { slashPath } from './index.js';
 /** THIS ASSUMES WE ARE IN A MODULE SYSTEM
  * Replaces __dirname & __filename
  * TODO: Investigate further - like - what is 'import.meta.url'?
  */
-const url_1 = require("url");
-const path_1 = require("path");
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 /**
  * Returns the full filename/path of the calling module/file -
  * Awkwardly replaces __filename - BUT calling module has to call with:
@@ -22,40 +16,38 @@ const path_1 = require("path");
  *
  * CONSIDER - creating a function that creates a function from a string with th Function constructor, or
  */
-function getFilename(url, ...parts) {
-    let urlPath = (0, url_1.fileURLToPath)(url);
-    let fpath = (0, index_js_1.slashPath)(urlPath, ...parts);
+export function getFilename(url, ...parts) {
+    let urlPath = fileURLToPath(url);
+    let fpath = slashPath(urlPath, ...parts);
     //return slashPath(fileURLToPath(url));
     return fpath;
 }
-exports.getFilename = getFilename;
 /** As above, ONLY for ESM replacing __dirname
  * const __dirname = getDirname(import.meta.url);
  */
-function getDirname(url, ...parts) {
+export function getDirname(url, ...parts) {
     let fpath = getFilename(url, ...parts);
-    return (0, index_js_1.slashPath)((0, path_1.dirname)(fpath));
+    return slashPath(dirname(fpath));
 }
-exports.getDirname = getDirname;
 /**
  * Returns array of file paths found in the
  * paths arg, recursive
  */
-function getFilePaths(paths) {
+export function getFilePaths(paths) {
     let fpaths = [];
     if (typeof paths === 'string') {
         paths = [paths];
     }
     for (let apath of paths) {
-        if (!fs_extra_1.default.existsSync(apath)) {
+        if (!fs.existsSync(apath)) {
             continue;
         }
-        let fsStat = fs_extra_1.default.statSync(apath);
+        let fsStat = fs.statSync(apath);
         if (fsStat.isFile()) {
             fpaths.push(apath);
         }
         else if (fsStat.isDirectory()) {
-            let fspRes = fs_path_1.default.findSync(apath);
+            let fspRes = fsPath.findSync(apath);
             fpaths = fpaths.concat(fspRes.files);
         }
         else {
@@ -65,5 +57,4 @@ function getFilePaths(paths) {
     fpaths = Array.from(new Set(fpaths));
     return fpaths;
 }
-exports.getFilePaths = getFilePaths;
 //# sourceMappingURL=files.js.map

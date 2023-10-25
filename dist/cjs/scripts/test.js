@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const index_js_1 = require("../index.js");
-const pk_ts_common_lib_1 = require("pk-ts-common-lib");
+import { getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, runCommand, stdOut, winBashes } from '../index.js';
+import { typeOf } from 'pk-ts-common-lib';
 /*
 console.log("Testing lib");
 
@@ -19,9 +17,9 @@ let scssMap = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, v
 let scssMapr = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (flex, (flex-direction: column)), block: block))';
 let testsFs = {
     tstShell: function (cmd = "ls -l", args = "-a", shellkey = 'git') {
-        let res = (0, index_js_1.runCommand)(cmd, { args, shellkey });
+        let res = runCommand(cmd, { args, shellkey });
         console.log({ res });
-        (0, index_js_1.stdOut)(res);
+        stdOut(res);
         console.error({ cmd, args, shellkey });
         return res;
     },
@@ -29,16 +27,16 @@ let testsFs = {
         //let res = saveData("SomeData?",{fname:"WhoWhat?",type:"JSXX",dir:"yy"});
         //let res = saveData(sdata, { fname, type });
         let smObj = { dog: 7, cat: [5, 8, 0], atiger: null };
-        let res = (0, index_js_1.saveData)(smObj, { fname, type: 'json' });
+        let res = saveData(smObj, { fname, type: 'json' });
     },
     tstBashes: function () {
-        let wbashes = (0, index_js_1.winBashes)();
+        let wbashes = winBashes();
         console.log({ wbashes });
-        (0, index_js_1.stdOut)(wbashes);
+        stdOut(wbashes);
         return wbashes;
     },
     tst: function () {
-        let too = (0, pk_ts_common_lib_1.typeOf)({});
+        let too = typeOf({});
         console.log({ too });
     },
     tstSlash: function () {
@@ -53,34 +51,34 @@ let testsFs = {
             "a//path/fnoext",
         ];
         for (let apath of somePaths) {
-            let res = (0, index_js_1.slashPath)(apath);
+            let res = slashPath(apath);
             console.log({ apath, res });
         }
         console.log("Done testing path functions...");
     },
     tstMap: function () {
-        let json = (0, index_js_1.sassMapStringToJson)(scssMap);
-        let obj = (0, index_js_1.sassMapStringToObj)(scssMap);
+        let json = sassMapStringToJson(scssMap);
+        let obj = sassMapStringToObj(scssMap);
         //let json = sassMapStringToJson(scssMapr);
-        (0, index_js_1.dbgWrt)(json, 'sassMap');
-        (0, index_js_1.dbgWrt)(obj, 'sassMapO');
+        dbgWrt(json, 'sassMap');
+        dbgWrt(obj, 'sassMapO');
         console.log({ json, obj });
     },
     tstAsk: async function () {
         //@ts-ignore
-        let answer = await (0, index_js_1.ask)('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
+        let answer = await ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
         console.log({ answer });
     },
     tstSlashOrig: async function () {
         //@ts-ignore
-        let answer = (0, index_js_1.slashPath)('.');
+        let answer = slashPath('.');
         console.log({ answer });
     },
     tstFPaths: async function () {
         //@ts-ignore
-        let answer = (0, index_js_1.getFilePaths)('.');
+        let answer = getFilePaths('.');
         console.log({ answer });
     },
 };
-(0, index_js_1.runCli)(testsFs);
+runCli(testsFs);
 //# sourceMappingURL=test.js.map
