@@ -1,8 +1,10 @@
 import {
-	getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, isFile, getOsType, isWindows, isLinux, runCommand, stdOut, winBashes
+	getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, isFile, getOsType, isWindows, isLinux, runCommand, stdOut, winBashes, 
 } from '../index.js';
 
-import { isEmpty, typeOf } from 'pk-ts-common-lib';
+import _ from 'lodash';
+
+import { mergeAndConcat, isEmpty, typeOf } from 'pk-ts-common-lib';
 /*
 console.log("Testing lib");
 
@@ -21,6 +23,46 @@ let scssMap = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, v
 let scssMapr = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (flex, (flex-direction: column)), block: block))';
 	
 let testsFs = {
+	tstMerge: function () {
+		let target = { t1: "hello", t2: ['yesterday', 'today'], };
+		let src1 = { t3: "MergedVal", t2: ['ever', 'never'] };
+		let src2 = { t4: "src2", t2: ['why', 'wherefore'] };
+		let src3 = { t4: "src3", t2: ['CANIBAL', 'LION'] };
+		let customizer = function (objValue, srcValue) {
+			if (_.isArray(objValue)) {
+				return objValue.concat(srcValue);
+			}
+		}
+		let res = _.merge({}, target, src1);
+		let res2 = _.merge({}, target, src1, src2);
+
+
+
+
+
+		let res3 = _.mergeWith({}, target, src1, src2, customizer);
+
+		let deepMerge = function (...objs) {
+			return _.mergeWith(...objs, customizer);
+		}
+		let deepMerge2 = function (...objs) {
+			return _.mergeWith({}, ...objs, customizer);
+		}
+
+		let resDM = deepMerge({}, target, src1, src2, src3);
+		let resDM2 = deepMerge2(target, src1, src2, src3);
+		console.log({ res, res2, res3, resDM, resDM2,});
+		return res;
+	},
+
+	tstMergeConcat: function () {
+		let target = { t1: "helloWNewMerge", t2: ['yesterday', 'today'], };
+		let src1 = { t3: "MergedVal And Concat", t2: ['ever', 'never'] };
+		let src2 = { t4: "src2", t2: ['why', 'wherefore'] };
+		let src3 = { t4: "src3", t2: ['CANIBAL', 'LION'] };
+		let res = mergeAndConcat(target, src1, src2, src3);
+		console.log({ res });
+	}, 
 	tstShell: function (cmd = "ls -l", args = "-a", shellkey = 'git') {
 		let res = runCommand(cmd, {args,  shellkey });
 		console.log({ res });
