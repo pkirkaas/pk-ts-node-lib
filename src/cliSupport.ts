@@ -20,6 +20,12 @@ import fs from "fs-extra";
 import util from "util";
 //const inquirer = require("inquirer");
 
+export function envInit(envPath = ".env") {
+//@ts-ignore
+	dotenv.config(path.join(cwd, envPath));
+}
+
+envInit();
 
 
 

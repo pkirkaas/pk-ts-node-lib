@@ -9,6 +9,11 @@ import { cwd } from './index.js';
 //@ts-ignore
 dotenv.config(path.join(cwd, ".env"));
 //const inquirer = require("inquirer");
+export function envInit(envPath = ".env") {
+    //@ts-ignore
+    dotenv.config(path.join(cwd, envPath));
+}
+envInit();
 // Simplified "inquirer" interface using "ask" with defaults (below)
 // For full details, see https://www.npmjs.com/package/inquirer
 // Should only need the async function "ask"

@@ -26,15 +26,18 @@
   },
   "dependencies": {
     "@types/node": "^20.8.4",
+    "cross-env": "*",
     "dotenv": "*",
     "fs-extra": "*",
     "fs-path": "*",
     "inquirer": "latest",
-    "cross-env": "*",
     "pk-ts-common-lib": "git+https://github.com/pkirkaas/pk-ts-common-lib.git#working",
     "ts-node": "*",
     "tsconfig-paths": "*",
     "valid-filename": "*",
     "yargs": "latest"
+  },
+  "devDependencies": {
+    "esm-loader-typescript": "^1.0.6"
   }
 }

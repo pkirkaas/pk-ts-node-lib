@@ -225,7 +225,7 @@ export function runCommand(command, options = {}) {
     args = convertParamsToCliArgs(args);
     let localOpts = {
         debug: true,
-        split: false,
+        split: false, // Split the output text into 
         shellKey: 'cygwin', // cygwin, git, bash, wsl, powershell, pwsh, cmd
     };
     for (let key in localOpts) {

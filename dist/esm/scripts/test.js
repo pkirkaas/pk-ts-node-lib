@@ -1,117 +1,220 @@
-import { getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, runCommand, stdOut, winBashes, } from '../index.js';
+import { PkError, typeOf, isEmpty, isObject, classStack, getAllBuiltInProps, objInfo, arrayToLower } from '../index.js';
 import _ from 'lodash';
-import { mergeAndConcat, typeOf } from 'pk-ts-common-lib';
+import util from 'util';
+util.inspect.defaultOptions.maxArrayLength = null;
+util.inspect.defaultOptions.depth = null;
+util.inspect.defaultOptions.breakLength = 200;
+console.log('In test.ts...');
+function camelCase(str) {
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+        return index == 0 ? word.toLowerCase() : word.toUpperCase();
+    }).replace(/\s+/g, '');
+}
+function camelize(str) {
+    return str.replace(/\W+(.)/g, function (match, chr) {
+        return chr.toUpperCase();
+    });
+}
+let snakes = [" dog-cat ", ' "tiger-lion" ', " ' horse-cow '",];
+let camels = [" dogMouse ", 9, null, ' "Dinosaur King" ', " ' NeverKnown '",];
+let tll = arrayToLower(camels);
+console.log({ tll });
+let strs = ['tag', 'donkey', 'animal', 'plant'];
 /*
-console.log("Testing lib");
-
-const anobj = { a: "b", c: "d" };
-const anarr = [1, 2, 3];
-const astr = "abc";
-
-let tob = typeOf(anobj);
-let toa = typeOf(anarr);
-let tos = typeOf(astr);
-
-console.log({ tob, toa, tos });
-*/
-let scssMap = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (display:flex, flex-direction: column), block: block)), font: (sz: (prop: font-size, vals: (xxs: xx-small, xs: x-small, s: small, m: medium, l: large, xl: x-large, xxl: xx-large, xxxl: xxx-large)), ff: (prop: font-family, vals: (v: verdana, a: arial, c: courier, t: times)), fw: (prop: font-weight, vals: (b: bold)), fs: (prop: font-style, vals: (i: italic)), c: (prop: color, vals: (r: red, b: blue, g: green, y: yellow)), a: (prop: text-align, vals: (l: left, r: right, c: center))), bg: (prop: background, vals: (lr: #fbb, l0: #fbb, lg: #bfb, l1: #bfb, lb: #bbf, l2: #bbf, ly: #fbb, l3: #fbb, ls: #bfb, l4: #bfb, lv: #fbf, l5: #fbf, lo: #ffb, l6: #ffb, dr: #400, d0: #400, dg: #040, d1: #040, db: #004, d2: #004, dy: #440, d3: #440, ds: #444, d4: #444, dv: #404, d5: #404, do: #440, d6: #440)), border: (prop: border, vals: (lr: #fbb, l0: #fbb, lg: #bfb, l1: #bfb, lb: #bbf, l2: #bbf, ly: #fbb, l3: #fbb, ls: #bfb, l4: #bfb, lv: #fbf, l5: #fbf, lo: #ffb, l6: #ffb, dr: #400, d0: #400, dg: #040, d1: #040, db: #004, d2: #004, dy: #440, d3: #440, ds: #444, d4: #444, dv: #404, d5: #404, do: #440, d6: #440)))';
-let scssMapr = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (flex, (flex-direction: column)), block: block))';
-let testsFs = {
-    tstMerge: function () {
-        let target = { t1: "hello", t2: ['yesterday', 'today'], };
-        let src1 = { t3: "MergedVal", t2: ['ever', 'never'] };
-        let src2 = { t4: "src2", t2: ['why', 'wherefore'] };
-        let src3 = { t4: "src3", t2: ['CANIBAL', 'LION'] };
-        let customizer = function (objValue, srcValue) {
-            if (_.isArray(objValue)) {
-                return objValue.concat(srcValue);
-            }
-        };
-        let res = _.merge({}, target, src1);
-        let res2 = _.merge({}, target, src1, src2);
-        let res3 = _.mergeWith({}, target, src1, src2, customizer);
-        let deepMerge = function (...objs) {
-            return _.mergeWith(...objs, customizer);
-        };
-        let deepMerge2 = function (...objs) {
-            return _.mergeWith({}, ...objs, customizer);
-        };
-        let resDM = deepMerge({}, target, src1, src2, src3);
-        let resDM2 = deepMerge2(target, src1, src2, src3);
-        console.log({ res, res2, res3, resDM, resDM2, });
-        return res;
-    },
-    tstMergeConcat: function () {
-        let target = { t1: "helloWNewMerge", t2: ['yesterday', 'today'], };
-        let src1 = { t3: "MergedVal And Concat", t2: ['ever', 'never'] };
-        let src2 = { t4: "src2", t2: ['why', 'wherefore'] };
-        let src3 = { t4: "src3", t2: ['CANIBAL', 'LION'] };
-        let res = mergeAndConcat(target, src1, src2, src3);
-        console.log({ res });
-    },
-    tstShell: function (cmd = "ls -l", args = "-a", shellkey = 'git') {
-        let res = runCommand(cmd, { args, shellkey });
-        console.log({ res });
-        stdOut(res);
-        console.error({ cmd, args, shellkey });
-        return res;
-    },
-    newData: function (sdata = "DefData", type = 'json5', fname = 'my-fname') {
-        //let res = saveData("SomeData?",{fname:"WhoWhat?",type:"JSXX",dir:"yy"});
-        //let res = saveData(sdata, { fname, type });
-        let smObj = { dog: 7, cat: [5, 8, 0], atiger: null };
-        let res = saveData(smObj, { fname, type: 'json' });
-    },
-    tstBashes: function () {
-        let wbashes = winBashes();
-        console.log({ wbashes });
-        stdOut(wbashes);
-        return wbashes;
-    },
-    tst: function () {
-        let too = typeOf({});
-        console.log({ too });
-    },
-    tstSlash: function () {
-        console.log("Testing path functions...");
-        let somePaths = [
-            "a/path/with//double/slashes",
-            "/a/path/with/preceding/path",
-            "/a/path/with a/ space//path",
-            "./a/path/dot",
-            "a/path/nodot",
-            "a//path//fnameext.anext",
-            "a//path/fnoext",
-        ];
-        for (let apath of somePaths) {
-            let res = slashPath(apath);
-            console.log({ apath, res });
-        }
-        console.log("Done testing path functions...");
-    },
-    tstMap: function () {
-        let json = sassMapStringToJson(scssMap);
-        let obj = sassMapStringToObj(scssMap);
-        //let json = sassMapStringToJson(scssMapr);
-        dbgWrt(json, 'sassMap');
-        dbgWrt(obj, 'sassMapO');
-        console.log({ json, obj });
-    },
-    tstAsk: async function () {
-        //@ts-ignore
-        let answer = await ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
-        console.log({ answer });
-    },
-    tstSlashOrig: async function () {
-        //@ts-ignore
-        let answer = slashPath('.');
-        console.log({ answer });
-    },
-    tstFPaths: async function () {
-        //@ts-ignore
-        let answer = getFilePaths('.');
-        console.log({ answer });
-    },
+for (let str of strs) {
+    let strpd = stripStray(str);
+    let strpp = stripStray(strpd);
+    let camel = toCamelCase(strpp);
+    console.log({ str, strpd, strpp, camel });
 };
-runCli(testsFs);
+*/
+let tstObjs = {
+    camelize, camels, empt: {}, Date, Math
+};
+for (let key in tstObjs) {
+    let val = tstObjs[key];
+    let toVal = typeOf(val);
+    let toval = typeof val;
+    let objLike = _.isObjectLike(val);
+    let isemp = isEmpty(val);
+    let isobj = isObject(val);
+    console.log({ key, toVal, toval, objLike, isobj, isemp });
+}
+/*
+console.log({ snakes, camels });
+for (let snake of snakes) {
+    let str = stripStray(snake);
+    let cc = camelCase(str);
+    let cmz = camelize(str);
+    let myRes = toCamelCase(snake);
+    console.log({ snake, str, cc, cmz, myRes });
+}
+
+for (let camel of camels) {
+    let stripped = stripStray(camel);
+    //let cc = camelCase(str);
+    //let cmz = camelize(str);
+    let snaked = toSnakeCase(camel);
+    console.log({  camel, stripped, snaked });
+}
+*/
+let tstArr = ['dog', 'cat', 'horse', 'donky', 7, 12, { some: 'obj' }, 'today'];
+class Organ {
+    constructor(age) {
+        this.age = age;
+    }
+}
+;
+class Animal extends Organ {
+    constructor(age, nick) {
+        super(age);
+        this.nick = nick;
+    }
+}
+;
+class Mammal extends Animal {
+}
+class Dog extends Mammal {
+    constructor(age, nick, breed, owner) {
+        super(age, nick);
+        this.breed = breed;
+        this.owner = owner;
+    }
+}
+function tstFnNames(arg) {
+    console.log({ arg });
+}
+let aDog = new Dog(22, 'buck', 'mutt', 'daddy');
+function tstPropsY() {
+    let biProps = getAllBuiltInProps();
+    console.log({ biProps });
+}
+function tstProps() {
+    let anErr = new PkError('tstErr');
+    let bres = {
+        aDog,
+        aDogOI: objInfo(aDog),
+        DogOI: objInfo(Dog),
+        inspP: objInfo(anErr, 'dv'),
+        anErr: objInfo(anErr),
+        PkError: objInfo(PkError),
+        isEmpty: objInfo(isEmpty),
+        emptyObj: objInfo({}),
+        emptyArr: objInfo([]),
+        string: objInfo(' '),
+        //aDogPChain: getPrototypeChain(aDog),
+        //anErrPChain: getPrototypeChain(anErr),
+        aDogCS: classStack(aDog),
+        //DogPChain: getPrototypeChain(Dog),
+        DogCS: classStack(Dog),
+        /*
+        inspP: allProps(anErr, 'dv'),
+        anErr: getObjDets(anErr),
+        PkError: getObjDets(PkError),
+        isEmpty: getObjDets(isEmpty),
+        emptyObj: getObjDets({}),
+        emptyArr: getObjDets([]),
+        string: getObjDets(' '),
+        aDogPChain: getPrototypeChain(aDog),
+        //anErrPChain: getPrototypeChain(anErr),
+        aDogCS: classStack(aDog),
+        //DogPChain: getPrototypeChain(Dog),
+        DogCS: classStack(Dog),
+        //	aDogCChain: getConstructorChain(aDog),
+        */
+    };
+    /*
+    let res = {
+        anErr: { props: allProps(anErr), type: typeof anErr },
+        PkErrorClass: { props: allProps(PkError), type: typeof PkError },
+        //emptyObj: allProps({}),
+        simpleObj: allProps({ d: 'cat' }),
+        emptyArr: allProps([]),
+        //smallArr: allProps([1, 2, 3]),
+        isEmptyFnc: allProps(isEmpty),
+        //null:allProps(null),
+    }
+    */
+    console.log({ bres });
+}
+;
+//tstProps();
+/*
+let tstDtArgs = { null: null, str1: '2023-12-01' };
+let res: GenObj = {};
+for (let key in tstDtArgs) {
+     let orig = tstDtArgs[key];
+     let pkTDRes
+    res[key] = {
+        orig,
+        pkTDRes: pkToDate(orig),
+        dtFmtShort: dtFmt('short', orig),
+        dtFmtDT: dtFmt('dt', orig),
+        dtFmtDTs: dtFmt('dts', orig),
+        dtFmtTs: dtFmt('ts', orig),
+    }
+}
+let dtE = new Date();
+let dtN = new Date(null);
+console.log('todate res:', { res, dtE, dtN });
+let tobj = { a: 8 };
+let isDist = false;
+let j5 = JSON5.stringify(tobj);
+let to = typeOf(tobj);
+let toJ = typeOf(JSON);
+let toJ5 = typeOf(JSON5);
+let arr1 = ['a', 'b', 'c'];
+let arr2 = ['a', 'b'];
+let asub = isSubset(arr2, arr1);
+let tagObj = new TagObj('myData', 'theTag');
+*/
+/*
+function valIsNaN(arg: any) {
+    return arg !== arg;
+}
+
+let tests = { int:5, True:true, False: false, str5:"5", str:"dog", float:2.3, floatStr:"4.7", null:null, emptyStr:'', };
+//let (res = tests.map((el) => filterInt(el));
+for (let key in tests) {
+    let orig = tests[key];
+    let fint = filterInt(orig);
+    let pInt = parseInt(orig);
+    let nanish = Number.isNaN(pInt);
+    let vIsNaN = valIsNaN(pInt);
+    tests[key] = { orig, fint, pInt, nanish, vIsNaN };
+}
+console.log({ tests });
+
+
+
+
+
+console.log("Testing tests", { tobj, to, j5, jsondecycle, toJ5, toJ, asub, tagObj });
+
+let anerr = new PkError('Some Err Msg', { dog: 3, cat: 'What?' }, 'something', 2, 8);
+
+throw anerr;
+
+let a1 = [1, 3, 5, 7];
+let a2 = [1, 'toby', 9, 7];
+let a3 = [5, 'toby', 'tomorrow', 7];
+let u = uniqueVals(a1, a2, a3);
+console.log({ u });
+
+let tobj1 = {
+    a: 1,
+    b: { dog: 5, cat: 'acat', no:9,},
+    c: [5, 7, 'tiger',],
+};
+
+let tobj2 = {
+    a: 'oprim',
+    b: { dog: 7, cat: 22, },
+    c: [ 9, 22, 'lion', 5],
+}
+
+let dm = deepMeld(tobj1, tobj2);
+
+console.log({ dm });
+*/ 
 //# sourceMappingURL=test.js.map

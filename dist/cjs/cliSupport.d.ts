@@ -1,3 +1,4 @@
+export declare function envInit(envPath?: string): void;
 export declare const inqTypes: string[];
 /**
  * Makes a single inquirer question JS Object, for use in "ask", below
