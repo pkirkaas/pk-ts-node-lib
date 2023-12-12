@@ -111,7 +111,7 @@ export async function runCli(fncs, env) {
     let params;
     let cmd;
     if (tofs === "object") {
-        cmd = args[0];
+        cmd = args[0] || 'default';
         params = args.slice(1);
     }
     else if (tofs === "function") {
