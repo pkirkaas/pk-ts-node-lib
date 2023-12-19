@@ -164,6 +164,8 @@ export function stamp(entry?: any, frameAfter?: any) {
   let now = new Date();
 
   let pe = process.env.PROCESS_ENV;
+    // TODO!! Just broke updating to latest version of date-fns - 19 Dec 2023
+  //@ts-ignore
   let ds = format(now, "y-LL-dd H:m:s");
   return `${ds}-${pe}${src}: ${entId} `;
 }
