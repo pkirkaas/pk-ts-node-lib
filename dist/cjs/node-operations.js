@@ -22,6 +22,7 @@ util.inspect.defaultOptions.breakLength = 200;
 import os from "os";
 import { spawn, spawnSync } from "child_process";
 import * as ESP from "error-stack-parser";
+import { format } from "date-fns";
 import { JSON5Parse, isEmpty, isSimpleType, isSimpleObject, JSON5Stringify, isPrimitive, inArr1NinArr2, intersect, arrayToLower } from 'pk-ts-common-lib';
 export const excludeFncs = [
     "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
