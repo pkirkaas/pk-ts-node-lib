@@ -1,6 +1,5 @@
 {
   "name": "pk-ts-node-lib",
-  "version": "l.0.1",
   "author": "Paul Kirkaas",
   "license": "UNLICENSED",
   "description": "TS/JS Utilities for node apps, including common JS functions",
