@@ -11,6 +11,12 @@ import path from 'path';
 
 import util from 'util';
 
+/** Test moving thest functions to common  */
+
+import {
+  getFrameAfterFunction, stamp, stackParse, getStack, 
+} from 'pk-ts-common-lib';
+
 export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null,) {
   util.inspect.defaultOptions.maxArrayLength = maxArrayLength;
   util.inspect.defaultOptions.depth = depth;
@@ -129,6 +135,7 @@ export function isFile(apath) {
 }
 
 
+/** Move to common? 
 export function stackParse() {
   let stack = ESP.parse(new Error());
   let ret = [];
@@ -142,7 +149,8 @@ export function stackParse() {
   }
   return ret;
 }
-/** Basic info for console logging */
+
+// Move to common? Basic info for console logging 
 export function stamp(entry?: any, frameAfter?: any) {
   let entId = "";
   //console.log({ entry });
@@ -153,6 +161,7 @@ export function stamp(entry?: any, frameAfter?: any) {
   }
 
 
+// Move to common? Basic info for console logging
   let frame = getFrameAfterFunction(frameAfter, true);
   //let frame = getFrameAfterFunction2(frameAfter, true);
   //let frame = getFrameAfterFunction(frameAfter, true);
@@ -169,6 +178,73 @@ export function stamp(entry?: any, frameAfter?: any) {
   let ds = format(now, "y-LL-dd H:m:s");
   return `${ds}-${pe}${src}: ${entId} `;
 }
+
+
+export function getFrameAfterFunction(fname?: any, forceFunction?: any) {
+  if (fname && typeof fname === "string") {
+    fname = [fname];
+  }
+  if (!Array.isArray(fname)) {
+    fname = [];
+  }
+  let stack: any;
+  try {
+    stack = ESP.parse(new Error());
+  } catch (err) {
+    //console.error("Error in ESP.parse/getFrameAfterFunction:", jsonClone(err));
+    console.error("Error in ESP.parse/getFrameAfterFunction:");
+    return;
+  }
+
+  let excludeFncs = [
+    "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
+    "infoLog", "debugLog", "stamp", "fulfilled", "rejected", "processTicksAndRejections", "LogData.log",
+    "LogData.out", "LogData.console", "LogData.errLog", "LogData.throw",
+  ];
+  //let fnSkips = ["__awaiter", "Object.<anonymous>", "undefined", undefined];
+  let fnSkips = ["__awaiter", "undefined", undefined];
+  let allSkips = fnSkips.concat(excludeFncs);
+
+
+  let skips = excludeFncs.concat(fname);
+  //writeFile(`../tmp/stack-${uv}.json`, stack);
+  //  console.log("Rest of the Stack:", { stack });
+  let lastFrame: any = stack.shift();
+  let frame: any;
+  let nextFrame: any;
+
+  while ((frame = stack.shift())) {
+    lastFrame = frame;
+    //if (frame.functionName && !skips.includes(frame.functionName)) {
+    if (!skips.includes(frame.functionName)) {
+      //if (frame.functionName && !allSkips.includes(frame.functionName)) {
+      break;
+    }
+  }
+  //  console.log("After break - should have lastFrame!", { lastFrame, frame, stack });
+  let functionName: any = lastFrame.functionName;
+
+  let exFns = skips.concat(fnSkips);
+  //if (!functionName || (exFns.includes(functionName) && forceFunction)) {
+  if (!functionName || (exFns.includes(functionName) && forceFunction)) {
+    //console.log(`Skipping ${functionName}`, { lastFrame });
+    // Continue through frames for next function name...
+    //'Object.<anonymous>'
+    while ((nextFrame = stack.shift())) {
+      let tsFn = nextFrame.functionName;
+      if (tsFn && !exFns.includes(tsFn)) {
+        functionName = nextFrame.functionName;
+        //      console.log(`Returning? tsFn: ${tsFn}, fname: ${functionName} `);
+        lastFrame.functionName = functionName;
+        return lastFrame;
+        //break;
+      }
+    }
+  }
+  return lastFrame;
+}
+
+*/
 
 export function getProcess() {
   console.log(process.env);
@@ -478,101 +554,6 @@ export function saveData(arg: any, { fname = 'dbg-out', fpath = null, type = 'js
   return fs.writeFileSync(fullPath, arg, opts);
 
 
-}
-
-
-export function getFrameAfterFunction(fname?: any, forceFunction?: any) {
-  if (fname && typeof fname === "string") {
-    fname = [fname];
-  }
-  if (!Array.isArray(fname)) {
-    fname = [];
-  }
-  /*
-  if (!Array.isArray(fname)) {
-    fname = [];
-  }
-  */
-  let stack: any;
-  try {
-    stack = ESP.parse(new Error());
-  } catch (err) {
-    //console.error("Error in ESP.parse/getFrameAfterFunction:", jsonClone(err));
-    console.error("Error in ESP.parse/getFrameAfterFunction:");
-    return;
-  }
-  //console.log("Enter getFrameAfter initial stack:", { stack });
-  //Test skipping all until find fname
-  /*
-   if (fname) {
-     console.log({ fname });
-     let tstFrame: any;
-     while ( tstFrame = stack.shift()) {
-       console.log({ tstFrame });
-       if (fname.includes(tstFrame.functionName)) {
-         break;
-       }
-     }
-   }
-   */
-
-
-  let excludeFncs = [
-    "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
-    "infoLog", "debugLog", "stamp", "fulfilled", "rejected", "processTicksAndRejections", "LogData.log",
-    "LogData.out", "LogData.console", "LogData.errLog", "LogData.throw",
-  ];
-  //let fnSkips = ["__awaiter", "Object.<anonymous>", "undefined", undefined];
-  let fnSkips = ["__awaiter", "undefined", undefined];
-  let allSkips = fnSkips.concat(excludeFncs);
-
-
-  let skips = excludeFncs.concat(fname);
-  //writeFile(`../tmp/stack-${uv}.json`, stack);
-  //  console.log("Rest of the Stack:", { stack });
-  let lastFrame: any = stack.shift();
-  let frame: any;
-  let nextFrame: any;
-
-  while ((frame = stack.shift())) {
-    lastFrame = frame;
-    //if (frame.functionName && !skips.includes(frame.functionName)) {
-    if (!skips.includes(frame.functionName)) {
-      //if (frame.functionName && !allSkips.includes(frame.functionName)) {
-      break;
-    }
-  }
-  /*
-  while ((frame = stack.shift())) {
-    if (skips.includes(frame.functionName)) {
-      lastFrame = stack.shift();
-    } else {
-      break;
-    }
-  }
-  */
-
-  //  console.log("After break - should have lastFrame!", { lastFrame, frame, stack });
-  let functionName: any = lastFrame.functionName;
-
-  let exFns = skips.concat(fnSkips);
-  //if (!functionName || (exFns.includes(functionName) && forceFunction)) {
-  if (!functionName || (exFns.includes(functionName) && forceFunction)) {
-    //console.log(`Skipping ${functionName}`, { lastFrame });
-    // Continue through frames for next function name...
-    //'Object.<anonymous>'
-    while ((nextFrame = stack.shift())) {
-      let tsFn = nextFrame.functionName;
-      if (tsFn && !exFns.includes(tsFn)) {
-        functionName = nextFrame.functionName;
-        //      console.log(`Returning? tsFn: ${tsFn}, fname: ${functionName} `);
-        lastFrame.functionName = functionName;
-        return lastFrame;
-        //break;
-      }
-    }
-  }
-  return lastFrame;
 }
 
 

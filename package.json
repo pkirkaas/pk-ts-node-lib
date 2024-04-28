@@ -21,6 +21,7 @@
   },
   "scripts": {
     "build": "tsc -p ./tsconfig.json && tsc -p ./tsconfig.cjs.json",
+    "devlink": " npm link pk-ts-common-lib",
     "clean": "rm -rf ./dist ./node_modules package-lock.json && npm install"
   },
   "dependencies": {
