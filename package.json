@@ -22,10 +22,15 @@
   "scripts": {
     "build": "tsc -p ./tsconfig.json && tsc -p ./tsconfig.cjs.json",
     "devlink": " npm link pk-ts-common-lib",
+    "monitor": "nodemon --exec \"npm run build\" --ext js,jsx,ts,tsx,sass,css --delay 5 --watch ./src",
     "clean": "rm -rf ./dist ./node_modules package-lock.json && npm install"
   },
   "dependencies": {
     "@types/node": "^20.8.4",
+    "axios": "*",
+    "date-fns": "latest",
+    "error-stack-parser": "*",
+    "url-status-code": "*",
     "cross-env": "*",
     "dotenv": "*",
     "fs-extra": "*",
