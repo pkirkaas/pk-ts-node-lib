@@ -464,6 +464,7 @@ export function dbgPath(fname) {
 
 /** Change argument order to make path optional*/
 export function dbgWrt(arg: any, fpath = 'debug', append: boolean = false) {
+   console.log(`in dbgWrt about to write to: ${fpath}`);
   return dbgWrite(fpath, arg, append);
 }
 
@@ -522,7 +523,9 @@ export function writeFile(fpath, arg: any, append: boolean = false) {
   if (!isPrimitive(arg)) {
     arg = JSON5Stringify(arg);
   }
-  return fs.writeFileSync(fpath, arg, opts);
+   console.log(`in writeFile about to write to: ${fpath}`);
+   let fsWriteRet = fs.writeFileSync(fpath, arg, opts);
+   return fpath;
 }
 
 /**
