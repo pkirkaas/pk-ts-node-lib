@@ -1,19 +1,26 @@
 /** CLI Support for async scripts */
-//const path = require("path");
 import path from "path";
-//const cwd = process.cwd();
 import _ from "lodash";
 import * as dotenv from 'dotenv';
 import { cwd } from './index.js';
-//import  dotenv  from 'dotenv';
+import { getProps, } from 'pk-ts-common-lib';
 //@ts-ignore
 dotenv.config(path.join(cwd, ".env"));
-//const inquirer = require("inquirer");
 export function envInit(envPath = ".env") {
     //@ts-ignore
     dotenv.config(path.join(cwd, envPath));
 }
 envInit();
+/**
+ * Interactive CLI function to dynamically explore an object & properties
+ * JS Objects can have cyclical references/properties - so can't just dump them.
+ *
+ * @param obj:any - any value to explore.
+ */
+export async function objectExplorer(obj, ppath) {
+    let props = await getProps(obj, true);
+    console.log(`objProps:`, { props });
+}
 // Simplified "inquirer" interface using "ask" with defaults (below)
 // For full details, see https://www.npmjs.com/package/inquirer
 // Should only need the async function "ask"

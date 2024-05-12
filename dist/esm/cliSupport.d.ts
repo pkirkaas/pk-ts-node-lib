@@ -1,4 +1,11 @@
 export declare function envInit(envPath?: string): void;
+/**
+ * Interactive CLI function to dynamically explore an object & properties
+ * JS Objects can have cyclical references/properties - so can't just dump them.
+ *
+ * @param obj:any - any value to explore.
+ */
+export declare function objectExplorer(obj: any, ppath: string[]): Promise<void>;
 export declare const inqTypes: string[];
 /**
  * Makes a single inquirer question JS Object, for use in "ask", below

@@ -1,24 +1,16 @@
 /** CLI Support for async scripts */
-//const path = require("path");
 import  path  from "path";
-//const cwd = process.cwd();
 import _  from "lodash";
 import * as dotenv from 'dotenv'
 import { cwd } from './index.js';
-//import  dotenv  from 'dotenv';
+import {getProps, getObjDets, subObj, typeOf, allProps, allPropsP, objInfo, } from 'pk-ts-common-lib';
 //@ts-ignore
 dotenv.config(path.join(cwd, ".env"));
-//require("dotenv").config(path.join(cwd, ".env"));
-//import { argv } from '../utils/database/init';
-//const https = require("https");
 import  https   from "https";
-//const axios = require("axios");
 import  axios  from "axios";
-//const os = require("os");
 import  os from "os";
 import fs from "fs-extra";
 import util from "util";
-//const inquirer = require("inquirer");
 
 export function envInit(envPath = ".env") {
 //@ts-ignore
@@ -27,6 +19,17 @@ export function envInit(envPath = ".env") {
 
 envInit();
 
+/**
+ * Interactive CLI function to dynamically explore an object & properties
+ * JS Objects can have cyclical references/properties - so can't just dump them.
+ * 
+ * @param obj:any - any value to explore.
+ */
+export async function objectExplorer(obj:any, ppath:string[], ) {
+	let props = await getProps(obj,true);
+	console.log(`objProps:`,{props});
+
+}
 
 
 // Simplified "inquirer" interface using "ask" with defaults (below)
@@ -101,6 +104,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { trueVal } from  'pk-ts-common-lib';
 export const argv = yargs(hideBin(process.argv)).argv;
+
 
 /** Support for CLI commands & tests with ts-node
  * From a test script (test.ts) import runTest - define some test functions:
