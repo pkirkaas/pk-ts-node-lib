@@ -39,14 +39,14 @@
     "fs-path": "*",
     "inquirer": "latest",
     "pk-ts-common-lib": "github:pkirkaas/pk-ts-common-lib#working",
-    "ts-node": "*",
-    "tsconfig-paths": "*",
     "valid-filename": "*",
     "yargs": "latest"
   },
   "devDependencies": {
+    "ts-node": "*",
     "esm-loader-typescript": "^1.0.6"
   },
+    "tsconfig-paths": "*",
   "alt-lib-gits" : [ {
     "pk-ts-common-lib": "git+https://github.com/pkirkaas/pk-ts-common-lib.git#working",
   "no":"nothing"},{
