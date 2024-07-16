@@ -24,6 +24,7 @@ export async function objectExplorer(obj, ppath) {
 // Simplified "inquirer" interface using "ask" with defaults (below)
 // For full details, see https://www.npmjs.com/package/inquirer
 // Should only need the async function "ask"
+// TODO: Update to https://www.npmjs.com/package/@inquirer/prompts
 import inquirer from "inquirer";
 export const inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expand', 'checkbox', 'password', 'editor'];
 /**
@@ -76,6 +77,7 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [] 
         }
     }
     let qArr = [makeQuestion(msg, { name, type, def, choices })];
+    //@ts-ignore
     let answers = await inquirer.prompt(qArr);
     let answer = answers[name];
     return answer;
