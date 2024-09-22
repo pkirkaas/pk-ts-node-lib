@@ -507,23 +507,12 @@ export function writeFile(fpath, arg: any, append: boolean = false) {
     flag = 'a';
   }
   let opts = { flag };
-  /*
-  let fpdname = path.join(__dirname, fpath);
-  let fpcwd = path.join(process.cwd(), fpath);
-  let dirs = {
-    dirname: __dirname,
-    cwd: process.cwd(),
-    fpdname: path.join(__dirname, fpath),
-    fpcwd: path.join(process.cwd(), fpath),
-  };
-  */
   let dir = path.posix.dirname(fpath);
   let dires = fs.mkdirSync(dir, { recursive: true });
-  //console.log(`writeFile to ${fpath}`);
   if (!isPrimitive(arg)) {
     arg = JSON5Stringify(arg);
   }
-   console.log(`in writeFile about to write to: ${fpath}`);
+   console.log(`in writeFile about to write to: ${fpath} with opts:`, opts);
    let fsWriteRet = fs.writeFileSync(fpath, arg, opts);
    return fpath;
 }

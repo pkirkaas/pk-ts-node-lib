@@ -105,6 +105,12 @@ const { hideBin } = require("yargs/helpers");
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { trueVal } from  'pk-ts-common-lib';
+
+/**
+ * Parse CLI arguments, return as object
+ * argv._ - array of CLI args
+ * argv.[optkey] - value of optkey
+ */
 export const argv = yargs(hideBin(process.argv)).argv;
 
 

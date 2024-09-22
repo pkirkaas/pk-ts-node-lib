@@ -45,6 +45,11 @@ export declare function ask(msg: string, { name, type, def, choices }?: {
     def?: any;
     choices?: any[];
 }): Promise<any>;
+/**
+ * Parse CLI arguments, return as object
+ * argv._ - array of CLI args
+ * argv.[optkey] - value of optkey
+ */
 export declare const argv: any;
 /** Support for CLI commands & tests with ts-node
  * From a test script (test.ts) import runTest - define some test functions:
