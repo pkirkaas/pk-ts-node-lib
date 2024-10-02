@@ -12,17 +12,19 @@ export declare const inqTypes: string[];
  * NOTE: type 'list' returns a SINGLE value from the list, 'checkbox' returns array of selected values
  * NOTE: 'default' for a 'list' can be either the value or the array index.
  */
-export declare function makeQuestion(message: string, { name, type, def, choices }: {
+export declare function makeQuestion(message: string, { name, type, def, choices, pageSize }: {
     name?: string;
     type?: string;
     def?: any;
     choices?: any[];
+    pageSize?: number;
 }): {
     message: string;
     type: string;
     default: any;
     choices: any[];
     name: string;
+    pageSize: number;
 };
 /**
  * Uses inquirer for one question, and answer
@@ -39,11 +41,12 @@ export declare function makeQuestion(message: string, { name, type, def, choices
  *
  * @return "answer" value -
  */
-export declare function ask(msg: string, { name, type, def, choices }?: {
+export declare function ask(msg: string, { name, type, def, choices, pageSize }?: {
     name?: string;
     type?: string;
     def?: any;
     choices?: any[];
+    pageSize?: number;
 }): Promise<any>;
 /**
  * Parse CLI arguments, return as object

@@ -32,7 +32,7 @@ export const inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expa
  * NOTE: type 'list' returns a SINGLE value from the list, 'checkbox' returns array of selected values
  * NOTE: 'default' for a 'list' can be either the value or the array index.
  */
-export function makeQuestion(message, { name = '', type = '', def = null, choices = [] }) {
+export function makeQuestion(message, { name = '', type = '', def = null, choices = [], pageSize = 40 }) {
     if (!inqTypes.includes(type)) {
         throw new Error(`Invalid inquirer question type [${type}]`);
     }
@@ -42,12 +42,13 @@ export function makeQuestion(message, { name = '', type = '', def = null, choice
     if (!type) {
         if (choices.length) {
             type = 'list';
+            pageSize = Math.min(choices.length, pageSize);
         }
         else {
             type = 'input';
         }
     }
-    return { message, type, default: def, choices, name, };
+    return { message, type, default: def, choices, name, pageSize };
 }
 /**
  * Uses inquirer for one question, and answer
@@ -64,7 +65,7 @@ export function makeQuestion(message, { name = '', type = '', def = null, choice
  *
  * @return "answer" value -
  */
-export async function ask(msg, { name = '', type = '', def = null, choices = [] } = {}) {
+export async function ask(msg, { name = '', type = '', def = null, choices = [], pageSize = 40 } = {}) {
     if (!name) {
         name = _.uniqueId('inc_name_');
     }
@@ -76,7 +77,7 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [] 
             type = 'input';
         }
     }
-    let qArr = [makeQuestion(msg, { name, type, def, choices })];
+    let qArr = [makeQuestion(msg, { name, type, def, choices, pageSize })];
     //@ts-ignore
     let answers = await inquirer.prompt(qArr);
     let answer = answers[name];
