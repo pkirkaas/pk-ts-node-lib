@@ -3,17 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/cjs",
-//    "module": "commonjs"
   },
   "include": [
     "./src/**/*",
     ],
-    /*
-  "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ],
-    "esm": false,
-  },
-  */
 }

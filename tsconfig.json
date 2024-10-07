@@ -6,31 +6,9 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/esm",
-
-    /*
-    // From common lib, while debugging:
-    "esModuleInterop": true,
-    "moduleDetection": "force",
-    "target":"ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    */
-
-
-
-
-
   },
     "include": [
     "./src/**/*",
     "./src/*",
   ],
-  /*
-  "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ],
-    "esm": true,
-  },
-  */
 }
