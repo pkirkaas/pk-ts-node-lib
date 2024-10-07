@@ -105,6 +105,14 @@ export function isDirectory(apath) {
 export function isFile(apath) {
     return fs.existsSync(apath) && fs.lstatSync(apath).isFile();
 }
+/**
+ * Ensure a directory exists for a path
+ */
+export function mkDirForPath(fpath) {
+    let dir = path.posix.dirname(fpath);
+    let dires = fs.mkdirSync(dir, { recursive: true });
+    return dir;
+}
 export function getProcess() {
     console.log(process.env);
     return process.env;

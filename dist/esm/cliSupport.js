@@ -3,7 +3,7 @@ import path from "path";
 import _ from "lodash";
 import * as dotenv from 'dotenv';
 import { cwd } from './index.js';
-import { getProps, } from 'pk-ts-common-lib';
+import { PkError, getProps, } from 'pk-ts-common-lib';
 //@ts-ignore
 dotenv.config(path.join(cwd, ".env"));
 export function envInit(envPath = ".env") {
@@ -82,6 +82,15 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [],
     let answers = await inquirer.prompt(qArr);
     let answer = answers[name];
     return answer;
+}
+export async function askConfirm(cMsg = 'Do It?') {
+    console.log(`Run Task: [${cMsg}]`);
+    let cont = await ask("Continue? (Yy)");
+    if (cont.toLowerCase() !== 'y') {
+        console.log("Aborting");
+        throw new PkError(`User aborted`);
+    }
+    return true;
 }
 /*
 const yargs = require("yargs/yargs");

@@ -1,19 +1,23 @@
 /** CLI Support for async scripts */
-import  path  from "path";
-import _  from "lodash";
-import * as dotenv from 'dotenv'
+import path from "path";
+import _ from "lodash";
+import * as dotenv from 'dotenv';
 import { cwd } from './index.js';
-import {getProps, getObjDets, subObj, typeOf, allProps, allPropsP, objInfo, } from 'pk-ts-common-lib';
+import {
+	PkError, getProps, getObjDets, subObj,
+	typeOf, allProps, allPropsP, objInfo,
+}
+	from 'pk-ts-common-lib';
 //@ts-ignore
 dotenv.config(path.join(cwd, ".env"));
-import  https   from "https";
-import  axios  from "axios";
-import  os from "os";
+import https from "https";
+import axios from "axios";
+import os from "os";
 import fs from "fs-extra";
 import util from "util";
 
 export function envInit(envPath = ".env") {
-//@ts-ignore
+	//@ts-ignore
 	dotenv.config(path.join(cwd, envPath));
 }
 
@@ -25,9 +29,9 @@ envInit();
  * 
  * @param obj:any - any value to explore.
  */
-export async function objectExplorer(obj:any, ppath:string[], ) {
-	let props = await getProps(obj,true);
-	console.log(`objProps:`,{props});
+export async function objectExplorer(obj: any, ppath: string[],) {
+	let props = await getProps(obj, true);
+	console.log(`objProps:`, { props });
 
 }
 
@@ -38,7 +42,7 @@ export async function objectExplorer(obj:any, ppath:string[], ) {
 // TODO: Update to https://www.npmjs.com/package/@inquirer/prompts
 
 
-import  inquirer    from "inquirer";
+import inquirer from "inquirer";
 export const inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expand', 'checkbox', 'password', 'editor'];
 
 /**
@@ -98,6 +102,18 @@ export async function ask(msg: string, { name = '', type = '', def = null, choic
 	return answer;
 }
 
+
+export async function askConfirm(cMsg = 'Do It?') {
+	console.log(`Run Task: [${cMsg}]`);
+	let cont = await ask("Continue? (Yy)");
+	if (cont.toLowerCase() !== 'y') {
+		console.log("Aborting");
+		throw new PkError(`User aborted`);
+	}
+	return true;
+}
+
+
 /*
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
@@ -105,7 +121,7 @@ const { hideBin } = require("yargs/helpers");
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { trueVal } from  'pk-ts-common-lib';
+import { trueVal } from 'pk-ts-common-lib';
 
 /**
  * Parse CLI arguments, return as object

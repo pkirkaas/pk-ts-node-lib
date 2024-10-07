@@ -48,6 +48,7 @@ export declare function ask(msg: string, { name, type, def, choices, pageSize }?
     choices?: any[];
     pageSize?: number;
 }): Promise<any>;
+export declare function askConfirm(cMsg?: string): Promise<boolean>;
 /**
  * Parse CLI arguments, return as object
  * argv._ - array of CLI args
