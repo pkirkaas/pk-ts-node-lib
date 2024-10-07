@@ -43,7 +43,7 @@ export declare function isFile(apath: any): any;
 /**
  * Ensure a directory exists for a path
  */
-export declare function mkDirForPath(fpath: any): string;
+export declare function mkDirForPath(fpath: string): string;
 export declare function getProcess(): NodeJS.ProcessEnv;
 /**
  * Starts a separate, external NODE.js script in a child process,

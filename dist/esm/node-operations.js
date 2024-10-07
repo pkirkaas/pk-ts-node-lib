@@ -96,7 +96,7 @@ export function isLinux() {
 //Moded to combine path.join & slashPath - should be compatible
 // What about spaces???
 export function slashPath(...parts) {
-    let apath = path.join(...parts);
+    let apath = path.posix.join(...parts);
     return apath.split(path.sep).join(path.posix.sep);
 }
 export function isDirectory(apath) {
@@ -109,8 +109,11 @@ export function isFile(apath) {
  * Ensure a directory exists for a path
  */
 export function mkDirForPath(fpath) {
+    fpath = slashPath(fpath);
     let dir = path.posix.dirname(fpath);
-    let dires = fs.mkdirSync(dir, { recursive: true });
+    if (!isDirectory(dir)) {
+        let dires = fs.mkdirSync(dir, { recursive: true });
+    }
     return dir;
 }
 export function getProcess() {

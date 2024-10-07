@@ -14,7 +14,7 @@ import util from 'util';
 /** Test moving thest functions to common  */
 
 import {
-  getFrameAfterFunction, stamp, stackParse, getStack, 
+  getFrameAfterFunction, stamp, stackParse, getStack,
 } from 'pk-ts-common-lib';
 
 export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null,) {
@@ -49,7 +49,7 @@ export function objInspect(arg, opts?: GenericObject) {
     depth: null,
     showProxy: true,
     getters: true,
-  }
+  };
   if (opts && typeof opts === 'object') {
     Object.assign(defOpts, opts);
   }
@@ -114,7 +114,7 @@ export function isLinux() {
 //Moded to combine path.join & slashPath - should be compatible
 // What about spaces???
 export function slashPath(...parts) {
-  let apath = path.join(...parts);
+  let apath = path.posix.join(...parts);
   return apath.split(path.sep).join(path.posix.sep);
 }
 
@@ -129,16 +129,19 @@ export function isFile(apath) {
 /**
  * Ensure a directory exists for a path
  */
-export function mkDirForPath(fpath) {
+export function mkDirForPath(fpath:string) {
+  fpath = slashPath(fpath);
   let dir = path.posix.dirname(fpath);
-  let dires = fs.mkdirSync(dir, { recursive: true });
+  if (!isDirectory(dir)) {
+    let dires = fs.mkdirSync(dir, { recursive: true });
+  }
   return dir;
 }
 
 
 export function getProcess() {
   console.log(process.env);
-  return process.env
+  return process.env;
 }
 
 
@@ -189,7 +192,7 @@ export function winBashes() {
   }
   let c1 = spawnSync('where', ['bash'], { shell: true, encoding: 'utf8' });
   if (c1.error) {
-    console.error(`Error running command: [cmd, where, bash]`)
+    console.error(`Error running command: [cmd, where, bash]`);
     console.error(c1.error);
     return false;
   }
@@ -211,7 +214,7 @@ export function winBashes() {
  * 
  */
 //export function runCommand(command: string, args: any | any[] = [], options: GenObj = {}): string | boolean {
-export function runCommand(command: string,  options: GenObj = {}): string | boolean {
+export function runCommand(command: string, options: GenObj = {}): string | boolean {
   let args = options.args;
   args = convertParamsToCliArgs(args);
   let localOpts = { // Default options for this function
@@ -239,7 +242,7 @@ export function runCommand(command: string,  options: GenObj = {}): string | boo
     encoding: 'utf8'
   };
 
-  let spawnOpts = {...defSpawnOpts,  ...options};
+  let spawnOpts = { ...defSpawnOpts, ...options };
 
   let shellPath = 'bash';
   if (isWindows()) {
@@ -271,10 +274,10 @@ export function runCommand(command: string,  options: GenObj = {}): string | boo
     }
   }
 
-  console.error(`In runCommand debug: `,{command, args, spawnOpts, shellPath});
-    // If we didn't find a particular bash path, just use "bash" as path
+  console.error(`In runCommand debug: `, { command, args, spawnOpts, shellPath });
+  // If we didn't find a particular bash path, just use "bash" as path
 
-    //@ts-ignore
+  //@ts-ignore
   const child = spawnSync(command, args, spawnOpts);
   if (child.error) {
     console.error(`Error running command: ${command}`);
@@ -350,7 +353,7 @@ export function dbgPath(fname) {
 
 /** Change argument order to make path optional*/
 export function dbgWrt(arg: any, fpath = 'debug', append: boolean = false) {
-   console.log(`in dbgWrt about to write to: ${fpath}`);
+  console.log(`in dbgWrt about to write to: ${fpath}`);
   return dbgWrite(fpath, arg, append);
 }
 
@@ -398,9 +401,9 @@ export function writeFile(fpath, arg: any, append: boolean = false) {
   if (!isPrimitive(arg)) {
     arg = JSON5Stringify(arg);
   }
-   console.log(`in writeFile about to write to: ${fpath} with opts:`, opts);
-   let fsWriteRet = fs.writeFileSync(fpath, arg, opts);
-   return fpath;
+  console.log(`in writeFile about to write to: ${fpath} with opts:`, opts);
+  let fsWriteRet = fs.writeFileSync(fpath, arg, opts);
+  return fpath;
 }
 
 /**
@@ -457,7 +460,7 @@ export function logMsg(msg: any, lpath?: string) {
     time: new Date(),
     lstack: stackParse(),
     stamp: stamp(),
-  }
+  };
   //What to do w. message?
   if (msg instanceof Error) {
     data.msg = msg.message;
