@@ -24,14 +24,6 @@ util.inspect.defaultOptions.breakLength = 200;
 import os from "os";
 import { spawn, spawnSync } from "child_process";
 import { JSON5Parse, isEmpty, isSimpleType, isSimpleObject, JSON5Stringify, isPrimitive, inArr1NinArr2, intersect, arrayToLower } from 'pk-ts-common-lib';
-export const excludeFncs = [
-    "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
-    "infoLog", "debugLog", "stamp", "fulfilled", "rejected", "processTicksAndRejections", "LogData.log",
-    "LogData.out", "LogData.console", "LogData.errLog", "LogData.throw", 'catchErr', 'logMsg',
-];
-//let fnSkips = ["__awaiter", "Object.<anonymous>", "undefined", undefined];
-export const fnSkips = ["__awaiter", "undefined", undefined];
-export const allSkips = fnSkips.concat(excludeFncs);
 export const cwd = slashPath(process.cwd());
 /** Uses util.inspect to stringify an arg
  * @param object? opts - to override the default opts
@@ -113,116 +105,6 @@ export function isDirectory(apath) {
 export function isFile(apath) {
     return fs.existsSync(apath) && fs.lstatSync(apath).isFile();
 }
-/** Move to common?
-export function stackParse() {
-  let stack = ESP.parse(new Error());
-  let ret = [];
-  for (let info of stack) {
-    let res = {
-      fileName: path.basename(info.fileName),
-      lineNumber: info.lineNumber,
-      functionName: info.functionName,
-    };
-    ret.push(res);
-  }
-  return ret;
-}
-
-// Move to common? Basic info for console logging
-export function stamp(entry?: any, frameAfter?: any) {
-  let entId = "";
-  //console.log({ entry });
-  if (!isEmpty(entry) && typeof entry === "object") {
-    if (entry.id) {
-      entId = entry.id;
-    }
-  }
-
-
-// Move to common? Basic info for console logging
-  let frame = getFrameAfterFunction(frameAfter, true);
-  //let frame = getFrameAfterFunction2(frameAfter, true);
-  //let frame = getFrameAfterFunction(frameAfter, true);
-  let src = "";
-  if (frame) {
-    src = `:${path.basename(frame.fileName)}:${frame.functionName}:${frame.lineNumber}:`;
-    //console.log({ frame });
-  }
-  let now = new Date();
-
-  let pe = process.env.PROCESS_ENV;
-    // TODO!! Just broke updating to latest version of date-fns - 19 Dec 2023
-  //@ts-ignore
-  let ds = format(now, "y-LL-dd H:m:s");
-  return `${ds}-${pe}${src}: ${entId} `;
-}
-
-
-export function getFrameAfterFunction(fname?: any, forceFunction?: any) {
-  if (fname && typeof fname === "string") {
-    fname = [fname];
-  }
-  if (!Array.isArray(fname)) {
-    fname = [];
-  }
-  let stack: any;
-  try {
-    stack = ESP.parse(new Error());
-  } catch (err) {
-    //console.error("Error in ESP.parse/getFrameAfterFunction:", jsonClone(err));
-    console.error("Error in ESP.parse/getFrameAfterFunction:");
-    return;
-  }
-
-  let excludeFncs = [
-    "errLog", "baseLog", "getFrameAfterFunction", "getFrameAfterFunction2", "consoleLog", "consoleError",
-    "infoLog", "debugLog", "stamp", "fulfilled", "rejected", "processTicksAndRejections", "LogData.log",
-    "LogData.out", "LogData.console", "LogData.errLog", "LogData.throw",
-  ];
-  //let fnSkips = ["__awaiter", "Object.<anonymous>", "undefined", undefined];
-  let fnSkips = ["__awaiter", "undefined", undefined];
-  let allSkips = fnSkips.concat(excludeFncs);
-
-
-  let skips = excludeFncs.concat(fname);
-  //writeFile(`../tmp/stack-${uv}.json`, stack);
-  //  console.log("Rest of the Stack:", { stack });
-  let lastFrame: any = stack.shift();
-  let frame: any;
-  let nextFrame: any;
-
-  while ((frame = stack.shift())) {
-    lastFrame = frame;
-    //if (frame.functionName && !skips.includes(frame.functionName)) {
-    if (!skips.includes(frame.functionName)) {
-      //if (frame.functionName && !allSkips.includes(frame.functionName)) {
-      break;
-    }
-  }
-  //  console.log("After break - should have lastFrame!", { lastFrame, frame, stack });
-  let functionName: any = lastFrame.functionName;
-
-  let exFns = skips.concat(fnSkips);
-  //if (!functionName || (exFns.includes(functionName) && forceFunction)) {
-  if (!functionName || (exFns.includes(functionName) && forceFunction)) {
-    //console.log(`Skipping ${functionName}`, { lastFrame });
-    // Continue through frames for next function name...
-    //'Object.<anonymous>'
-    while ((nextFrame = stack.shift())) {
-      let tsFn = nextFrame.functionName;
-      if (tsFn && !exFns.includes(tsFn)) {
-        functionName = nextFrame.functionName;
-        //      console.log(`Returning? tsFn: ${tsFn}, fname: ${functionName} `);
-        lastFrame.functionName = functionName;
-        return lastFrame;
-        //break;
-      }
-    }
-  }
-  return lastFrame;
-}
-
-*/
 export function getProcess() {
     console.log(process.env);
     return process.env;
