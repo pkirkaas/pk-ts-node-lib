@@ -4,6 +4,7 @@ export * from './files.js';
 export * from './cliSupport.js';
 export * from './configUtils.js';
 export * from './sass-support.js';
+export * from './module-introspection.js';
 /*
 
 let tstObj = { akey: "aval", anotherKey: "anotherVal" };

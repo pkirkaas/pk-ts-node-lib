@@ -72,7 +72,10 @@ const fncs = {
 };
 runTest(fncs,[cli_env]);
 
-Call from cli with "ts-node <scripts/name.ts testName arg1 arg2"
+Run from cli with:
+`node <script-path> <cmd> ai ts --dog=cat --tiger=lion`
+Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion"});`
+
 
  */
 export declare function runCli(fncs: any, env?: any): Promise<void>;

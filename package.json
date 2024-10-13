@@ -30,30 +30,41 @@
   "dependencies": {
     "@types/node": "^20.8.4",
     "axios": "*",
-    "date-fns": "latest",
-    "error-stack-parser": "*",
-    "url-status-code": "*",
     "cross-env": "*",
+    "date-fns": "latest",
     "dotenv": "*",
+    "error-stack-parser": "*",
     "fs-extra": "*",
     "fs-path": "*",
     "inquirer": "latest",
     "pk-ts-common-lib": "github:pkirkaas/pk-ts-common-lib#working",
+    "ts-morph": "^24.0.0",
+    "url-status-code": "*",
     "valid-filename": "*",
     "yargs": "latest"
   },
   "devDependencies": {
-    "ts-node": "*",
-    "esm-loader-typescript": "^1.0.6"
+    "esm-loader-typescript": "^1.0.6",
+    "ts-node": "*"
   },
-    "tsconfig-paths": "*",
-  "alt-lib-gits" : [ {
-    "pk-ts-common-lib": "git+https://github.com/pkirkaas/pk-ts-common-lib.git#working",
-  "no":"nothing"},{
-    "pk-ts-common-lib": "github:pkirkaas/pk-ts-common-lib#working",
-  "no":"nothing"},{
-  "no":"nothing"},{
-  "no":"nothing"},{
-  "no":"nothing"}]
-
+  "tsconfig-paths": "*",
+  "alt-lib-gits": [
+    {
+      "pk-ts-common-lib": "git+https://github.com/pkirkaas/pk-ts-common-lib.git#working",
+      "no": "nothing"
+    },
+    {
+      "pk-ts-common-lib": "github:pkirkaas/pk-ts-common-lib#working",
+      "no": "nothing"
+    },
+    {
+      "no": "nothing"
+    },
+    {
+      "no": "nothing"
+    },
+    {
+      "no": "nothing"
+    }
+  ]
 }
