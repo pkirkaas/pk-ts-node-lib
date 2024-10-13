@@ -38,6 +38,7 @@ export declare function makeQuestion(message: string, { name, type, def, choices
  *      if type==='list', single item returned, if 'checkbox', array of selected items returned.
  *   def: string|int - default, if any. If type === 'list', default can be value or inde4x
  *   choices: opt array - type empty & choices NOT empty, type changes to "list"
+ *   **choices** can be a simple array of strings, or an array of objects with 'name' & 'value' properties - name is what is displayed, value is the value returned
  *
  * @return "answer" value -
  */

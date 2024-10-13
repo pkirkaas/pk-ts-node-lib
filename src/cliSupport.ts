@@ -80,6 +80,7 @@ export function makeQuestion(message: string, { name = '', type = '', def = null
  *      if type==='list', single item returned, if 'checkbox', array of selected items returned.
  *   def: string|int - default, if any. If type === 'list', default can be value or inde4x
  *   choices: opt array - type empty & choices NOT empty, type changes to "list" 
+ *   **choices** can be a simple array of strings, or an array of objects with 'name' & 'value' properties - name is what is displayed, value is the value returned
  * 
  * @return "answer" value - 
  */
@@ -158,8 +159,9 @@ export async function runCli(fncs, env?: any) {
 	delete largv.$0;
 	largv = trueVal(largv);
 	let tofs = typeof fncs;
-	let params: any;
-	let cmd: any;
+	let params: any[];
+
+	let cmd: string;
 	if (tofs === "object") {
 		cmd = args[0] || 'default';
 		params = args.slice(1);
@@ -169,8 +171,11 @@ export async function runCli(fncs, env?: any) {
 		console.log(`What to do with fncs type: ${tofs}?`);
 		process.exit();
 	}
+	if (largv) { //Add to params
+		params.push(largv);
+	}
 	if (typeof fncs === "object") {
-		console.log(`\n\nAbout to await run ${cmd} in environment: [${env}] with params:`, { params, largv });
+		console.log(`\n\nAbout to await run ${cmd} in environment: [${env}] with params:`, { params,  });
 		let fkeys = Object.keys(fncs);
 		if (!fkeys.includes(cmd)) {
 			console.log(`"${cmd}" is not a test function - did you mean one of:`, fkeys);
@@ -178,13 +183,13 @@ export async function runCli(fncs, env?: any) {
 		}
 
 		try {
-			let res = await fncs[cmd](...params, largv);
+			let res = await fncs[cmd](...params,);
 		} catch (err) {
 			console.error(`There was an error: ${err.message}`, { err });
 		}
 	} else if (typeof fncs === "function") {
-		console.log("Running single function w. params:", { params, largv });
-		let res = await fncs(...params, largv);
+		console.log("Running single function w. params:", { params, });
+		let res = await fncs(...params,);
 		console.log("Completed Run");
 	} else {
 		console.log("Don't know what to run!");
