@@ -11,7 +11,7 @@ import fs from 'fs-extra';
  */
 //import { Project, SourceFile, Node, Symbol, Type, TypeAliasDeclaration, InterfaceDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, VariableDeclaration, ModuleDeclaration } from 'ts-morph';
 import { Project, Node, SyntaxKind, } from 'ts-morph';
-function packageReport(packageName) {
+export function packageReport(packageName) {
     const project = new Project({
         tsConfigFilePath: 'tsconfig.json',
     });

@@ -63,7 +63,7 @@ interface PackageReport {
     exports: Record<string, TypeInfo>;
 }
 
-function packageReport(packageName: string): PackageReport {
+export function packageReport(packageName: string): PackageReport {
     const project = new Project({
         tsConfigFilePath: 'tsconfig.json',
     });
