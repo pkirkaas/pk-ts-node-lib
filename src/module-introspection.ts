@@ -22,8 +22,7 @@ import {
  * @param packageName - name of an INSTALLED npm package, in node_modules directory
  */
 
-//import { Project, SourceFile, Node, Symbol, Type, TypeAliasDeclaration, InterfaceDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, VariableDeclaration, ModuleDeclaration } from 'ts-morph';
-
+// Does something - but not all I want... Enhance later...
 
 import { Project, SourceFile, Node, TypeAliasDeclaration, InterfaceDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, VariableDeclaration, ModuleDeclaration, SyntaxKind, MethodSignature, PropertySignature, ParameterDeclaration, PropertyDeclaration, MethodDeclaration, } from 'ts-morph';
 

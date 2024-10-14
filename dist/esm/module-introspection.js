@@ -9,7 +9,7 @@ import fs from 'fs-extra';
  * Needs to be run from project root - where tsconfig.json is.
  * @param packageName - name of an INSTALLED npm package, in node_modules directory
  */
-//import { Project, SourceFile, Node, Symbol, Type, TypeAliasDeclaration, InterfaceDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, VariableDeclaration, ModuleDeclaration } from 'ts-morph';
+// Does something - but not all I want... Enhance later...
 import { Project, Node, SyntaxKind, } from 'ts-morph';
 export function packageReport(packageName) {
     const project = new Project({
