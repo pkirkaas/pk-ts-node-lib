@@ -12,91 +12,227 @@ import {
   GenObj, typeOf,
 } from 'pk-ts-common-lib';
 
-import { Project, SourceFile, ExportedDeclarations, Type, Symbol } from 'ts-morph';
 
 
-export interface MemberInfo {
-  name: string;
-  kind: string;
-  type?: string;
-  members?: { [key: string]: MemberInfo; };
+
+/**
+ * Designed by Claude using `ts-morph` - supposed to return all module exports including TS Type & Inference, but
+ * doesn't quite - needs ... something.
+ * Needs to be run from project root - where tsconfig.json is.
+ * @param packageName - name of an INSTALLED npm package, in node_modules directory
+ */
+
+//import { Project, SourceFile, Node, Symbol, Type, TypeAliasDeclaration, InterfaceDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, VariableDeclaration, ModuleDeclaration } from 'ts-morph';
+
+
+import { Project, SourceFile, Node, TypeAliasDeclaration, InterfaceDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, VariableDeclaration, ModuleDeclaration, SyntaxKind, MethodSignature, PropertySignature, ParameterDeclaration, PropertyDeclaration, MethodDeclaration, } from 'ts-morph';
+
+interface TypeInfo {
+    kind: string;
+    name: string;
+    typeParameters?: string[];
+    extends?: string[];
+    properties?: Record<string, PropertyInfo>;
+    methods?: Record<string, MethodInfo>;
+    typeAlias?: string;
+    enumMembers?: string[];
+    functionSignature?: string;
+    variableType?: string;
+    members?: Record<string, TypeInfo>;
 }
 
-export interface PackageReport {
-  packageName: string;
-  exports: { [key: string]: MemberInfo; };
+interface PropertyInfo {
+    type: string;
+    optional: boolean;
 }
 
-export function packageReport(packageName: string): PackageReport {
-  const project = new Project({
-    tsConfigFilePath: 'tsconfig.json',
-  });
-
-  const packagePath = path.resolve('node_modules', packageName);
-  const packageJsonPath = path.join(packagePath, 'package.json');
-
-  if (!fs.existsSync(packageJsonPath)) {
-    throw new Error(`Package ${packageName} not found in node_modules.`);
-  }
-
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
-  const entryPoint = packageJson.types || packageJson.typings || packageJson.main || 'index.d.ts';
-  const entryPointPath = path.join(packagePath, entryPoint);
-
-  if (!fs.existsSync(entryPointPath)) {
-    throw new Error(`Entry point ${entryPointPath} not found for package ${packageName}.`);
-  }
-
-  const sourceFile = project.addSourceFileAtPath(entryPointPath);
-  const exports = getExports(sourceFile);
-
-  return {
-    packageName,
-    exports,
-  };
+interface MethodInfo {
+    parameters: ParameterInfo[];
+    returnType: string;
 }
 
-export function getExports(sourceFile: SourceFile): { [key: string]: MemberInfo; } {
-  const exports: { [key: string]: MemberInfo; } = {};
-
-  sourceFile.getExportedDeclarations().forEach((declarations, name) => {
-    const declaration = declarations[0];
-    const symbol = declaration.getSymbol();
-    if (symbol) {
-      exports[name] = getMemberInfo(symbol);
-    }
-  });
-
-  return exports;
+interface ParameterInfo {
+    name: string;
+    type: string;
+    optional: boolean;
 }
 
-export function getMemberInfo(symbol: Symbol): MemberInfo {
-  const declaration = symbol.getDeclarations()[0];
-  if (!declaration) {
-    let decs = symbol.getDeclarations();
-    //console.log(`decs:`,decs);
-    let err: MemberInfo = {
-      name: "No Declarations for Symbol",
-      kind: "Bad declaration",
-    };
-    return err;
-  }
-  const type = declaration.getType();
+interface PackageReport {
+    name: string;
+    version: string;
+    exports: Record<string, TypeInfo>;
+}
 
-  const info: MemberInfo = {
-    name: symbol.getName(),
-    kind: declaration.getKindName(),
-  };
-
-  if (type.isInterface() || type.isClass() || type.isObject()) {
-    info.members = {};
-    type.getProperties().forEach(prop => {
-      info.members![prop.getName()] = getMemberInfo(prop);
+function packageReport(packageName: string): PackageReport {
+    const project = new Project({
+        tsConfigFilePath: 'tsconfig.json',
     });
-  } else {
-    info.type = type.getText();
-  }
 
-  return info;
+    const packagePath = path.resolve('node_modules', packageName);
+    const packageJsonPath = path.join(packagePath, 'package.json');
+
+    if (!fs.existsSync(packageJsonPath)) {
+        throw new Error(`Package ${packageName} not found in node_modules.`);
+    }
+
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+    const typesFile = packageJson.types || packageJson.typings || 'index.d.ts';
+
+    const sourceFile = project.addSourceFileAtPath(path.join(packagePath, typesFile));
+
+    const exports: Record<string, TypeInfo> = {};
+
+    // Process top-level declarations
+    processDeclarations(sourceFile, exports);
+
+    // Process namespaces
+    sourceFile.getDescendantsOfKind(SyntaxKind.ModuleDeclaration).forEach(namespace => {
+        const namespaceName = namespace.getName();
+        const namespaceExports: Record<string, TypeInfo> = {};
+        processDeclarations(namespace, namespaceExports);
+        exports[namespaceName] = {
+            kind: 'namespace',
+            name: namespaceName,
+            members: namespaceExports,
+        };
+    });
+
+    return {
+        name: packageName,
+        version: packageJson.version,
+        exports,
+    };
 }
 
+function processDeclarations(node: SourceFile | ModuleDeclaration, exports: Record<string, TypeInfo>) {
+    node.getExportedDeclarations().forEach((declarations, name) => {
+        declarations.forEach(declaration => {
+            if (Node.isTypeAliasDeclaration(declaration)) {
+                exports[name] = processTypeAlias(declaration);
+            } else if (Node.isInterfaceDeclaration(declaration)) {
+                exports[name] = processInterface(declaration);
+            } else if (Node.isClassDeclaration(declaration)) {
+                exports[name] = processClass(declaration);
+            } else if (Node.isEnumDeclaration(declaration)) {
+                exports[name] = processEnum(declaration);
+            } else if (Node.isFunctionDeclaration(declaration)) {
+                exports[name] = processFunction(declaration);
+            } else if (Node.isVariableDeclaration(declaration)) {
+                exports[name] = processVariable(declaration);
+            }
+        });
+    });
+}
+
+function processTypeAlias(declaration: TypeAliasDeclaration): TypeInfo {
+    return {
+        kind: 'typeAlias',
+        name: declaration.getName(),
+        typeParameters: declaration.getTypeParameters().map(tp => tp.getText()),
+        typeAlias: declaration.getType().getText(),
+    };
+}
+
+function processInterface(declaration: InterfaceDeclaration): TypeInfo {
+    const properties: Record<string, PropertyInfo> = {};
+    const methods: Record<string, MethodInfo> = {};
+
+    declaration.getProperties().forEach(prop => {
+        properties[prop.getName()] = processProperty(prop);
+    });
+
+    declaration.getMethods().forEach(method => {
+        methods[method.getName()] = processMethod(method);
+    });
+
+    return {
+        kind: 'interface',
+        name: declaration.getName(),
+        typeParameters: declaration.getTypeParameters().map(tp => tp.getText()),
+        extends: declaration.getExtends().map(ext => ext.getText()),
+        properties,
+        methods,
+    };
+}
+
+function processClass(declaration: ClassDeclaration): TypeInfo {
+    const properties: Record<string, PropertyInfo> = {};
+    const methods: Record<string, MethodInfo> = {};
+
+    declaration.getProperties().forEach(prop => {
+      properties[prop.getName()] = processClassProperty(prop);
+    });
+
+    declaration.getMethods().forEach(method => {
+        methods[method.getName()] = processClassMethod(method);
+    });
+
+
+    return {
+        kind: 'class',
+        name: declaration.getName(),
+        typeParameters: declaration.getTypeParameters().map(tp => tp.getText()),
+        extends: declaration.getExtends() ? [declaration.getExtends().getText()] : [],
+        properties,
+        methods,
+    };
+}
+
+function processProperty(prop: PropertySignature): PropertyInfo {
+    return {
+        type: prop.getType().getText(),
+        optional: prop.hasQuestionToken(),
+    };
+}
+
+function processMethod(method: MethodSignature): MethodInfo {
+    return {
+        parameters: method.getParameters().map(processParameter),
+        returnType: method.getReturnType().getText(),
+    };
+}
+
+function processClassProperty(prop: PropertyDeclaration): PropertyInfo {
+    return {
+        type: prop.getType().getText(),
+        optional: prop.hasQuestionToken(),
+    };
+}
+
+function processClassMethod(method: MethodDeclaration): MethodInfo {
+    return {
+        parameters: method.getParameters().map(processParameter),
+        returnType: method.getReturnType().getText(),
+    };
+}
+function processParameter(param: ParameterDeclaration): ParameterInfo {
+    return {
+        name: param.getName(),
+        type: param.getType().getText(),
+        optional: param.hasQuestionToken(),
+    };
+}
+
+function processEnum(declaration: EnumDeclaration): TypeInfo {
+    return {
+        kind: 'enum',
+        name: declaration.getName(),
+        enumMembers: declaration.getMembers().map(member => member.getName()),
+    };
+}
+
+function processFunction(declaration: FunctionDeclaration): TypeInfo {
+    return {
+        kind: 'function',
+        name: declaration.getName() || '',
+        functionSignature: declaration.getSignature().getDeclaration().getText(),
+    };
+}
+
+function processVariable(declaration: VariableDeclaration): TypeInfo {
+    return {
+        kind: 'variable',
+        name: declaration.getName(),
+        variableType: declaration.getType().getText(),
+    };
+}
