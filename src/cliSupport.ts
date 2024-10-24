@@ -1,5 +1,8 @@
 /** CLI Support for async scripts */
 import path from "path";
+import { stdin as input, stdout as output } from 'node:process';
+import * as readline from 'node:readline/promises';
+
 import _ from "lodash";
 import * as dotenv from 'dotenv';
 import { cwd } from './index.js';
@@ -102,6 +105,33 @@ export async function ask(msg: string, { name = '', type = '', def = null, choic
 	let answer = answers[name];
 	return answer;
 }
+export async function multiLineInput(prompt?:string):Promise<string> {
+  if (!prompt) {
+    prompt = 'Enter text: ';
+  }
+  prompt += ' ("exit" or <Ctl-D> to finish)';
+  const rl = readline.createInterface({ input, output, terminal:true, });
+  let lines = [];
+  let exits = ['exit', 'quit', 'q', '.', 'bye', 'done',];
+  console.log(prompt);
+    return new Promise((resolve, reject) => {
+    rl.on('line', (line) => {
+      if (exits.includes(line.trim())) {
+        rl.close();
+        return resolve(lines.join('\n'));
+      }
+      lines.push(line);
+    });
+
+    rl.on('close', () => {
+      resolve(lines.join('\n')); // Handle Ctrl-D here
+    });
+
+    rl.on('error', (err) => {
+      reject(err);
+    });
+  });
+}
 
 
 export async function askConfirm(cMsg = 'Do It?') {
@@ -188,12 +218,18 @@ export async function runCli(fncs, env?: any) {
 		try {
 			let res = await fncs[cmd](...params,);
 		} catch (err) {
-			console.error(`There was an error: ${err.message}`, { err });
+			console.error(`Exception in 'runCli' for cmd: [${cmd}], params:`,params,
+				`Err Message: [${err.message}]`, { err });
 		}
 	} else if (typeof fncs === "function") {
 		console.log("Running single function w. params:", { params, });
+		try {
 		let res = await fncs(...params,);
 		console.log("Completed Run");
+		} catch (err) {
+			console.error(`Exception in 'runCli' for FUNCTION w. params:`,params,
+				`Err Message: [${err.message}]`, { err });
+		}
 	} else {
 		console.log("Don't know what to run!");
 	}
