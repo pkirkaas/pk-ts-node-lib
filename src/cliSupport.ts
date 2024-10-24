@@ -105,7 +105,7 @@ export async function ask(msg: string, { name = '', type = '', def = null, choic
 	let answer = answers[name];
 	return answer;
 }
-export async function multiLineInput(prompt?:string):Promise<string> {
+export async function multilineInput(prompt?:string):Promise<string> {
   if (!prompt) {
     prompt = 'Enter text: ';
   }

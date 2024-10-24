@@ -86,7 +86,7 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [],
     let answer = answers[name];
     return answer;
 }
-export async function multiLineInput(prompt) {
+export async function multilineInput(prompt) {
     if (!prompt) {
         prompt = 'Enter text: ';
     }
