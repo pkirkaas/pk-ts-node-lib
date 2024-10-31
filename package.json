@@ -24,7 +24,7 @@
     "Ydevlink": " npm link pk-ts-common-lib && npm link",
     "devlink": " npm link && npm link pk-ts-common-lib",
     "monitor": "nodemon --exec \"npm run build\" --ext js,jsx,ts,tsx,sass,css --delay 5 --watch ./src",
-    "clean": "rm -rf ./dist ./node_modules package-lock.json",
+    "clean": "rm -rf ./dist ./node_modules package-lock.json && npm i",
     "cleani": "rm -rf ./dist ./node_modules package-lock.json && npm install"
   },
   "dependencies": {

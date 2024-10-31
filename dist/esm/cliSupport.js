@@ -86,7 +86,10 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [],
     let answer = answers[name];
     return answer;
 }
-export async function multilineInput(prompt) {
+/**
+ * Multi-line input, similar to "ask" above, but returns a string of all lines entered. End input with <Ctl-D>
+ */
+export async function multiAsk(prompt) {
     if (!prompt) {
         prompt = 'Enter text: ';
     }

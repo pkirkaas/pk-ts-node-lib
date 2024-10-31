@@ -105,7 +105,10 @@ export async function ask(msg: string, { name = '', type = '', def = null, choic
 	let answer = answers[name];
 	return answer;
 }
-export async function multilineInput(prompt?:string):Promise<string> {
+/**
+ * Multi-line input, similar to "ask" above, but returns a string of all lines entered. End input with <Ctl-D>
+ */
+export async function multiAsk(prompt?:string):Promise<string> {
   if (!prompt) {
     prompt = 'Enter text: ';
   }

@@ -49,7 +49,10 @@ export declare function ask(msg: string, { name, type, def, choices, pageSize }?
     choices?: any[];
     pageSize?: number;
 }): Promise<any>;
-export declare function multilineInput(prompt?: string): Promise<string>;
+/**
+ * Multi-line input, similar to "ask" above, but returns a string of all lines entered. End input with <Ctl-D>
+ */
+export declare function multiAsk(prompt?: string): Promise<string>;
 export declare function askConfirm(cMsg?: string): Promise<boolean>;
 /**
  * Parse CLI arguments, return as object
