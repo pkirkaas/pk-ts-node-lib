@@ -108,32 +108,32 @@ export async function ask(msg: string, { name = '', type = '', def = null, choic
 /**
  * Multi-line input, similar to "ask" above, but returns a string of all lines entered. End input with <Ctl-D>
  */
-export async function multiAsk(prompt?:string):Promise<string> {
-  if (!prompt) {
-    prompt = 'Enter text: ';
-  }
-  prompt += ' ("exit" or <Ctl-D> to finish)';
-  const rl = readline.createInterface({ input, output, terminal:true, });
-  let lines = [];
-  let exits = ['exit', 'quit', 'q', '.', 'bye', 'done',];
-  console.log(prompt);
-    return new Promise((resolve, reject) => {
-    rl.on('line', (line) => {
-      if (exits.includes(line.trim())) {
-        rl.close();
-        return resolve(lines.join('\n'));
-      }
-      lines.push(line);
-    });
+export async function multiAsk(prompt?: string): Promise<string> {
+	if (!prompt) {
+		prompt = 'Enter text: ';
+	}
+	prompt += ' ("exit" or <Ctl-D> to finish)';
+	const rl = readline.createInterface({ input, output, terminal: true, });
+	let lines = [];
+	let exits = ['exit', 'quit', 'q', '.', 'bye', 'done',];
+	console.log(prompt);
+	return new Promise((resolve, reject) => {
+		rl.on('line', (line) => {
+			if (exits.includes(line.trim())) {
+				rl.close();
+				return resolve(lines.join('\n'));
+			}
+			lines.push(line);
+		});
 
-    rl.on('close', () => {
-      resolve(lines.join('\n')); // Handle Ctrl-D here
-    });
+		rl.on('close', () => {
+			resolve(lines.join('\n')); // Handle Ctrl-D here
+		});
 
-    rl.on('error', (err) => {
-      reject(err);
-    });
-  });
+		rl.on('error', (err) => {
+			reject(err);
+		});
+	});
 }
 
 
@@ -190,31 +190,38 @@ Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" 
 /** 
  * For runCli argument parsing - ...args will be array of args, possibly empty, possibly w. GenObj at end
  */
-export function getSimpleArgs(args:any[]):any[] {
+export function getSimpleArgs(args: any[]): any[] {
 	return args.filter(a => !isSimpleObject(a));
 }
 
 /**
  * Return object arg, if any - else empty object or null
+ * @param defObj: null, empty obj, or default object
+ * @return object arg, if any, w. default, if any, - else empty object or null
  */
-export function getObjectArg(args:any[],emptyObj=false):any {
-	let ret = emptyObj ? {} : null;
+export function getObjArg(args: any[], defObj: any = null): any {
+	/*
 	if (isEmpty(args)) {
-		return ret;
+		return defObj;
 	}
+	*/
 	let lastArg = args.at(-1);
 	if (isSimpleObject(lastArg)) {
+		if (defObj) {
+			return { ...defObj, ...lastArg };
+		}
+	} else {
 		return lastArg;
 	}
-	return ret;
+	return defObj;
 }
 
 /**
  * Return object {arrArgs, opts} w. array args & obj args - 
  */
-export function decomposeArgs(args:any[], emptyObj=false):any {
+export function decomposeArgs(args: any[], defObj: any = null): any {
 	let arr = getSimpleArgs(args);
-	let opts = getObjectArg(args, emptyObj);
+	let opts = getObjArg(args, defObj);
 	return { arr, opts };
 }
 export async function runCli(fncs, env?: any) {
@@ -241,7 +248,7 @@ export async function runCli(fncs, env?: any) {
 		params.push(largv);
 	}
 	if (typeof fncs === "object") {
-		console.log(`\n\nAbout to await run ${cmd} in environment: [${env}] with params:`, { params,  });
+		console.log(`\n\nAbout to await run ${cmd} in environment: [${env}] with params:`, { params, });
 		let fkeys = Object.keys(fncs);
 		if (!fkeys.includes(cmd)) {
 			console.log(`"${cmd}" is not a test function - did you mean one of:`, fkeys);
@@ -251,16 +258,16 @@ export async function runCli(fncs, env?: any) {
 		try {
 			let res = await fncs[cmd](...params,);
 		} catch (err) {
-			console.error(`Exception in 'runCli' for cmd: [${cmd}], params:`,params,
+			console.error(`Exception in 'runCli' for cmd: [${cmd}], params:`, params,
 				`Err Message: [${err.message}]`, { err });
 		}
 	} else if (typeof fncs === "function") {
 		console.log("Running single function w. params:", { params, });
 		try {
-		let res = await fncs(...params,);
-		console.log("Completed Run");
+			let res = await fncs(...params,);
+			console.log("Completed Run");
 		} catch (err) {
-			console.error(`Exception in 'runCli' for FUNCTION w. params:`,params,
+			console.error(`Exception in 'runCli' for FUNCTION w. params:`, params,
 				`Err Message: [${err.message}]`, { err });
 		}
 	} else {

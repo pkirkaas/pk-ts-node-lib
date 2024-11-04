@@ -87,11 +87,13 @@ Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" 
 export declare function getSimpleArgs(args: any[]): any[];
 /**
  * Return object arg, if any - else empty object or null
+ * @param defObj: null, empty obj, or default object
+ * @return object arg, if any, w. default, if any, - else empty object or null
  */
-export declare function getObjectArg(args: any[], emptyObj?: boolean): any;
+export declare function getObjArg(args: any[], defObj?: any): any;
 /**
  * Return object {arrArgs, opts} w. array args & obj args -
  */
-export declare function decomposeArgs(args: any[], emptyObj?: boolean): any;
+export declare function decomposeArgs(args: any[], defObj?: any): any;
 export declare function runCli(fncs: any, env?: any): Promise<void>;
 //# sourceMappingURL=cliSupport.d.ts.map

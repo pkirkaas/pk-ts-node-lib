@@ -5,7 +5,7 @@ import * as readline from 'node:readline/promises';
 import _ from "lodash";
 import * as dotenv from 'dotenv';
 import { cwd } from './index.js';
-import { PkError, getProps, isSimpleObject, isEmpty, } from 'pk-ts-common-lib';
+import { PkError, getProps, isSimpleObject, } from 'pk-ts-common-lib';
 //@ts-ignore
 dotenv.config(path.join(cwd, ".env"));
 export function envInit(envPath = ".env") {
@@ -165,24 +165,32 @@ export function getSimpleArgs(args) {
 }
 /**
  * Return object arg, if any - else empty object or null
+ * @param defObj: null, empty obj, or default object
+ * @return object arg, if any, w. default, if any, - else empty object or null
  */
-export function getObjectArg(args, emptyObj = false) {
-    let ret = emptyObj ? {} : null;
+export function getObjArg(args, defObj = null) {
+    /*
     if (isEmpty(args)) {
-        return ret;
+        return defObj;
     }
+    */
     let lastArg = args.at(-1);
     if (isSimpleObject(lastArg)) {
+        if (defObj) {
+            return { ...defObj, ...lastArg };
+        }
+    }
+    else {
         return lastArg;
     }
-    return ret;
+    return defObj;
 }
 /**
  * Return object {arrArgs, opts} w. array args & obj args -
  */
-export function decomposeArgs(args, emptyObj = false) {
+export function decomposeArgs(args, defObj = null) {
     let arr = getSimpleArgs(args);
-    let opts = getObjectArg(args, emptyObj);
+    let opts = getObjArg(args, defObj);
     return { arr, opts };
 }
 export async function runCli(fncs, env) {
