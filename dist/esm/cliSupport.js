@@ -119,7 +119,7 @@ export async function askConfirm(cMsg = 'Do It?') {
     let cont = await ask("Continue? (Yy)");
     if (cont.toLowerCase() !== 'y') {
         console.log("Aborting");
-        throw new PkError(`User aborted`);
+        throw new PkError(`User aborted task [${cMsg}]`);
     }
     return true;
 }
@@ -160,7 +160,7 @@ Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" 
 /**
  * For runCli argument parsing - ...args will be array of args, possibly empty, possibly w. GenObj at end
  */
-export function getArrArgs(args) {
+export function getArrArgs(...args) {
     return args.filter(a => !isSimpleObject(a));
 }
 /**
