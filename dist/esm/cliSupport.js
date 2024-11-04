@@ -160,15 +160,15 @@ Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" 
 /**
  * For runCli argument parsing - ...args will be array of args, possibly empty, possibly w. GenObj at end
  */
-export function getSimpleArgs(args) {
+export function getArrArgs(args) {
     return args.filter(a => !isSimpleObject(a));
 }
 /**
  * Return object arg, if any - else empty object or null
- * @param defObj: null, empty obj, or default object
+ * @param defObj: undefined, empty obj, or default object
  * @return object arg, if any, w. default, if any, - else empty object or null
  */
-export function getObjArg(args, defObj = null) {
+export function getObjArg(args, defObj) {
     /*
     if (isEmpty(args)) {
         return defObj;
@@ -179,19 +179,19 @@ export function getObjArg(args, defObj = null) {
         if (defObj) {
             return { ...defObj, ...lastArg };
         }
-    }
-    else {
-        return lastArg;
+        else {
+            return lastArg;
+        }
     }
     return defObj;
 }
 /**
  * Return object {arrArgs, opts} w. array args & obj args -
  */
-export function decomposeArgs(args, defObj = null) {
-    let arr = getSimpleArgs(args);
+export function parseArgs(args, defObj) {
+    let arr = getArrArgs(args);
     let opts = getObjArg(args, defObj);
-    return { arr, opts };
+    return { arr, opts, obj: opts, };
 }
 export async function runCli(fncs, env) {
     console.log("Entering runCli");

@@ -190,16 +190,16 @@ Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" 
 /** 
  * For runCli argument parsing - ...args will be array of args, possibly empty, possibly w. GenObj at end
  */
-export function getSimpleArgs(args: any[]): any[] {
+export function getArrArgs(args: any[]): any[] {
 	return args.filter(a => !isSimpleObject(a));
 }
 
 /**
  * Return object arg, if any - else empty object or null
- * @param defObj: null, empty obj, or default object
+ * @param defObj: undefined, empty obj, or default object
  * @return object arg, if any, w. default, if any, - else empty object or null
  */
-export function getObjArg(args: any[], defObj: any = null): any {
+export function getObjArg(args: any[], defObj?: any): any {
 	/*
 	if (isEmpty(args)) {
 		return defObj;
@@ -209,9 +209,9 @@ export function getObjArg(args: any[], defObj: any = null): any {
 	if (isSimpleObject(lastArg)) {
 		if (defObj) {
 			return { ...defObj, ...lastArg };
+		} else {
+			return lastArg;
 		}
-	} else {
-		return lastArg;
 	}
 	return defObj;
 }
@@ -219,10 +219,10 @@ export function getObjArg(args: any[], defObj: any = null): any {
 /**
  * Return object {arrArgs, opts} w. array args & obj args - 
  */
-export function decomposeArgs(args: any[], defObj: any = null): any {
-	let arr = getSimpleArgs(args);
+export function parseArgs(args: any[], defObj?: any): any {
+	let arr = getArrArgs(args);
 	let opts = getObjArg(args, defObj);
-	return { arr, opts };
+	return { arr, opts, obj:opts, };
 }
 export async function runCli(fncs, env?: any) {
 	console.log("Entering runCli");
