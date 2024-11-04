@@ -67,7 +67,8 @@ import { runTest } from "../src";
 import { ProductModel, TradingPartnerModel } from '../src';
 const SSID = "613f4597f29dae35a2c9c3d4";
 const fncs = {
-    tstTst: async function () {
+    tstTst: async function (...args) {
+        //args - array of str args, possibly w. GenObj at end
         console.log("In tstTst -2 ");
         let tp = await TradingPartnerModel.getDoc(SSID);
         let companyname = tp.companyname;
@@ -77,10 +78,20 @@ const fncs = {
 runTest(fncs,[cli_env]);
 
 Run from cli with:
-`node <script-path> <cmd> ai ts --dog=cat --tiger=lion`
-Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion"});`
-
-
+`node <script-path> <cmd> ai -abc wolf ts --dog=cat --tiger=lion`
+Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" });`
+*/
+/**
+ * For runCli argument parsing - ...args will be array of args, possibly empty, possibly w. GenObj at end
  */
+export declare function getSimpleArgs(args: any[]): any[];
+/**
+ * Return object arg, if any - else empty object or null
+ */
+export declare function getObjectArg(args: any[], emptyObj?: boolean): any;
+/**
+ * Return object {arrArgs, opts} w. array args & obj args -
+ */
+export declare function decomposeArgs(args: any[], emptyObj?: boolean): any;
 export declare function runCli(fncs: any, env?: any): Promise<void>;
 //# sourceMappingURL=cliSupport.d.ts.map

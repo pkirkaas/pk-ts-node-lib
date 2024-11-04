@@ -5,7 +5,7 @@ import * as readline from 'node:readline/promises';
 import _ from "lodash";
 import * as dotenv from 'dotenv';
 import { cwd } from './index.js';
-import { PkError, getProps, } from 'pk-ts-common-lib';
+import { PkError, getProps, isSimpleObject, isEmpty, } from 'pk-ts-common-lib';
 //@ts-ignore
 dotenv.config(path.join(cwd, ".env"));
 export function envInit(envPath = ".env") {
@@ -143,7 +143,8 @@ import { runTest } from "../src";
 import { ProductModel, TradingPartnerModel } from '../src';
 const SSID = "613f4597f29dae35a2c9c3d4";
 const fncs = {
-    tstTst: async function () {
+    tstTst: async function (...args) {
+        //args - array of str args, possibly w. GenObj at end
         console.log("In tstTst -2 ");
         let tp = await TradingPartnerModel.getDoc(SSID);
         let companyname = tp.companyname;
@@ -153,11 +154,37 @@ const fncs = {
 runTest(fncs,[cli_env]);
 
 Run from cli with:
-`node <script-path> <cmd> ai ts --dog=cat --tiger=lion`
-Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion"});`
-
-
+`node <script-path> <cmd> ai -abc wolf ts --dog=cat --tiger=lion`
+Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" });`
+*/
+/**
+ * For runCli argument parsing - ...args will be array of args, possibly empty, possibly w. GenObj at end
  */
+export function getSimpleArgs(args) {
+    return args.filter(a => !isSimpleObject(a));
+}
+/**
+ * Return object arg, if any - else empty object or null
+ */
+export function getObjectArg(args, emptyObj = false) {
+    let ret = emptyObj ? {} : null;
+    if (isEmpty(args)) {
+        return ret;
+    }
+    let lastArg = args.at(-1);
+    if (isSimpleObject(lastArg)) {
+        return lastArg;
+    }
+    return ret;
+}
+/**
+ * Return object {arrArgs, opts} w. array args & obj args -
+ */
+export function decomposeArgs(args, emptyObj = false) {
+    let arr = getSimpleArgs(args);
+    let opts = getObjectArg(args, emptyObj);
+    return { arr, opts };
+}
 export async function runCli(fncs, env) {
     console.log("Entering runCli");
     let largv = argv;
