@@ -237,7 +237,9 @@ export function parseArgs(args: any[], defObj?: any): any {
 }
 export async function runCli(fncs, env?: any) {
 	console.log("Entering runCli");
+	let pargv = process.argv;
 	let largv = argv;
+	//console.log(`debugging yargs:`, { largv, pargv, });
 	const args = largv._;
 	delete largv._; //The rest is an object
 	delete largv.$0;
