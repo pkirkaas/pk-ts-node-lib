@@ -159,8 +159,19 @@ Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" 
 */
 /**
  * For runCli argument parsing - ...args will be array of args, possibly empty, possibly w. GenObj at end
+ * Usage:
+ * test tstTst wolf ts --dog=cat --tiger=lion
+ * // fncs - object of functions to call
+ * fncs = {
+        tstTst: async function (...args) {
+          let {arr,obj} = parseArgs(args); //IMPORTANT - define fnc w. ...args, BUT call parseArgs(args)
+            console.log({ arr, obj });
+            // arr: ["wolf", "ts"], obj: { dog: 'cat', tiger: 'lion' }
+        },
+    };
+    runTest(fncs,[cli_env]);
  */
-export function getArrArgs(...args) {
+export function getArrArgs(args) {
     return args.filter(a => !isSimpleObject(a));
 }
 /**
@@ -190,8 +201,8 @@ export function getObjArg(args, defObj) {
  */
 export function parseArgs(args, defObj) {
     let arr = getArrArgs(args);
-    let opts = getObjArg(args, defObj);
-    return { arr, opts, obj: opts, };
+    let obj = getObjArg(args, defObj);
+    return { arr, obj, opts: obj, };
 }
 export async function runCli(fncs, env) {
     console.log("Entering runCli");
@@ -218,7 +229,8 @@ export async function runCli(fncs, env) {
         params.push(largv);
     }
     if (typeof fncs === "object") {
-        console.log(`\n\nAbout to await run ${cmd} in environment: [${env}] with params:`, { params, });
+        let inEnv = env ? `, in env: [${env}] ` : "";
+        console.log(`\n\nAbout to await run ${cmd} ${inEnv} with params:`, { params, });
         let fkeys = Object.keys(fncs);
         if (!fkeys.includes(cmd)) {
             console.log(`"${cmd}" is not a test function - did you mean one of:`, fkeys);

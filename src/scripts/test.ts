@@ -1,5 +1,5 @@
 import {
-	getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, isFile, getOsType, isWindows, isLinux, runCommand, stdOut, winBashes, 
+	getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, isFile, getOsType, isWindows, isLinux, runCommand, stdOut, winBashes, parseArgs, getArrArgs, getObjArg,
 } from '../index.js';
 
 import _ from 'lodash';
@@ -23,6 +23,16 @@ let scssMap = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, v
 let scssMapr = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (flex, (flex-direction: column)), block: block))';
 	
 let testsFs = {
+
+	tstArgs: function (...args) {
+		let parsed = parseArgs(args,{tiger:4});
+		let arrArgs = getArrArgs(args);
+		let objArg = getObjArg(args);
+		console.log(`\n\nparsed\n`,{ parsed},
+			`\narrArgs:\n`,{ arrArgs},
+			`\nobjArg:\n`, {objArg });
+		
+	},
 	tstMerge: function () {
 		let target = { t1: "hello", t2: ['yesterday', 'today'], };
 		let src1 = { t3: "MergedVal", t2: ['ever', 'never'] };

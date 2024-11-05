@@ -83,8 +83,19 @@ Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" 
 */
 /**
  * For runCli argument parsing - ...args will be array of args, possibly empty, possibly w. GenObj at end
+ * Usage:
+ * test tstTst wolf ts --dog=cat --tiger=lion
+ * // fncs - object of functions to call
+ * fncs = {
+        tstTst: async function (...args) {
+          let {arr,obj} = parseArgs(args); //IMPORTANT - define fnc w. ...args, BUT call parseArgs(args)
+            console.log({ arr, obj });
+            // arr: ["wolf", "ts"], obj: { dog: 'cat', tiger: 'lion' }
+        },
+    };
+    runTest(fncs,[cli_env]);
  */
-export declare function getArrArgs(...args: any[]): any[];
+export declare function getArrArgs(args: any[]): any[];
 /**
  * Return object arg, if any - else empty object or null
  * @param defObj: undefined, empty obj, or default object
