@@ -103,7 +103,8 @@ export declare function getArrArgs(args: any[]): any[];
  */
 export declare function getObjArg(args: any[], defObj?: any): any;
 /**
- * Return object {arrArgs, opts} w. array args & obj args -
+ * Return object {arr, obj, opts} w. array args & obj args -
+ * opts same as obj, EXCEPT if no default & no obj, opts is '{}' empty obj.
  */
 export declare function parseArgs(args: any[], defObj?: any): any;
 export declare function runCli(fncs: any, env?: any): Promise<void>;

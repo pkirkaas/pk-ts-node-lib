@@ -197,12 +197,14 @@ export function getObjArg(args, defObj) {
     return defObj;
 }
 /**
- * Return object {arrArgs, opts} w. array args & obj args -
+ * Return object {arr, obj, opts} w. array args & obj args -
+ * opts same as obj, EXCEPT if no default & no obj, opts is '{}' empty obj.
  */
 export function parseArgs(args, defObj) {
     let arr = getArrArgs(args);
     let obj = getObjArg(args, defObj);
-    return { arr, obj, opts: obj, };
+    let opts = isSimpleObject(obj) ? obj : {};
+    return { arr, obj, opts, };
 }
 export async function runCli(fncs, env) {
     console.log("Entering runCli");
