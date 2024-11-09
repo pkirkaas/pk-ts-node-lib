@@ -28,6 +28,7 @@ export async function objectExplorer(obj, ppath) {
 // Should only need the async function "ask"
 // TODO: Update to https://www.npmjs.com/package/@inquirer/prompts
 import inquirer from "inquirer";
+import { editor } from '@inquirer/prompts';
 export const inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expand', 'checkbox', 'password', 'editor'];
 /**
  * Makes a single inquirer question JS Object, for use in "ask", below
@@ -79,6 +80,14 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [],
         else {
             type = 'input';
         }
+    }
+    if (type === 'multi') {
+        let ans = await multiAsk(msg);
+        return ans;
+    }
+    else if (type === 'editor') {
+        let ans = await editor({ message: msg, default: def, postfix: '.md' });
+        return ans;
     }
     let qArr = [makeQuestion(msg, { name, type, def, choices, pageSize })];
     //@ts-ignore
