@@ -73,7 +73,7 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [],
     if (!name) {
         name = _.uniqueId('inc_name_');
     }
-    if (!type) {
+    if (type === '') {
         if (choices.length) {
             type = 'list';
         }
@@ -81,13 +81,21 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [],
             type = 'input';
         }
     }
-    if (type === 'multi') {
+    else if (type === 'multi') {
         let ans = await multiAsk(msg);
         return ans;
     }
     else if (type === 'editor') {
         let ans = await editor({ message: msg, default: def, postfix: '.md' });
         return ans;
+    }
+    else if (type === 'confirm') {
+        //let ans  = await inquirer.prompt([{ message: msg, type: 'confirm', name, default: def, }]);
+        let ans = await askConfirm(msg);
+        return ans;
+    }
+    else if (type == 'none') {
+        return null;
     }
     let qArr = [makeQuestion(msg, { name, type, def, choices, pageSize })];
     //@ts-ignore
