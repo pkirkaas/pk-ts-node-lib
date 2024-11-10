@@ -73,7 +73,8 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [],
     if (!name) {
         name = _.uniqueId('inc_name_');
     }
-    if (type === '') {
+    //if (type === '') {
+    if (!type) {
         if (choices.length) {
             type = 'list';
         }
