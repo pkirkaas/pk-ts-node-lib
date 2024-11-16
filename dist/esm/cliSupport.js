@@ -115,9 +115,6 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [],
             else if (trimmed === 'editor') {
                 answer = await editor({ message: origMsg, default: def, postfix: '.md' });
             }
-            else if (trimmed === 'confirm') {
-                answer = await askConfirm(origMsg);
-            }
         }
     }
     return answer;
