@@ -88,7 +88,7 @@ Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" 
  * // fncs - object of functions to call
  * fncs = {
         tstTst: async function (...args) {
-          let {arr,obj} = parseArgs(args); //IMPORTANT - define fnc w. ...args, BUT call parseArgs(args)
+            let {arr,obj} = parseArgs(args); //IMPORTANT - define fnc w. ...args, BUT call parseArgs(args)
             console.log({ arr, obj });
             // arr: ["wolf", "ts"], obj: { dog: 'cat', tiger: 'lion' }
         },

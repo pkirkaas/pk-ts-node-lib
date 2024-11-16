@@ -94,7 +94,7 @@ export async function ask(msg: string, { name = '', type = '', def = null, choic
 		name = _.uniqueId('inc_name_');
 	}
 	//if (type === '') {
-	if (!type ) {
+	if (!type) {
 		if (choices.length) {
 			type = 'list';
 		} else {
@@ -104,32 +104,34 @@ export async function ask(msg: string, { name = '', type = '', def = null, choic
 		let ans = await multiAsk(msg);
 		return ans;
 	} else if (type === 'editor') {
-		let ans = await editor({ message: msg, default: def, postfix:'.md' });
+		let ans = await editor({ message: msg, default: def, postfix: '.md' });
 		return ans;
 	} else if (type === 'confirm') {
 		//let ans  = await inquirer.prompt([{ message: msg, type: 'confirm', name, default: def, }]);
-		let ans  = await askConfirm(msg);
+		let ans = await askConfirm(msg);
 		return ans;
-	} else if (type=='none') {
+	} else if (type == 'none') {
 		return null;
 	}
 
 
 	if (type === 'input') { // Allow switch to 'multi' or 'editor'
-		msg+= `('multi' or 'editor' to switch)`;
+		msg += `('multi' or 'editor' to switch)`;
 	}
 	let qArr = [makeQuestion(msg, { name, type, def, choices, pageSize })];
 	//@ts-ignore
 	let answers = await inquirer.prompt(qArr);
 	let answer = answers[name];
 	if (type === 'input') { // Allow switch to 'multi' or 'editor'
-		let trimmed = answer.trim();
-		if (trimmed === 'multi') {
-			answer = await multiAsk(origMsg);
-		} else if (trimmed === 'editor') {
-			answer = await editor({ message: origMsg, default: def, postfix:'.md' });
-		} else if (trimmed === 'confirm') {
-			answer = await askConfirm(origMsg);
+		if ((typeof answer === 'string') && answer) {
+			let trimmed = answer.trim();
+			if (trimmed === 'multi') {
+				answer = await multiAsk(origMsg);
+			} else if (trimmed === 'editor') {
+				answer = await editor({ message: origMsg, default: def, postfix: '.md' });
+			} else if (trimmed === 'confirm') {
+				answer = await askConfirm(origMsg);
+			}
 		}
 	}
 	return answer;
@@ -223,7 +225,7 @@ Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" 
  * // fncs - object of functions to call
  * fncs = {
 		tstTst: async function (...args) {
-		  let {arr,obj} = parseArgs(args); //IMPORTANT - define fnc w. ...args, BUT call parseArgs(args)
+			let {arr,obj} = parseArgs(args); //IMPORTANT - define fnc w. ...args, BUT call parseArgs(args)
 			console.log({ arr, obj });
 			// arr: ["wolf", "ts"], obj: { dog: 'cat', tiger: 'lion' }
 		},

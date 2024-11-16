@@ -107,15 +107,17 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [],
     let answers = await inquirer.prompt(qArr);
     let answer = answers[name];
     if (type === 'input') { // Allow switch to 'multi' or 'editor'
-        let trimmed = answer.trim();
-        if (trimmed === 'multi') {
-            answer = await multiAsk(origMsg);
-        }
-        else if (trimmed === 'editor') {
-            answer = await editor({ message: origMsg, default: def, postfix: '.md' });
-        }
-        else if (trimmed === 'confirm') {
-            answer = await askConfirm(origMsg);
+        if ((typeof answer === 'string') && answer) {
+            let trimmed = answer.trim();
+            if (trimmed === 'multi') {
+                answer = await multiAsk(origMsg);
+            }
+            else if (trimmed === 'editor') {
+                answer = await editor({ message: origMsg, default: def, postfix: '.md' });
+            }
+            else if (trimmed === 'confirm') {
+                answer = await askConfirm(origMsg);
+            }
         }
     }
     return answer;
@@ -198,7 +200,7 @@ Will call `<cmd>('ai', 'ts', {dog:"cat", tiger:"lion", a:true, b:true, c:"wolf" 
  * // fncs - object of functions to call
  * fncs = {
         tstTst: async function (...args) {
-          let {arr,obj} = parseArgs(args); //IMPORTANT - define fnc w. ...args, BUT call parseArgs(args)
+            let {arr,obj} = parseArgs(args); //IMPORTANT - define fnc w. ...args, BUT call parseArgs(args)
             console.log({ arr, obj });
             // arr: ["wolf", "ts"], obj: { dog: 'cat', tiger: 'lion' }
         },
