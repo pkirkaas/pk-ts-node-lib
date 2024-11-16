@@ -29,7 +29,7 @@ export async function objectExplorer(obj, ppath) {
 // TODO: Update to https://www.npmjs.com/package/@inquirer/prompts
 import inquirer from "inquirer";
 import { editor } from '@inquirer/prompts';
-export const inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expand', 'checkbox', 'password', 'editor'];
+export const inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expand', 'checkbox', 'password', 'editor', 'multi', 'multiline',];
 /**
  * Makes a single inquirer question JS Object, for use in "ask", below
  * NOTE: type 'list' returns a SINGLE value from the list, 'checkbox' returns array of selected values
@@ -70,6 +70,7 @@ export function makeQuestion(message, { name = '', type = '', def = null, choice
  * @return "answer" value -
  */
 export async function ask(msg, { name = '', type = '', def = null, choices = [], pageSize = 40 } = {}) {
+    let origMsg = msg;
     if (!name) {
         name = _.uniqueId('inc_name_');
     }
@@ -98,10 +99,25 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [],
     else if (type == 'none') {
         return null;
     }
+    if (type === 'input') { // Allow switch to 'multi' or 'editor'
+        msg += `('multi' or 'editor' to switch)`;
+    }
     let qArr = [makeQuestion(msg, { name, type, def, choices, pageSize })];
     //@ts-ignore
     let answers = await inquirer.prompt(qArr);
     let answer = answers[name];
+    if (type === 'input') { // Allow switch to 'multi' or 'editor'
+        let trimmed = answer.trim();
+        if (trimmed === 'multi') {
+            answer = await multiAsk(origMsg);
+        }
+        else if (trimmed === 'editor') {
+            answer = await editor({ message: origMsg, default: def, postfix: '.md' });
+        }
+        else if (trimmed === 'confirm') {
+            answer = await askConfirm(origMsg);
+        }
+    }
     return answer;
 }
 /**

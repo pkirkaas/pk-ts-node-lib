@@ -5,6 +5,9 @@
   "extends": "pk-ts-common-lib/tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
+    // Try changing module to suport ts-node/esm
+    //"moduleResolution": "node16",
+    //"module": "esnext",
     "outDir": "./dist/esm",
   },
     "include": [

@@ -127,9 +127,16 @@ let testsFs = {
 		console.log({ json, obj });
 	},
 
-	tstAsk: async function () {
+	tstAsk: async function (...args) {
+		let type=args[0];
+		console.log(`tstAsk: ${type}`);
+		let answer:string;
+		if (type === 'multi') {
+			answer = await ask('What kind of input do you want?');
+		} else {
 		//@ts-ignore
-		let answer = await ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
+		answer = await ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
+		}
 		console.log({ answer });
 	},
 	

@@ -103,9 +103,17 @@ let testsFs = {
         dbgWrt(obj, 'sassMapO');
         console.log({ json, obj });
     },
-    tstAsk: async function () {
-        //@ts-ignore
-        let answer = await ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
+    tstAsk: async function (...args) {
+        let type = args[0];
+        console.log(`tstAsk: ${type}`);
+        let answer;
+        if (type === 'multi') {
+            answer = await ask('What kind of input do you want?');
+        }
+        else {
+            //@ts-ignore
+            answer = await ask('What color are your eyes?', { choices: ['red', 'blue', 'green'] });
+        }
         console.log({ answer });
     },
     tstSlashOrig: async function () {
