@@ -90,11 +90,12 @@ export async function ask(msg, { name = '', type = '', def = null, choices = [],
     else if (type === 'editor') {
         let ans = await editor({ message: msg, default: def, postfix: '.md' });
         return ans;
-    }
-    else if (type === 'confirm') {
+        /*
+    } else if (type === 'confirm') {
         //let ans  = await inquirer.prompt([{ message: msg, type: 'confirm', name, default: def, }]);
         let ans = await askConfirm(msg);
         return ans;
+        */
     }
     else if (type == 'none') {
         return null;

@@ -106,10 +106,12 @@ export async function ask(msg: string, { name = '', type = '', def = null, choic
 	} else if (type === 'editor') {
 		let ans = await editor({ message: msg, default: def, postfix: '.md' });
 		return ans;
+		/*
 	} else if (type === 'confirm') {
 		//let ans  = await inquirer.prompt([{ message: msg, type: 'confirm', name, default: def, }]);
 		let ans = await askConfirm(msg);
 		return ans;
+		*/
 	} else if (type == 'none') {
 		return null;
 	}
