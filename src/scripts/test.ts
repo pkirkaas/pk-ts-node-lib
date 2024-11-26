@@ -23,6 +23,10 @@ let scssMap = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, v
 let scssMapr = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (flex, (flex-direction: column)), block: block))';
 	
 let testsFs = {
+	tstAsk: async  () => {
+		let res = await ask("What is your name?",);
+		console.log({ res });
+	},
 
 	tstArgs: function (...args) {
 		let parsed = parseArgs(args,{tiger:4});
@@ -127,7 +131,7 @@ let testsFs = {
 		console.log({ json, obj });
 	},
 
-	tstAsk: async function (...args) {
+	tstAskOld: async function (...args) {
 		let type=args[0];
 		console.log(`tstAsk: ${type}`);
 		let answer:string;

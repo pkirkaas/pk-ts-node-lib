@@ -80,15 +80,16 @@ export function makeQuestion(message: string, { name = '', type = '', def = null
  * @param string msg - the message to show/prompt
  * @param object w. optional keys/values:
  *   name: string - the name to use for the answer - not required since only one answer per ask
- *   type: one of the incTypes above. If not defined, defaults to string input, unless the choices array exists
+ *   type: one of the incTypes above. If not defined, defaults to string 'input', unless the choices array exists
  *      if type==='list', single item returned, if 'checkbox', array of selected items returned.
- *   def: string|int - default, if any. If type === 'list', default can be value or inde4x
+ *      if type='input', allows switch to 'editor' or 'multi' for multi-line input
+ *   def: string|int - default, if any. If type === 'list', default can be value or index
  *   choices: opt array - type empty & choices NOT empty, type changes to "list" 
  *   **choices** can be a simple array of strings, or an array of objects with 'name' & 'value' properties - name is what is displayed, value is the value returned
  * 
  * @return "answer" value - 
  */
-export async function ask(msg: string, { name = '', type = '', def = null, choices = [], pageSize = 40 } = {}) {
+export async function ask(msg: string, { name = '', type = '', def = null,  choices = [], pageSize = 40 } = {}) {
 	let origMsg = msg;
 	if (!name) {
 		name = _.uniqueId('inc_name_');
@@ -125,6 +126,16 @@ export async function ask(msg: string, { name = '', type = '', def = null, choic
 	let answers = await inquirer.prompt(qArr);
 	let answer = answers[name];
 	if (type === 'input') { // Allow switch to 'multi' or 'editor'
+		if (!answer) {
+			//let toa = typeOf(answer);
+			//console.log(`In ask, type = 'input' - Falsy answer: toa: [${toa}]`, {answer});
+			let conf = await ask('Sure you want to exit? ', { type: 'confirm', def: false });
+			if (conf) {
+				return answer;
+			} else {
+				answer = await ask(origMsg, { type: 'input', def: def });
+			}
+		}
 		if ((typeof answer === 'string') && answer) {
 			let trimmed = answer.trim();
 			if (trimmed === 'multi') {
