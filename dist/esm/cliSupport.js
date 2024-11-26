@@ -5,7 +5,7 @@ import * as readline from 'node:readline/promises';
 import _ from "lodash";
 import * as dotenv from 'dotenv';
 import { cwd } from './index.js';
-import { PkError, getProps, isSimpleObject, } from 'pk-ts-common-lib';
+import { getProps, isSimpleObject, } from 'pk-ts-common-lib';
 //@ts-ignore
 dotenv.config(path.join(cwd, ".env"));
 export function envInit(envPath = ".env") {
@@ -160,7 +160,16 @@ export async function multiAsk(prompt) {
         });
     });
 }
-export async function askConfirm(cMsg = 'Do It?') {
+/**
+ * Ask for confirmation, return true or false
+ * @param string cMsg - the message to show/prompt
+ * @param boolean def - default confirmation value (default = true)
+ * @return boolean - true or false
+ */
+export async function askConfirm(cMsg = 'Do It?', def = true) {
+    let answer = await ask(cMsg, { type: 'confirm', def });
+    return answer;
+    /*
     console.log(`Run Task: [${cMsg}]`);
     let cont = await ask("Continue? (Yy)");
     if (cont.toLowerCase() !== 'y') {
@@ -168,6 +177,7 @@ export async function askConfirm(cMsg = 'Do It?') {
         throw new PkError(`User aborted task [${cMsg}]`);
     }
     return true;
+    */
 }
 /*
 const yargs = require("yargs/yargs");

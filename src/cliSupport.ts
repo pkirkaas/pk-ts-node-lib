@@ -179,7 +179,16 @@ export async function multiAsk(prompt?: string): Promise<string> {
 }
 
 
-export async function askConfirm(cMsg = 'Do It?') {
+/**
+ * Ask for confirmation, return true or false
+ * @param string cMsg - the message to show/prompt
+ * @param boolean def - default confirmation value (default = true)
+ * @return boolean - true or false
+ */
+export async function askConfirm(cMsg = 'Do It?', def = true) {
+	let answer = await ask(cMsg, { type: 'confirm', def });
+	return answer;
+	/*
 	console.log(`Run Task: [${cMsg}]`);
 	let cont = await ask("Continue? (Yy)");
 	if (cont.toLowerCase() !== 'y') {
@@ -187,6 +196,7 @@ export async function askConfirm(cMsg = 'Do It?') {
 		throw new PkError(`User aborted task [${cMsg}]`);
 	}
 	return true;
+	*/
 }
 
 

@@ -54,7 +54,13 @@ export declare function ask(msg: string, { name, type, def, choices, pageSize }?
  * Multi-line input, similar to "ask" above, but returns a string of all lines entered. End input with <Ctl-D>
  */
 export declare function multiAsk(prompt?: string): Promise<string>;
-export declare function askConfirm(cMsg?: string): Promise<boolean>;
+/**
+ * Ask for confirmation, return true or false
+ * @param string cMsg - the message to show/prompt
+ * @param boolean def - default confirmation value (default = true)
+ * @return boolean - true or false
+ */
+export declare function askConfirm(cMsg?: string, def?: boolean): Promise<any>;
 /**
  * Parse CLI arguments, return as object
  * argv._ - array of CLI args
