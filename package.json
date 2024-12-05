@@ -30,6 +30,7 @@
   "dependencies": {
     "@types/node": "^20.8.4",
     "axios": "*",
+    "commander": "^12.1.0",
     "cross-env": "*",
     "date-fns": "latest",
     "dotenv": "*",
