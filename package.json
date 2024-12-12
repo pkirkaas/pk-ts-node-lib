@@ -28,9 +28,9 @@
     "cleani": "rm -rf ./dist ./node_modules package-lock.json && npm install"
   },
   "dependencies": {
-    "@types/node": "^20.8.4",
+    "@types/node": "*",
     "axios": "*",
-    "commander": "^12.1.0",
+    "commander": "*",
     "cross-env": "*",
     "date-fns": "latest",
     "dotenv": "*",
@@ -39,14 +39,15 @@
     "fs-path": "*",
     "inquirer": "latest",
     "pk-ts-common-lib": "github:pkirkaas/pk-ts-common-lib#working",
-    "ts-morph": "^24.0.0",
-    "url-status-code": "*",
-    "valid-filename": "*",
+    "ts-morph": "*",
     "yargs": "latest"
   },
   "devDependencies": {
-    "esm-loader-typescript": "^1.0.6",
-    "ts-node": "*"
+    "esm-loader-typescript": "^1.0.6"
+  },
+  "deprecated-deps": {
+    "valid-filename": "*",
+    "end":"end"
   },
   "tsconfig-paths": "*",
   "alt-lib-gits": [
