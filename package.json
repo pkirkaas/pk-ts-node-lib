@@ -28,6 +28,7 @@
     "cleani": "rm -rf ./dist ./node_modules package-lock.json && npm install"
   },
   "dependencies": {
+    "@inquirer/prompts": "^7.2.1",
     "@types/node": "*",
     "axios": "*",
     "commander": "*",
@@ -47,7 +48,7 @@
   },
   "deprecated-deps": {
     "valid-filename": "*",
-    "end":"end"
+    "end": "end"
   },
   "tsconfig-paths": "*",
   "alt-lib-gits": [

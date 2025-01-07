@@ -19,4 +19,17 @@ export declare function getDirname(url: string, ...parts: any[]): string;
  * paths arg, recursive
  */
 export declare function getFilePaths(paths: OptArrStr): any[];
+export declare const extTypes: {
+    vid: string[];
+    img: string[];
+};
+/**
+ * Returns flat array of file paths found in the folder, recursive
+ * @param folder - path to folder
+ * @param type - optional file type to filter on -
+ *   a key to extTypes, or ext string
+ *   if empty, all files
+ * @return array of file paths
+ */
+export declare function getFiles(folder: any, type?: string): Promise<any>;
 //# sourceMappingURL=files.d.ts.map

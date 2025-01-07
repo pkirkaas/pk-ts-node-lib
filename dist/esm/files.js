@@ -1,7 +1,12 @@
 import fsPath from 'fs-path';
+import path from 'path';
 import fs from "fs-extra";
 export { fs };
-import { slashPath } from './index.js';
+//import {  OptArrStr, cwd,   bsetpath, appDefaults } from '../../init';
+//import { GenericObject, OptArrStr, cwd, path, JSON5,  bsetpath, appDefaults } from '../common';
+//here changing in cdc
+import { PkError, } from 'pk-ts-common-lib';
+import { slashPath, isDirectory, } from './index.js';
 /** THIS ASSUMES WE ARE IN A MODULE SYSTEM
  * Replaces __dirname & __filename
  * TODO: Investigate further - like - what is 'import.meta.url'?
@@ -56,5 +61,46 @@ export function getFilePaths(paths) {
     }
     fpaths = Array.from(new Set(fpaths));
     return fpaths;
+}
+export const extTypes = {
+    vid: [
+        ".webm", ".mkv", ".flv", ".vob", ".ogv", ".ogg", ".rrc", ".gifv", ".mng",
+        ".mov", ".avi", ".qt", ".wmv", ".yuv", ".rm", ".asf", ".amv", ".mp4", ".m4p",
+        ".m4v", ".mpg", ".mp2", ".mts", ".mpeg", ".mpe", ".mpv", ".m4v", ".svi", ".3gp",
+        ".3g2", ".mxf", ".roq", ".nsv", ".flv", ".f4v", ".f4p", ".f4a", ".f4b", ".mod",
+    ],
+    img: [
+        '.jpg', '.jpeg', '.jpe', '.jif', '.jfif', '.jfi', '.png', '.gif', '.webp', '.tiff',
+    ],
+};
+/**
+ * Returns flat array of file paths found in the folder, recursive
+ * @param folder - path to folder
+ * @param type - optional file type to filter on -
+ *   a key to extTypes, or ext string
+ *   if empty, all files
+ * @return array of file paths
+ */
+export async function getFiles(folder, type) {
+    if (!isDirectory(folder)) {
+        throw new PkError(`Folder not found: ${folder}`);
+    }
+    //  const contents = await readdir(path, { withFileTypes: true });
+    const filesInPath = await fs.readdir(folder, { withFileTypes: true });
+    let files = (await Promise.all(filesInPath.map((fileInPath) => {
+        const resolvedPath = slashPath(path.resolve(folder, fileInPath.name));
+        return fileInPath.isDirectory() ? getFiles(resolvedPath) : resolvedPath;
+    }))).flat(99);
+    if (type) {
+        let extArr = [];
+        if (type in extTypes) {
+            extArr = extTypes[type];
+        }
+        else {
+            extArr = [type];
+        }
+        files = files.filter(file => extArr.includes(path.extname(file).toLowerCase()));
+    }
+    return files;
 }
 //# sourceMappingURL=files.js.map
