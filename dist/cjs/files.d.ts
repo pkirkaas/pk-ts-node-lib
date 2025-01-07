@@ -32,4 +32,8 @@ export declare const extTypes: {
  * @return array of file paths
  */
 export declare function getFiles(folder: any, type?: string): Promise<any>;
+/**
+ * Returns SET of all extensions in a folder
+ */
+export declare function getAllExts(folder: any): Promise<unknown[]>;
 //# sourceMappingURL=files.d.ts.map

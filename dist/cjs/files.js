@@ -103,4 +103,13 @@ export async function getFiles(folder, type) {
     }
     return files;
 }
+/**
+ * Returns SET of all extensions in a folder
+ */
+export async function getAllExts(folder) {
+    let files = await getFiles(folder);
+    let exts = files.map(file => path.extname(file).toLowerCase());
+    let uexts = Array.from(new Set(exts));
+    return uexts;
+}
 //# sourceMappingURL=files.js.map
