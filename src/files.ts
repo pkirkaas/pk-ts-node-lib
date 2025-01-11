@@ -77,14 +77,19 @@ export function getFilePaths(paths: OptArrStr) {
 }
 
 export const extTypes = { // Extensions for file types
-	vid: [
+	vid: [ //Video formats
 		".webm", ".mkv", ".flv", ".vob", ".ogv", ".ogg", ".rrc", ".gifv", ".mng",
 		".mov", ".avi", ".qt", ".wmv", ".yuv", ".rm", ".asf", ".amv", ".mp4", ".m4p",
 		".m4v", ".mpg", ".mp2", ".mts", ".mpeg", ".mpe", ".mpv", ".m4v", ".svi", ".3gp",
 		".3g2", ".mxf", ".roq", ".nsv", ".flv", ".f4v", ".f4p", ".f4a", ".f4b", ".mod",
 	],
-	img: [
+	img: [ //Image formats
 		'.jpg', '.jpeg', '.jpe', '.jif', '.jfif', '.jfi', '.png', '.gif', '.webp', '.tiff',
+		'.jbf', '.psd', '.bmp', '.svg', '.raw', '.pcd', 
+	],
+	aud: [ //Audio formats
+		'.aac', '.aif', '.cda', '.mid', '.midi', '.mp3', '.mpa', '.ogg', '.wav', '.wma', '.wpl',
+		
 	],
 };
 

@@ -22,6 +22,7 @@ export declare function getFilePaths(paths: OptArrStr): any[];
 export declare const extTypes: {
     vid: string[];
     img: string[];
+    aud: string[];
 };
 /**
  * Returns flat array of file paths found in the folder, recursive

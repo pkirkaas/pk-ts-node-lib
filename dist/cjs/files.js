@@ -71,6 +71,10 @@ export const extTypes = {
     ],
     img: [
         '.jpg', '.jpeg', '.jpe', '.jif', '.jfif', '.jfi', '.png', '.gif', '.webp', '.tiff',
+        '.jbf', '.psd', '.bmp', '.svg', '.raw', '.pcd',
+    ],
+    aud: [
+        '.aac', '.aif', '.cda', '.mid', '.midi', '.mp3', '.mpa', '.ogg', '.wav', '.wma', '.wpl',
     ],
 };
 /**
