@@ -11,7 +11,7 @@ import path from 'path';
 import util from 'util';
 /** Test moving thest functions to common  */
 import { stamp, stackParse, } from 'pk-ts-common-lib';
-export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null) {
+export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null, getters = true) {
     util.inspect.defaultOptions.maxArrayLength = maxArrayLength;
     util.inspect.defaultOptions.depth = depth;
     util.inspect.defaultOptions.colors = colors;
@@ -20,6 +20,7 @@ export function setInspectLevels(depth = null, maxArrayLength = null, breakLengt
 }
 util.inspect.defaultOptions.maxArrayLength = null;
 util.inspect.defaultOptions.depth = null;
+util.inspect.defaultOptions.getters = true;
 util.inspect.defaultOptions.breakLength = 200;
 import os from "os";
 import { spawn, spawnSync } from "child_process";

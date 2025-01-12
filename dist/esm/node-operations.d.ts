@@ -1,4 +1,4 @@
-export declare function setInspectLevels(depth?: any, maxArrayLength?: any, breakLength?: number, colors?: boolean, maxStringLength?: any): void;
+export declare function setInspectLevels(depth?: any, maxArrayLength?: any, breakLength?: number, colors?: boolean, maxStringLength?: any, getters?: boolean): void;
 import { GenericObject, GenObj } from 'pk-ts-common-lib';
 export declare const cwd: string;
 /** Uses util.inspect to stringify an arg

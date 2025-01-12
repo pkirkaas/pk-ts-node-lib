@@ -8,7 +8,7 @@ import * as dotenv from 'dotenv';
 import { cwd } from './index.js';
 import {
 	PkError, getProps, getObjDets, subObj, isObject, isSimpleObject, isEmpty,
-	typeOf, allProps, allPropsP, objInfo,
+	typeOf, allProps,  objInfo,
 }
 	from 'pk-ts-common-lib';
 //@ts-ignore
