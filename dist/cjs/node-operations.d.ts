@@ -1,3 +1,8 @@
+/**
+ * Cribbed from old version of is-invalid-path 1.0
+ * Very rough test for invalid characters in a file path.
+ */
+export declare function invalidPath(str: string): any;
 export declare function setInspectLevels(depth?: any, maxArrayLength?: any, breakLength?: number, colors?: boolean, maxStringLength?: any, getters?: boolean): void;
 import { GenericObject, GenObj } from 'pk-ts-common-lib';
 export declare const cwd: string;
@@ -78,27 +83,13 @@ export declare function convertParamsToCliArgs(params: string | string[] | GenOb
  */
 export declare function stdOut(...args: any[]): void;
 export declare function utilInspect(obj: any, opts?: any): string;
-export declare function dbgPath(fname: any): string;
+export declare function dbgPath(fname?: string): string;
 /** Change argument order to make path optional*/
-export declare function dbgWrt(arg: any, fpath?: string, append?: boolean): any;
-export declare function dbgWrite(fpath: any, arg: any, append?: boolean): any;
-export declare function compareArrays(arr1: [], arr2: []): {
-    arr1: [];
-    arr2: [];
-    arr1Cnt: 0;
-    arr2Cnt: 0;
-    shared: any[];
-    sharedCnt: number;
-    onlyArr1: any[];
-    onlyArr1Cnt: number;
-    onlyArr2: any[];
-    onlyArr2Cnt: number;
-};
+export declare function dbgWrt(arg: any, fname?: string, append?: boolean): string;
 /**
- * Better param order for writeFile
+ *
  */
-export declare function writeData(arg: any, fpath?: string, append?: boolean): any;
-export declare function writeFile(fpath: any, arg: any, append?: boolean): any;
+export declare function writeData(arg: any, fpath?: string, append?: boolean): string;
 /**
  * ANOTHER TRY!! Write data to a file - with better options, defaults & params....
   //function sayName({first='Bob',last='Smith'}: {first?: string; last?: string}={}){
@@ -119,7 +110,7 @@ export declare function saveData(arg: any, { fname, fpath, type, dir, append }?:
  * or we make a best guess
  * @return ???
  */
-export declare function logMsg(msg: any, lpath?: string): any;
+export declare function logMsg(msg: any, lpath?: string): string | false;
 /** Call from a catch - logs error to file, console.error, & returns false
  */
 export declare function catchErr(err: any, ...rest: any[]): boolean;

@@ -5,17 +5,25 @@
  * @email pkirkaas@gmail.com
  * 
  */
+// NPM Imports
 import fs from "fs-extra";
-//export const  path =  require( 'path');
 import path from 'path';
-
+import isGlob from 'is-glob';
 import util from 'util';
 
-/** Test moving thest functions to common  */
-
+// PK Lib Imports
 import {
-  getFrameAfterFunction, stamp, stackParse, getStack,
+  getFrameAfterFunction, stamp, stackParse, getStack, PkError, isString, isVoid,
 } from 'pk-ts-common-lib';
+
+/**
+ * Cribbed from old version of is-invalid-path 1.0
+ * Very rough test for invalid characters in a file path.
+ */
+export function invalidPath(str: string) {
+  var re = /[‘“!#$%&+^<=>`]/;
+  return !str || (typeof str !== 'string') || isGlob(str) || re.test(str);
+};
 
 export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null, getters = true) {
   util.inspect.defaultOptions.maxArrayLength = maxArrayLength;
@@ -116,7 +124,11 @@ export function isLinux() {
 // What about spaces???
 export function slashPath(...parts) {
   let apath = path.posix.join(...parts);
-  return apath.split(path.sep).join(path.posix.sep);
+  let tstPath = apath.split(path.sep).join(path.posix.sep);
+  if (invalidPath(tstPath)) {
+    throw new PkError(`in slashPath - Invalid path: ${tstPath}`);
+  }
+  return tstPath;
 }
 
 export function isDirectory(apath) {
@@ -346,23 +358,18 @@ export function utilInspect(obj: any, opts?: any) {
   return util.inspect(obj, opts);
 }
 
-export function dbgPath(fname) {
+export function dbgPath(fname='debug') {
   fname = `${fname}.json5`;
   return slashPath(cwd, 'tmp', fname);
-
 }
 
 /** Change argument order to make path optional*/
-export function dbgWrt(arg: any, fpath = 'debug', append: boolean = false) {
-  console.log(`in dbgWrt about to write to: ${fpath}`);
-  return dbgWrite(fpath, arg, append);
+export function dbgWrt(arg: any, fname = 'debug', append: boolean = false) {
+  let dpath = dbgPath(fname);
+  return writeData(arg, dpath,  append);
 }
 
-export function dbgWrite(fpath, arg: any, append: boolean = false) {
-  let dpath = dbgPath(fpath);
-  return writeFile(dpath, arg, append);
-}
-
+/*
 export function compareArrays(arr1: [], arr2: []) {
   let shared = intersect(arr1, arr2);
   let sharedCnt = shared.length;
@@ -375,12 +382,36 @@ export function compareArrays(arr1: [], arr2: []) {
   return { arr1, arr2, arr1Cnt, arr2Cnt, shared, sharedCnt, onlyArr1, onlyArr1Cnt, onlyArr2, onlyArr2Cnt };
 }
 
+*/
 /**
- * Better param order for writeFile
+ * 
  */
 export function writeData(arg: any, fpath = '.', append: boolean = false) {
-  return writeFile(fpath, arg, append);
+  if (arg === undefined) {
+    arg = "undefned";
+  } else if (arg === null) {
+    arg = "null";
+  }
+  fpath = slashPath(fpath);
+  if (isDirectory(fpath)) {
+    fpath = path.join(fpath, "debug-out.json5");
+  }
+  //let fexists = fs.existsSync(fpath);
+  let flag = 'w';
+  if (append) {
+    flag = 'a';
+  }
+  let opts = { flag };
+  let dir = path.posix.dirname(fpath);
+  let dires = fs.mkdirSync(dir, { recursive: true });
+  if (!isPrimitive(arg)) {
+    arg = JSON5Stringify(arg);
+  }
+  console.log(`in writeFile about to write to: ${fpath} with opts:`, opts);
+  let fsWriteRet = fs.writeFileSync(fpath, arg, opts);
+  return fpath;
 }
+/*
 export function writeFile(fpath, arg: any, append: boolean = false) {
   if (arg === undefined) {
     arg = "undefned";
@@ -406,6 +437,7 @@ export function writeFile(fpath, arg: any, append: boolean = false) {
   let fsWriteRet = fs.writeFileSync(fpath, arg, opts);
   return fpath;
 }
+  */
 
 /**
  * ANOTHER TRY!! Write data to a file - with better options, defaults & params....
@@ -417,7 +449,8 @@ export function writeFile(fpath, arg: any, append: boolean = false) {
 export function saveData(arg: any, { fname = 'dbg-out', fpath = null, type = 'json5', dir = './tmp', append = false } = {}) {
   // Get/Make the file output path
   type = (type === 'json5') ? 'json5' : 'json';
-  let fullPath = fpath ?? slashPath(dir, `${fname}.${type}`);
+  //let fullPath = fpath ?? slashPath(dir, `${fname}.${type}`);
+  let fullPath = fpath ? slashPath(fpath) : slashPath(dir, `${fname}.${type}`);
   let dirName = path.posix.dirname(fullPath);
   let dires = fs.mkdirSync(dirName, { recursive: true });
   if (!isPrimitive(arg)) {
@@ -467,18 +500,15 @@ export function logMsg(msg: any, lpath?: string) {
     data.msg = msg.message;
     data.stack = msg.stack;
     data.name = msg.name;
-    //@ts-ignore
-    data.column = msg.columnNumber;
-    //@ts-ignore
-    data.line = msg.lineNumber;
-    //@ts-ignore
-    data.file = msg.fileName;
+    data.column = (msg as any).columnNumber;
+    data.line = (msg as any).lineNumber;
+    data.file = (msg as any).fileName;
     data.raw = msg;
   } else {
     data.msg = msg;
   }
   try {
-    let res = writeFile(lpath, data, true);
+    let res = writeData(data, lpath,  true);
     return res;
   } catch (err) {
     console.error(`Whoops! Exception logging error!`, { msg, lpath, data, err });
