@@ -1,4 +1,4 @@
-import { getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, runCommand, stdOut, winBashes, parseArgs, getArrArgs, getObjArg, getAllExts, } from '../index.js';
+import { getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, runCommand, stdOut, winBashes, parseArgs, getArrArgs, getObjArg, getFiles, } from '../index.js';
 import _ from 'lodash';
 import { mergeAndConcat, typeOf } from 'pk-ts-common-lib';
 /*
@@ -34,8 +34,8 @@ let testsFs = {
             null,
         ];
         for (let types of ftypes) {
-            //let res = await getFiles(dir ,types);
-            let res = await getAllExts(dir, types);
+            let res = await getFiles(dir, types);
+            //let res = await getAllExts(dir ,types);
             let rep = { dir, types, res };
             console.log(rep);
             out.push(rep);

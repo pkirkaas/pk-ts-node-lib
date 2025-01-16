@@ -39,7 +39,7 @@ export declare const extTypes: {
  *   if empty, all files
  * @return array of file paths
  */
-export declare function getFiles(folder: string, types?: Strings): Promise<string[]>;
+export declare function getFiles(folder: string, types?: Strings): string[];
 /**
  * Returns SET of all extensions in a folder, testing getFiles w. types
  * @param folder:string - path to folder
@@ -48,5 +48,5 @@ export declare function getFiles(folder: string, types?: Strings): Promise<strin
  *   if empty, all files
  * @return array of file extensions found
  */
-export declare function getAllExts(folder: string, types?: Strings): Promise<string[]>;
+export declare function getAllExts(folder: string, types?: Strings): string[];
 //# sourceMappingURL=files.d.ts.map

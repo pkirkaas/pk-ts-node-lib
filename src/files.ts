@@ -110,18 +110,32 @@ export const extTypes = { // Extensions for file types
  *   if empty, all files
  * @return array of file paths
  */
-export async function getFiles(folder:string, types?: Strings):Promise<string[]> {
+//export async function getFiles(folder:string, types?: Strings):Promise<string[]> {
+export  function getFiles(folder:string, types?: Strings):string[] {
 	if (!isDirectory(folder)) {
 		throw new PkError(`Folder not found: ${folder}`);
 	}
 
 	//  const contents = await readdir(path, { withFileTypes: true });
+
+
+
+	/* Async version
 	const filesInPath = await fs.readdir(folder, { withFileTypes: true });
 
 	let files = (await Promise.all(filesInPath.map((fileInPath) => {
 		const resolvedPath = slashPath(path.resolve(folder, fileInPath.name));
 		return fileInPath.isDirectory() ? getFiles(resolvedPath) : resolvedPath;
 	}))).flat(99);
+	*/
+
+	// Sync version
+	let filesInPath = fs.readdirSync(folder, { withFileTypes: true });
+	let files = filesInPath.map((fileInPath) => {
+		const resolvedPath = slashPath(path.resolve(folder, fileInPath.name));
+		return fileInPath.isDirectory() ? getFiles(resolvedPath) : resolvedPath;
+	});
+	files = files.flat(99);
 
 	if (types) {
 		let incTypes: string[] = mkArray(types);
@@ -151,8 +165,8 @@ export async function getFiles(folder:string, types?: Strings):Promise<string[]>
  *   if empty, all files
  * @return array of file extensions found
  */
-export async function getAllExts(folder:string, types?: Strings):Promise<string[]> {
-	let files = await getFiles(folder, types);
+export  function getAllExts(folder:string, types?: Strings):string[] {
+	let files =  getFiles(folder, types);
 	let exts = files.map(file => path.extname(file).toLowerCase());
 	let uexts = Array.from(new Set(exts));
 	return uexts;

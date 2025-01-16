@@ -42,8 +42,8 @@ let testsFs = {
 
 		];
 		for (let types of ftypes) {
-			//let res = await getFiles(dir ,types);
-			let res = await getAllExts(dir ,types);
+			let res = await getFiles(dir ,types);
+			//let res = await getAllExts(dir ,types);
 			let rep = { dir, types, res };
 			console.log(rep);
 			out.push(rep);
