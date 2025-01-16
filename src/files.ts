@@ -1,3 +1,8 @@
+/**
+ * Node File  System functions/utilities
+ */
+
+// NPM Imports
 import urlStatus from 'url-status-code';
 import fsPath from 'fs-path';
 import path from 'path';
@@ -10,20 +15,24 @@ import { format, isValid } from "date-fns";
 import fs from "fs-extra";
 export { fs };
 import os from 'os';
-//const os = require("os");
-import { cwd } from './index.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// PK Lib Imports
 //import {  OptArrStr, cwd,   bsetpath, appDefaults } from '../../init';
 //import { GenericObject, OptArrStr, cwd, path, JSON5,  bsetpath, appDefaults } from '../common';
 //here changing in cdc
-import { GenericObject, OptArrStr, JSON5, PkError, } from 'pk-ts-common-lib';
+
+import { GenericObject, GenObj, uniqueVals, Strings, mkArray, OptArrStr, JSON5, PkError, } from 'pk-ts-common-lib';
+
+// Local Imports
+import { cwd } from './index.js';
 import { slashPath, isDirectory, } from './index.js';
 
 /** THIS ASSUMES WE ARE IN A MODULE SYSTEM
  * Replaces __dirname & __filename
  * TODO: Investigate further - like - what is 'import.meta.url'?
  */
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 /**
  * Returns the full filename/path of the calling module/file -
@@ -85,23 +94,23 @@ export const extTypes = { // Extensions for file types
 	],
 	img: [ //Image formats
 		'.jpg', '.jpeg', '.jpe', '.jif', '.jfif', '.jfi', '.png', '.gif', '.webp', '.tiff',
-		'.jbf', '.psd', '.bmp', '.svg', '.raw', '.pcd', 
+		'.jbf', '.psd', '.bmp', '.svg', '.raw', '.pcd',
 	],
 	aud: [ //Audio formats
 		'.aac', '.aif', '.cda', '.mid', '.midi', '.mp3', '.mpa', '.ogg', '.wav', '.wma', '.wpl',
-		
+
 	],
 };
 
 /**
  * Returns flat array of file paths found in the folder, recursive
- * @param folder - path to folder
- * @param type - optional file type to filter on -
+ * @param folder:string - path to folder
+ * @param types?:string|string[] - optional white list file type to filter on -
  *   a key to extTypes, or ext string
  *   if empty, all files
  * @return array of file paths
  */
-export async function getFiles(folder, type?: string) {
+export async function getFiles(folder:string, types?: Strings):Promise<string[]> {
 	if (!isDirectory(folder)) {
 		throw new PkError(`Folder not found: ${folder}`);
 	}
@@ -114,23 +123,36 @@ export async function getFiles(folder, type?: string) {
 		return fileInPath.isDirectory() ? getFiles(resolvedPath) : resolvedPath;
 	}))).flat(99);
 
-	if (type) {
+	if (types) {
+		let incTypes: string[] = mkArray(types);
 		let extArr = [];
-		if (type in extTypes) {
-			extArr = extTypes[type];
-		} else {
-			extArr = [type];
+		for (let type of incTypes) {
+
+			if (type in extTypes) {
+				extArr = extArr.concat(extTypes[type]);
+			} else {
+				extArr = extArr.concat([type]);
+			}
 		}
+		extArr = extArr.map(ext => {
+			return (ext.startsWith('.') ? ext : '.' + ext).toLowerCase();;
+		});
+		extArr = uniqueVals(extArr);
 		files = files.filter(file => extArr.includes(path.extname(file).toLowerCase()));
 	}
 	return files;
 }
 
 /**
- * Returns SET of all extensions in a folder
+ * Returns SET of all extensions in a folder, testing getFiles w. types
+ * @param folder:string - path to folder
+ * @param types?:string|string[] - optional white list file type to filter on -
+ *   a key to extTypes, or ext string
+ *   if empty, all files
+ * @return array of file extensions found
  */
-export async function getAllExts(folder) {
-	let  files = await getFiles(folder);
+export async function getAllExts(folder:string, types?: Strings):Promise<string[]> {
+	let files = await getFiles(folder, types);
 	let exts = files.map(file => path.extname(file).toLowerCase());
 	let uexts = Array.from(new Set(exts));
 	return uexts;

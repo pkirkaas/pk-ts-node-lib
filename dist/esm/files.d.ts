@@ -1,6 +1,13 @@
+/**
+ * Node File  System functions/utilities
+ */
 import fs from "fs-extra";
 export { fs };
-import { OptArrStr } from 'pk-ts-common-lib';
+import { Strings, OptArrStr } from 'pk-ts-common-lib';
+/** THIS ASSUMES WE ARE IN A MODULE SYSTEM
+ * Replaces __dirname & __filename
+ * TODO: Investigate further - like - what is 'import.meta.url'?
+ */
 /**
  * Returns the full filename/path of the calling module/file -
  * Awkwardly replaces __filename - BUT calling module has to call with:
@@ -26,15 +33,20 @@ export declare const extTypes: {
 };
 /**
  * Returns flat array of file paths found in the folder, recursive
- * @param folder - path to folder
- * @param type - optional file type to filter on -
+ * @param folder:string - path to folder
+ * @param types?:string|string[] - optional white list file type to filter on -
  *   a key to extTypes, or ext string
  *   if empty, all files
  * @return array of file paths
  */
-export declare function getFiles(folder: any, type?: string): Promise<any>;
+export declare function getFiles(folder: string, types?: Strings): Promise<string[]>;
 /**
- * Returns SET of all extensions in a folder
+ * Returns SET of all extensions in a folder, testing getFiles w. types
+ * @param folder:string - path to folder
+ * @param types?:string|string[] - optional white list file type to filter on -
+ *   a key to extTypes, or ext string
+ *   if empty, all files
+ * @return array of file extensions found
  */
-export declare function getAllExts(folder: any): Promise<unknown[]>;
+export declare function getAllExts(folder: string, types?: Strings): Promise<string[]>;
 //# sourceMappingURL=files.d.ts.map

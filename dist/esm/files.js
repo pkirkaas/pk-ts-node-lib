@@ -1,18 +1,22 @@
+/**
+ * Node File  System functions/utilities
+ */
 import fsPath from 'fs-path';
 import path from 'path';
 import fs from "fs-extra";
 export { fs };
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+// PK Lib Imports
 //import {  OptArrStr, cwd,   bsetpath, appDefaults } from '../../init';
 //import { GenericObject, OptArrStr, cwd, path, JSON5,  bsetpath, appDefaults } from '../common';
 //here changing in cdc
-import { PkError, } from 'pk-ts-common-lib';
+import { uniqueVals, mkArray, PkError, } from 'pk-ts-common-lib';
 import { slashPath, isDirectory, } from './index.js';
 /** THIS ASSUMES WE ARE IN A MODULE SYSTEM
  * Replaces __dirname & __filename
  * TODO: Investigate further - like - what is 'import.meta.url'?
  */
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 /**
  * Returns the full filename/path of the calling module/file -
  * Awkwardly replaces __filename - BUT calling module has to call with:
@@ -79,13 +83,13 @@ export const extTypes = {
 };
 /**
  * Returns flat array of file paths found in the folder, recursive
- * @param folder - path to folder
- * @param type - optional file type to filter on -
+ * @param folder:string - path to folder
+ * @param types?:string|string[] - optional white list file type to filter on -
  *   a key to extTypes, or ext string
  *   if empty, all files
  * @return array of file paths
  */
-export async function getFiles(folder, type) {
+export async function getFiles(folder, types) {
     if (!isDirectory(folder)) {
         throw new PkError(`Folder not found: ${folder}`);
     }
@@ -95,23 +99,36 @@ export async function getFiles(folder, type) {
         const resolvedPath = slashPath(path.resolve(folder, fileInPath.name));
         return fileInPath.isDirectory() ? getFiles(resolvedPath) : resolvedPath;
     }))).flat(99);
-    if (type) {
+    if (types) {
+        let incTypes = mkArray(types);
         let extArr = [];
-        if (type in extTypes) {
-            extArr = extTypes[type];
+        for (let type of incTypes) {
+            if (type in extTypes) {
+                extArr = extArr.concat(extTypes[type]);
+            }
+            else {
+                extArr = extArr.concat([type]);
+            }
         }
-        else {
-            extArr = [type];
-        }
+        extArr = extArr.map(ext => {
+            return (ext.startsWith('.') ? ext : '.' + ext).toLowerCase();
+            ;
+        });
+        extArr = uniqueVals(extArr);
         files = files.filter(file => extArr.includes(path.extname(file).toLowerCase()));
     }
     return files;
 }
 /**
- * Returns SET of all extensions in a folder
+ * Returns SET of all extensions in a folder, testing getFiles w. types
+ * @param folder:string - path to folder
+ * @param types?:string|string[] - optional white list file type to filter on -
+ *   a key to extTypes, or ext string
+ *   if empty, all files
+ * @return array of file extensions found
  */
-export async function getAllExts(folder) {
-    let files = await getFiles(folder);
+export async function getAllExts(folder, types) {
+    let files = await getFiles(folder, types);
     let exts = files.map(file => path.extname(file).toLowerCase());
     let uexts = Array.from(new Set(exts));
     return uexts;
