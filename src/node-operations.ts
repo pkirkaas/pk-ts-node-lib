@@ -379,7 +379,9 @@ export function dbgPath(fname?:string) {
 /** Change argument order to make path optional*/
 export function dbgWrt(arg: any, fname?:string, append: boolean = false) {
   let dpath = dbgPath(fname);
-  return writeData(arg, dpath,  append);
+  let res = writeData(arg, dpath,  append);
+  console.log(`dbgWrt: wrote debug data: dpath: [${dpath}], writeData res: [${res}]`);
+  return res;
 }
 
 /*
