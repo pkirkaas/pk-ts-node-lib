@@ -1,6 +1,14 @@
-import { getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, runCommand, stdOut, winBashes, parseArgs, getArrArgs, getObjArg, getFiles, } from '../index.js';
+/**
+ * Tests for node-lib
+ */
+// NPM Imports
 import _ from 'lodash';
+//import path from 'path/posix';
+import path from 'path';
+// PK Lib Imports
 import { mergeAndConcat, typeOf } from 'pk-ts-common-lib';
+// Local Imports
+import { getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, runCommand, stdOut, winBashes, parseArgs, getArrArgs, getObjArg, getFiles, writeData, } from '../index.js';
 /*
 console.log("Testing lib");
 
@@ -17,6 +25,52 @@ console.log({ tob, toa, tos });
 let scssMap = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (display:flex, flex-direction: column), block: block)), font: (sz: (prop: font-size, vals: (xxs: xx-small, xs: x-small, s: small, m: medium, l: large, xl: x-large, xxl: xx-large, xxxl: xxx-large)), ff: (prop: font-family, vals: (v: verdana, a: arial, c: courier, t: times)), fw: (prop: font-weight, vals: (b: bold)), fs: (prop: font-style, vals: (i: italic)), c: (prop: color, vals: (r: red, b: blue, g: green, y: yellow)), a: (prop: text-align, vals: (l: left, r: right, c: center))), bg: (prop: background, vals: (lr: #fbb, l0: #fbb, lg: #bfb, l1: #bfb, lb: #bbf, l2: #bbf, ly: #fbb, l3: #fbb, ls: #bfb, l4: #bfb, lv: #fbf, l5: #fbf, lo: #ffb, l6: #ffb, dr: #400, d0: #400, dg: #040, d1: #040, db: #004, d2: #004, dy: #440, d3: #440, ds: #444, d4: #444, dv: #404, d5: #404, do: #440, d6: #440)), border: (prop: border, vals: (lr: #fbb, l0: #fbb, lg: #bfb, l1: #bfb, lb: #bbf, l2: #bbf, ly: #fbb, l3: #fbb, ls: #bfb, l4: #bfb, lv: #fbf, l5: #fbf, lo: #ffb, l6: #ffb, dr: #400, d0: #400, dg: #040, d1: #040, db: #004, d2: #004, dy: #440, d3: #440, ds: #444, d4: #444, dv: #404, d5: #404, do: #440, d6: #440)))';
 let scssMapr = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (flex, (flex-direction: column)), block: block))';
 let testsFs = {
+    tstWrt() {
+        let fpaths = [undefined, "./tmp/tst", "./tmp", "outf", "outf.ext",
+        ];
+        //let data = { a: "b", c: "d" };
+        let data = "A Primitive  String";
+        for (let fpath of fpaths) {
+            let dbg = dbgWrt(data, fpath);
+            let wd = writeData(data, fpath);
+            console.log("\n\n", { fpath, dbg, wd }, "\n\n");
+        }
+        console.log("Done testing wrt");
+    },
+    tstPaths(arg) {
+        let tstPaths = [
+            //null,
+            //undefined,
+            //"",
+            ".",
+            "./tmp",
+            //			"tmp",
+            "tmp",
+            "tmp.ext",
+            //			"C:/tmp/fname.ext",
+            //			"./fname"
+        ];
+        let pathOps = [
+            //			"basename",
+            "dirname",
+            //			"extname",
+            "parse",
+            //			"resolve",
+        ];
+        console.log("Testing node paths... sep:", path.sep);
+        for (let tstPath of tstPaths) {
+            console.log("\n", tstPath);
+            for (let pathOp of pathOps) {
+                let native = path[pathOp](tstPath);
+                let posix = path.posix[pathOp](tstPath);
+                if (pathOp === "parse") {
+                    posix = posix.dir;
+                    native = native.dir;
+                }
+                console.log("    ", pathOp, { native, posix });
+            }
+        }
+    },
     tstGetFiles: async () => {
         let out = [];
         console.log("Testing getFiles...");

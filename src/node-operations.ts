@@ -358,13 +358,26 @@ export function utilInspect(obj: any, opts?: any) {
   return util.inspect(obj, opts);
 }
 
-export function dbgPath(fname='debug') {
-  fname = `${fname}.json5`;
+export function dbgPath(fname?:string) {
+  let defaultName = 'dbg-out';
+  if (isDirectory(fname)) {
+    //fname = path.join(fname, defaultName);
+    fname = slashPath(fname, defaultName);
+  } else if (!fname) {
+    fname = defaultName;
+  }
+  /*
+  let {base, name, ext} = path.parse(fname);
+  if (!ext) {
+    fname += '.json5';
+  }
+    */
+  //fname = `${name}${ext}`;
   return slashPath(cwd, 'tmp', fname);
 }
 
 /** Change argument order to make path optional*/
-export function dbgWrt(arg: any, fname = 'debug', append: boolean = false) {
+export function dbgWrt(arg: any, fname?:string, append: boolean = false) {
   let dpath = dbgPath(fname);
   return writeData(arg, dpath,  append);
 }
@@ -384,30 +397,47 @@ export function compareArrays(arr1: [], arr2: []) {
 
 */
 /**
- * 
+ * Write data to a file
+ * @param arg:any - data to write - if not a string, it will be stringified
+ * @param fpath:string - filename or directory path - 
+ *   if a directory, will write to a file "{fpath}/debug-out.json5"
+ *   if a filename/path, will write to the path.
+ *     If no extension, will add ".json5" or ".log" depending on the type of arg
  */
-export function writeData(arg: any, fpath = '.', append: boolean = false) {
+//export function writeData(arg: any, fpath?:string, append: boolean = false) {
+export function writeData(arg: any, fpath:string, append: boolean = false) {
+  if (!fpath) {
+    throw new PkError(`In writeData: No 'fpath' provided for arg:`, {arg});
+  }
+//export function writeData(arg: any, fpath = '.', append: boolean = false) {
   if (arg === undefined) {
     arg = "undefned";
   } else if (arg === null) {
     arg = "null";
   }
-  fpath = slashPath(fpath);
-  if (isDirectory(fpath)) {
-    fpath = path.join(fpath, "debug-out.json5");
-  }
-  //let fexists = fs.existsSync(fpath);
-  let flag = 'w';
-  if (append) {
-    flag = 'a';
-  }
-  let opts = { flag };
-  let dir = path.posix.dirname(fpath);
-  let dires = fs.mkdirSync(dir, { recursive: true });
+  let defaultExt = ".log";
+  let defaultName = 'debug-out';
   if (!isPrimitive(arg)) {
+    defaultExt = ".json5";
     arg = JSON5Stringify(arg);
   }
-  console.log(`in writeFile about to write to: ${fpath} with opts:`, opts);
+  fpath = slashPath(fpath);
+  if (isDirectory(fpath)) {
+    //fpath = path.join(fpath, "debug-out.json5");
+    fpath = slashPath(fpath, defaultName);
+  }
+  let { name, ext, base}  = path.parse(fpath);
+  if (!ext) {
+     fpath = fpath+defaultExt;
+  }
+  //let fexists = fs.existsSync(fpath);
+  let flag = append ? 'a' : 'w';
+  let opts = { flag };
+  let dir = path.dirname(fpath);
+  let dires = fs.mkdirSync(dir, { recursive: true });
+  //fpath = slashPath(dir,base);
+  //let outPath = path.join(dir, base);
+  //console.log(`in writeFile about to write to: ${fpath} with opts:`, opts);
   let fsWriteRet = fs.writeFileSync(fpath, arg, opts);
   return fpath;
 }

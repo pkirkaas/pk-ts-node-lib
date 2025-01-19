@@ -87,9 +87,14 @@ export declare function dbgPath(fname?: string): string;
 /** Change argument order to make path optional*/
 export declare function dbgWrt(arg: any, fname?: string, append?: boolean): string;
 /**
- *
+ * Write data to a file
+ * @param arg:any - data to write - if not a string, it will be stringified
+ * @param fpath:string - filename or directory path -
+ *   if a directory, will write to a file "{fpath}/debug-out.json5"
+ *   if a filename/path, will write to the path.
+ *     If no extension, will add ".json5" or ".log" depending on the type of arg
  */
-export declare function writeData(arg: any, fpath?: string, append?: boolean): string;
+export declare function writeData(arg: any, fpath: string, append?: boolean): string;
 /**
  * ANOTHER TRY!! Write data to a file - with better options, defaults & params....
   //function sayName({first='Bob',last='Smith'}: {first?: string; last?: string}={}){

@@ -1,10 +1,25 @@
-import {
-	getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, isFile, getOsType, isWindows, isLinux, runCommand, stdOut, winBashes, parseArgs, getArrArgs, getObjArg, getFiles, getAllExts,
-} from '../index.js';
+/**
+ * Tests for node-lib
+ */
 
+// NPM Imports
 import _ from 'lodash';
+import fs from 'fs-extra';
+//import path from 'path/posix';
+import path from 'path';
+
+// PK Lib Imports
 
 import { mergeAndConcat, isEmpty, typeOf } from 'pk-ts-common-lib';
+
+// Local Imports
+
+import {
+	getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, isFile, getOsType, isWindows, isLinux, runCommand, stdOut, winBashes, parseArgs, getArrArgs, getObjArg, getFiles, getAllExts,
+	writeData,
+} from '../index.js';
+
+
 /*
 console.log("Testing lib");
 
@@ -23,6 +38,53 @@ let scssMap = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, v
 let scssMapr = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (flex, (flex-direction: column)), block: block))';
 
 let testsFs = {
+	tstWrt() {
+		let fpaths = [undefined,  "./tmp/tst", "./tmp", "outf", "outf.ext",
+		];
+		//let data = { a: "b", c: "d" };
+		let data = "A Primitive  String";
+		for (let fpath of fpaths) {
+			let dbg = dbgWrt(data, fpath);
+			let wd = writeData(data, fpath);
+			console.log("\n\n",{fpath, dbg, wd }, "\n\n");
+		}
+		console.log("Done testing wrt");
+	},
+	tstPaths(arg) {
+		let tstPaths = [
+			//null,
+			//undefined,
+			//"",
+			".",
+			"./tmp",
+//			"tmp",
+			"tmp",
+			"tmp.ext",
+//			"C:/tmp/fname.ext",
+//			"./fname"
+		];
+		let pathOps = [
+//			"basename",
+			"dirname",
+//			"extname",
+			"parse",
+//			"resolve",
+
+		];
+		console.log("Testing node paths... sep:", path.sep);
+		for (let tstPath of tstPaths) {
+			console.log("\n", tstPath );
+			for (let pathOp of pathOps) {
+				let native = path[pathOp](tstPath);
+				let posix = path.posix[pathOp](tstPath);
+				if (pathOp === "parse") {
+					posix = posix.dir;
+					native = native.dir;
+				}
+				console.log("    ", pathOp, {native, posix });
+			}
+		}
+	},
 	tstGetFiles: async () => {
 		let out = [];
 		console.log("Testing getFiles...");
