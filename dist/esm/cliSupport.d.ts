@@ -1,3 +1,10 @@
+/** CLI Support for async scripts */
+/**
+ * Parse CLI arguments, return as object
+ * argv._ - array of CLI args
+ * argv.[optkey] - value of optkey
+ */
+export declare const argv: any;
 export declare function envInit(envPath?: string): void;
 /**
  * Interactive CLI function to dynamically explore an object & properties
@@ -61,12 +68,6 @@ export declare function multiAsk(prompt?: string): Promise<string>;
  * @return boolean - true or false
  */
 export declare function askConfirm(cMsg?: string, def?: boolean): Promise<any>;
-/**
- * Parse CLI arguments, return as object
- * argv._ - array of CLI args
- * argv.[optkey] - value of optkey
- */
-export declare const argv: any;
 /** Support for CLI commands & tests with ts-node
  * From a test script (test.ts) import runTest - define some test functions:
  *
@@ -110,7 +111,19 @@ export declare function getArrArgs(args: any[]): any[];
  */
 export declare function getObjArg(args: any[], defObj?: any): any;
 /**
- * Return object {arr, obj, opts} w. array args & obj args -
+ * Parses CLI args into array of simple args and object of options
+ * TODO: DOESN'T WORK outside of `runCli` - fix this!
+ * TODO: consider adding breakup of optargs into array if comma separated
+ * Usage:
+ * cliFnc(...args) {
+ *   let {arr, obj, opts} = parseArgs(args); //IMPORTANT - define fnc w. ...args, BUT call parseArgs(args)
+ *   let firstArg = arr[0] || 'default';
+ * ;
+ *
+ * If no regular args, can use default with
+ * @param args: array of args
+ * @param defObj?:object - default object to use if no obj arg
+ * @return object {arr, obj, opts} w. array args & obj args -
  * opts same as obj, EXCEPT if no default & no obj, opts is '{}' empty obj.
  */
 export declare function parseArgs(args: any[], defObj?: any): any;

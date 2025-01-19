@@ -425,51 +425,20 @@ export function writeData(arg: any, fpath:string, append: boolean = false) {
   }
   fpath = slashPath(fpath);
   if (isDirectory(fpath)) {
-    //fpath = path.join(fpath, "debug-out.json5");
     fpath = slashPath(fpath, defaultName);
   }
   let { name, ext, base}  = path.parse(fpath);
   if (!ext) {
      fpath = fpath+defaultExt;
   }
-  //let fexists = fs.existsSync(fpath);
   let flag = append ? 'a' : 'w';
   let opts = { flag };
   let dir = path.dirname(fpath);
-  let dires = fs.mkdirSync(dir, { recursive: true });
-  //fpath = slashPath(dir,base);
-  //let outPath = path.join(dir, base);
+  fs.mkdirSync(dir, { recursive: true });
   //console.log(`in writeFile about to write to: ${fpath} with opts:`, opts);
-  let fsWriteRet = fs.writeFileSync(fpath, arg, opts);
+  fs.writeFileSync(fpath, arg, opts);
   return fpath;
 }
-/*
-export function writeFile(fpath, arg: any, append: boolean = false) {
-  if (arg === undefined) {
-    arg = "undefned";
-  } else if (arg === null) {
-    arg = "null";
-  }
-  fpath = slashPath(fpath);
-  if (isDirectory(fpath)) {
-    fpath = path.join(fpath, "debug-out.json");
-  }
-  //let fexists = fs.existsSync(fpath);
-  let flag = 'w';
-  if (append) {
-    flag = 'a';
-  }
-  let opts = { flag };
-  let dir = path.posix.dirname(fpath);
-  let dires = fs.mkdirSync(dir, { recursive: true });
-  if (!isPrimitive(arg)) {
-    arg = JSON5Stringify(arg);
-  }
-  console.log(`in writeFile about to write to: ${fpath} with opts:`, opts);
-  let fsWriteRet = fs.writeFileSync(fpath, arg, opts);
-  return fpath;
-}
-  */
 
 /**
  * ANOTHER TRY!! Write data to a file - with better options, defaults & params....

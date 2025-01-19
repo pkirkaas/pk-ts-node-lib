@@ -1,15 +1,27 @@
 /** CLI Support for async scripts */
+// NPM Imports
 import path from "path";
 import { stdin as input, stdout as output } from 'node:process';
 import * as readline from 'node:readline/promises';
 import _ from "lodash";
 import * as dotenv from 'dotenv';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+// PK Lib Imports
+import { getProps, isSimpleObject, trueVal, } from 'pk-ts-common-lib';
+// Local Imports
 import { cwd } from './index.js';
-import { getProps, isSimpleObject, } from 'pk-ts-common-lib';
 //@ts-ignore
-dotenv.config(path.join(cwd, ".env"));
+// Covered w. envInit()?
+//dotenv.config(path.join(cwd, ".env"));
+/**
+ * Parse CLI arguments, return as object
+ * argv._ - array of CLI args
+ * argv.[optkey] - value of optkey
+ */
+export const argv = yargs(hideBin(process.argv)).argv;
 export function envInit(envPath = ".env") {
-    //@ts-ignore
+    //@ts-ignore - why is this needed?
     dotenv.config(path.join(cwd, envPath));
 }
 envInit();
@@ -169,29 +181,7 @@ export async function multiAsk(prompt) {
 export async function askConfirm(cMsg = 'Do It?', def = true) {
     let answer = await ask(cMsg, { type: 'confirm', def });
     return answer;
-    /*
-    console.log(`Run Task: [${cMsg}]`);
-    let cont = await ask("Continue? (Yy)");
-    if (cont.toLowerCase() !== 'y') {
-        console.log("Aborting");
-        throw new PkError(`User aborted task [${cMsg}]`);
-    }
-    return true;
-    */
 }
-/*
-const yargs = require("yargs/yargs");
-const { hideBin } = require("yargs/helpers");
-*/
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
-import { trueVal } from 'pk-ts-common-lib';
-/**
- * Parse CLI arguments, return as object
- * argv._ - array of CLI args
- * argv.[optkey] - value of optkey
- */
-export const argv = yargs(hideBin(process.argv)).argv;
 /** Support for CLI commands & tests with ts-node
  * From a test script (test.ts) import runTest - define some test functions:
  *
@@ -253,7 +243,19 @@ export function getObjArg(args, defObj) {
     return defObj;
 }
 /**
- * Return object {arr, obj, opts} w. array args & obj args -
+ * Parses CLI args into array of simple args and object of options
+ * TODO: DOESN'T WORK outside of `runCli` - fix this!
+ * TODO: consider adding breakup of optargs into array if comma separated
+ * Usage:
+ * cliFnc(...args) {
+ *   let {arr, obj, opts} = parseArgs(args); //IMPORTANT - define fnc w. ...args, BUT call parseArgs(args)
+ *   let firstArg = arr[0] || 'default';
+ * ;
+ *
+ * If no regular args, can use default with
+ * @param args: array of args
+ * @param defObj?:object - default object to use if no obj arg
+ * @return object {arr, obj, opts} w. array args & obj args -
  * opts same as obj, EXCEPT if no default & no obj, opts is '{}' empty obj.
  */
 export function parseArgs(args, defObj) {
