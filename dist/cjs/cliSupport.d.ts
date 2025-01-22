@@ -1,4 +1,5 @@
 /** CLI Support for async scripts */
+import { GenObj } from 'pk-ts-common-lib';
 /**
  * Parse CLI arguments, return as object
  * argv._ - array of CLI args
@@ -6,6 +7,7 @@
  */
 export declare const argv: any;
 export declare function envInit(envPath?: string): void;
+export declare const inqTypes: string[];
 /**
  * Interactive CLI function to dynamically explore an object & properties
  * JS Objects can have cyclical references/properties - so can't just dump them.
@@ -13,26 +15,25 @@ export declare function envInit(envPath?: string): void;
  * @param obj:any - any value to explore.
  */
 export declare function objectExplorer(obj: any, ppath: string[]): Promise<void>;
-export declare const inqTypes: string[];
 /**
  * Makes a single inquirer question JS Object, for use in "ask", below
  * NOTE: type 'list' returns a SINGLE value from the list, 'checkbox' returns array of selected values
  * NOTE: 'default' for a 'list' can be either the value or the array index.
  */
-export declare function makeQuestion(message: string, { name, type, def, choices, pageSize }: {
-    name?: string;
-    type?: string;
-    def?: any;
-    choices?: any[];
-    pageSize?: number;
-}): {
-    message: string;
-    type: string;
-    default: any;
-    choices: any[];
-    name: string;
-    pageSize: number;
-};
+export declare const ask2types: string[];
+/**
+ * Re-implement 'ask' with new inquirer prompts lib
+ * Asks a CLI question of type
+ * simplifies inquirer/prompts with defaults
+ * If `choices` is a simple object keys:values, converts to choices array w. [{name:key, value:value}]
+ * @param msg:string - the message to prompt
+ * @param opts?:GenObj|any[] - parameters for prompt -
+ *   if empty, prompt type is 'input'
+ *   if array or GenObj w/o type key of ask2types, is 'choices' for 'select'
+ *   else contains 'type' and params for type. If contains key 'choices', and no type, makes type select
+ * @return answer
+ */
+export declare function ask(message: string, opts?: GenObj | any[]): Promise<any>;
 /**
  * Uses inquirer for one question, and answer
  * Real inquirer accepts an ARRAY of question objects in a single argument, & returns an object of answers keyed by 'name'
@@ -50,13 +51,6 @@ export declare function makeQuestion(message: string, { name, type, def, choices
  *
  * @return "answer" value -
  */
-export declare function ask(msg: string, { name, type, def, choices, pageSize }?: {
-    name?: string;
-    type?: string;
-    def?: any;
-    choices?: any[];
-    pageSize?: number;
-}): Promise<any>;
 /**
  * Multi-line input, similar to "ask" above, but returns a string of all lines entered. End input with <Ctl-D>
  */

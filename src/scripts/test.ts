@@ -15,6 +15,7 @@ import { mergeAndConcat, isEmpty, typeOf } from 'pk-ts-common-lib';
 // Local Imports
 
 import {
+//	ask2,
 	getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, isFile, getOsType, isWindows, isLinux, runCommand, stdOut, winBashes, parseArgs, getArrArgs, getObjArg, getFiles, getAllExts,
 	writeData,
 } from '../index.js';
@@ -143,6 +144,20 @@ let testsFs = {
 	tstAsk: async () => {
 		let res = await ask("What is your name?",);
 		console.log({ res });
+	},
+	tstA2: async() => {
+		let tsts = {
+			carr:['array', 'of', 'choices'],
+			cobj:{Name1:"Val1", Name2:"Val2",},
+			sopt:{choices:['a','b','c']},
+	//		editor:{type:'editor'},
+		};
+		for (let key in tsts) {
+			let val = tsts[key];
+			console.log("Testing",key,val);
+			let answer = await ask(key,val);
+			console.log(`Answer:`, answer);
+		}
 	},
 
 	tstArgs: function (...args) {

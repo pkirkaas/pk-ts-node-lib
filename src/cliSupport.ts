@@ -15,11 +15,13 @@ import util from "util";
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-
+import inquirer from "inquirer";
+import { editor } from '@inquirer/prompts';
+import * as inq from '@inquirer/prompts';
 // PK Lib Imports
 import {
 	PkError, getProps, getObjDets, subObj, isObject, isSimpleObject, isEmpty,
-	typeOf, allProps,  objInfo, trueVal,
+	typeOf, allProps, objInfo, trueVal, GenObj,
 } from 'pk-ts-common-lib';
 
 // Local Imports
@@ -44,6 +46,8 @@ export function envInit(envPath = ".env") {
 
 envInit();
 
+export const inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expand', 'checkbox', 'password', 'editor', 'multi', 'multiline',];
+
 /**
  * Interactive CLI function to dynamically explore an object & properties
  * JS Objects can have cyclical references/properties - so can't just dump them.
@@ -63,15 +67,13 @@ export async function objectExplorer(obj: any, ppath: string[],) {
 // TODO: Update to https://www.npmjs.com/package/@inquirer/prompts
 
 
-import inquirer from "inquirer";
-import { editor } from '@inquirer/prompts';
-export const inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expand', 'checkbox', 'password', 'editor', 'multi', 'multiline',];
 
 /**
  * Makes a single inquirer question JS Object, for use in "ask", below
  * NOTE: type 'list' returns a SINGLE value from the list, 'checkbox' returns array of selected values
  * NOTE: 'default' for a 'list' can be either the value or the array index.
  */
+/*
 export function makeQuestion(message: string, { name = '', type = '', def = null, choices = [], pageSize = 40 }) {
 	if (!inqTypes.includes(type)) {
 		throw new Error(`Invalid inquirer question type [${type}]`);
@@ -80,6 +82,15 @@ export function makeQuestion(message: string, { name = '', type = '', def = null
 		name = _.uniqueId('inc_name_');
 	}
 	if (!type) {
+		if (!isEmpty(choices)) {
+			if (isSimpleObject(choices)) {
+				let choiceArr = [];
+				for (let name in choices) {
+					choiceArr.push({ name, value: choices[name] });
+				}
+				choices = choiceArr;
+			}
+		}
 		if (choices.length) {
 			type = 'list';
 			pageSize = Math.min(choices.length, pageSize);
@@ -89,7 +100,128 @@ export function makeQuestion(message: string, { name = '', type = '', def = null
 	}
 	return { message, type, default: def, choices, name, pageSize };
 }
+	*/
 
+export const ask2types = [
+	'editor', 'select', 'input', 'confirm', 'multi', 'checkbox',
+	'expand', 'search', 'rawlist', 'number',
+];
+
+/**
+ * Re-implement 'ask' with new inquirer prompts lib
+ * Asks a CLI question of type
+ * simplifies inquirer/prompts with defaults
+ * If `choices` is a simple object keys:values, converts to choices array w. [{name:key, value:value}]
+ * @param msg:string - the message to prompt
+ * @param opts?:GenObj|any[] - parameters for prompt -
+ *   if empty, prompt type is 'input'
+ *   if array or GenObj w/o type key of ask2types, is 'choices' for 'select'
+ *   else contains 'type' and params for type. If contains key 'choices', and no type, makes type select
+ * @return answer
+ */
+export async function ask(message: string, opts?: GenObj | any[]) {
+	if (opts && !Array.isArray(opts) && !isSimpleObject(opts)) {
+		throw new PkError(`Invalid opts param:`, { opts });
+	}
+	//let inqObj: GenObj = { message, name: _.uniqueId('inc_name_') };
+	let inqObj: GenObj = { message, };
+	let type: string;
+	//let name = _.uniqueId('inc_name_');
+	//let choices:any[];
+
+	let isChoices = (arg: unknown) => (Array.isArray(arg) ||
+		(isSimpleObject(arg) && (!('choices' in arg) && (!('type' in arg) || !ask2types.includes(arg.type)))));
+	let choicesAsArr = (arg: GenObj | any[]): any[] =>
+		Array.isArray(arg) ? arg as any[] : Object.keys(arg).map((name) => { return { name, value: arg[name] }; }) as any[];
+
+	/*
+		for (let name in opts) {
+			let value=opts[name];
+			choices.push({name,value});
+		}
+	} 
+}
+	*/
+
+	if (!opts) {
+		type = 'input';
+	} else if (isChoices(opts)) { // Opts are choices, type is 'select'
+		type = 'select';
+		inqObj.choices = choicesAsArr(opts);
+		/*
+		if (Array.isArray(opts)) {
+			choices = opts;
+		} else { // simple object, convert keys->values to [{name:?,value:?},...]
+			for (let name in opts) {
+				let value=opts[name];
+				choices.push({name,value});
+			}
+		} 
+			*/
+	} else if (isSimpleObject(opts)) { // General object 
+		if (opts.choices) {
+
+			inqObj.choices = choicesAsArr(opts.choices);
+			delete opts.choices;
+			type = opts.type || 'select';
+		} else {
+			type = opts.type || 'input';
+		}
+		delete opts.type;
+		inqObj = { ...inqObj, ...opts };
+		if (type === 'editor' && !inqObj.postfix) {
+			inqObj.postfix = '.md';
+		}
+	}
+	if (inqObj.choices && !inqObj.pageSize) {
+		inqObj.pageSize=40;
+	}
+	let answer: any;
+	if (type === 'multi') {
+		let answer = await multiAsk(message);
+	} else {
+
+		if (type === 'input') {
+			inqObj.message += `('multi' or 'editor' to switch)`;
+			//@ts-ignore
+			answer = await inq.input(inqObj);
+			if (!answer) {
+				//let toa = typeOf(answer);
+				//console.log(`In ask, type = 'input' - Falsy answer: toa: [${toa}]`, {answer});
+				//let conf = await ask('Sure you want to exit? ', { type: 'confirm', def: false });
+				let conf = await inq.confirm({ message: 'Sure you want to exit? ', default: false });
+				if (conf) {
+					return answer;
+				} else {
+					//answer = await ask(origMsg, { type: 'input', def: def });
+					//@ts-ignore
+					answer = await await inq.input(inqObj);
+				}
+			}
+			if ((typeof answer === 'string') && answer) {
+				let trimmed = answer.trim();
+				if (trimmed === 'multi') {
+					answer = await multiAsk(message);
+				} else if (trimmed === 'editor') {
+					answer = await inq.editor({ ...inqObj, message, postfix: '.md' });
+				}
+			}
+		} else {
+			//console.log(`\n\nIn Ask2:`, {message, opts, type, inqObj},`\n\n`);
+			answer = await inq[type](inqObj);
+		}
+		return answer;
+	}
+
+
+
+
+
+
+
+
+
+}
 /**
  * Uses inquirer for one question, and answer
  * Real inquirer accepts an ARRAY of question objects in a single argument, & returns an object of answers keyed by 'name'
@@ -107,7 +239,8 @@ export function makeQuestion(message: string, { name = '', type = '', def = null
  * 
  * @return "answer" value - 
  */
-export async function ask(msg: string, { name = '', type = '', def = null,  choices = [], pageSize = 40 } = {}) {
+/*
+export async function askOld(msg: string, { name = '', type = '', def = null, choices = [], pageSize = 40 } = {}) {
 	let origMsg = msg;
 	if (!name) {
 		name = _.uniqueId('inc_name_');
@@ -125,12 +258,9 @@ export async function ask(msg: string, { name = '', type = '', def = null,  choi
 	} else if (type === 'editor') {
 		let ans = await editor({ message: msg, default: def, postfix: '.md' });
 		return ans;
-		/*
-	} else if (type === 'confirm') {
-		//let ans  = await inquirer.prompt([{ message: msg, type: 'confirm', name, default: def, }]);
-		let ans = await askConfirm(msg);
-		return ans;
-		*/
+	//} else if (type === 'confirm') {
+		//let ans = await askConfirm(msg);
+		//return ans;
 	} else if (type == 'none') {
 		return null;
 	}
@@ -165,6 +295,7 @@ export async function ask(msg: string, { name = '', type = '', def = null,  choi
 	}
 	return answer;
 }
+*/
 /**
  * Multi-line input, similar to "ask" above, but returns a string of all lines entered. End input with <Ctl-D>
  */
