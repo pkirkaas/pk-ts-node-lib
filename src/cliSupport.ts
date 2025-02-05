@@ -15,7 +15,7 @@ import util from "util";
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import inquirer from "inquirer";
+//import inquirer from "inquirer";
 import { editor } from '@inquirer/prompts';
 import * as inq from '@inquirer/prompts';
 // PK Lib Imports

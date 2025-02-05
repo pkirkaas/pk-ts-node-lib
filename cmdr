@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Building and executing commander script: ./dist/esm/scripts/commanders.js w. args:  [${*}]"
+npm run build && node dist/esm/scripts/commanders "${@}"
