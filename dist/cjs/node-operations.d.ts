@@ -93,6 +93,8 @@ export declare function dbgWrt(arg: any, fname?: string, append?: boolean): stri
  *   if a directory, will write to a file "{fpath}/debug-out.json5"
  *   if a filename/path, will write to the path.
  *     If no extension, will add ".json5" or ".log" depending on the type of arg
+ * @param append:boolean - Append or overwrite?
+ * @return string - the path written to
  */
 export declare function writeData(arg: any, fpath: string, append?: boolean): string;
 /**

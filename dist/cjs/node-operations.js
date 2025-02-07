@@ -368,6 +368,8 @@ export function compareArrays(arr1: [], arr2: []) {
  *   if a directory, will write to a file "{fpath}/debug-out.json5"
  *   if a filename/path, will write to the path.
  *     If no extension, will add ".json5" or ".log" depending on the type of arg
+ * @param append:boolean - Append or overwrite?
+ * @return string - the path written to
  */
 //export function writeData(arg: any, fpath?:string, append: boolean = false) {
 export function writeData(arg, fpath, append = false) {
