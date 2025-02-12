@@ -131,6 +131,71 @@ export function slashPath(...parts) {
   return tstPath;
 }
 
+/**
+ * Converts a string into a valid filename for both Windows and Linux systems.
+ * 
+ * Rules implemented:
+ * - Removes/replaces invalid characters
+ * - Handles Windows reserved names
+ * - Prevents leading/trailing spaces and dots
+ * - Enforces maximum length
+ * - Handles empty or invalid inputs
+ * 
+ * @param {string} str - The input string to convert to a valid filename
+ * @param {string} [rep='_'] - The replacement character for invalid characters
+ * @returns {string} A valid filename string
+ * @throws {TypeError} If input parameters are invalid
+ */
+export function safeFile(str: string, rep = '_'): string {
+  // Input validation
+  if (typeof str !== 'string') {
+    throw new TypeError('Input must be a string');
+  }
+  if (typeof rep !== 'string' || rep.length !== 1) {
+    throw new TypeError('Replacement must be a single character');
+  }
+
+  // Constants
+  const MAX_LENGTH = 255; // Maximum filename length for most filesystems
+  const WINDOWS_RESERVED = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])$/i;
+
+  // Replace invalid characters
+  // Includes: Control characters, <>:"/\|?*, and other special characters
+  let osafe = str
+    .replace(/[\x00-\x1F\x7F<>:"/\\|?*]/g, rep)  // Control chars and illegal chars
+    .replace(/[\s.]+$/g, '')                      // Remove trailing spaces and dots
+    .replace(/^[\s.]+/g, '')                      // Remove leading spaces and dots
+    .replace(/\s+/g, rep);                        // Replace spaces with replacement char
+
+  // Replace invalid characters
+  let safe = str
+    // Replace control chars (including tabs, newlines) and illegal chars
+    .replace(/[\x00-\x1F\x7F<>:"/\\|?*]/g, rep)
+    // Replace all whitespace sequences (including tabs, newlines, etc.) with single replacement
+    .replace(/\s+/g, rep)
+    // Remove trailing spaces, dots, and replacement chars
+    .replace(/[\s._-]+$/g, '')
+    // Remove leading spaces, dots, and replacement chars
+    .replace(/^[\s._-]+/g, '');
+
+  // Handle Windows reserved names by prefixing with replacement character
+  if (WINDOWS_RESERVED.test(safe)) {
+    safe = rep + safe;
+  }
+
+  // Handle empty string case
+  if (!safe) {
+    safe = 'unnamed';
+  }
+
+  // Truncate if too long, being careful not to cut in the middle of a surrogate pair
+  if (safe.length > MAX_LENGTH) {
+    safe = safe.slice(0, MAX_LENGTH).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]?$/, '');
+  }
+
+  return safe;
+}
+
 export function isDirectory(apath) {
   return fs.existsSync(apath) && fs.lstatSync(apath).isDirectory();
 }
@@ -142,7 +207,7 @@ export function isFile(apath) {
 /**
  * Ensure a directory exists for a path
  */
-export function mkDirForPath(fpath:string) {
+export function mkDirForPath(fpath: string) {
   fpath = slashPath(fpath);
   let dir = path.posix.dirname(fpath);
   if (!isDirectory(dir)) {
@@ -358,7 +423,7 @@ export function utilInspect(obj: any, opts?: any) {
   return util.inspect(obj, opts);
 }
 
-export function dbgPath(fname?:string) {
+export function dbgPath(fname?: string) {
   let defaultName = 'dbg-out';
   if (isDirectory(fname)) {
     //fname = path.join(fname, defaultName);
@@ -377,9 +442,9 @@ export function dbgPath(fname?:string) {
 }
 
 /** Change argument order to make path optional*/
-export function dbgWrt(arg: any, fname?:string, append: boolean = false):string {
+export function dbgWrt(arg: any, fname?: string, append: boolean = false): string {
   let dpath = dbgPath(fname);
-  let res = writeData(arg, dpath,  append);
+  let res = writeData(arg, dpath, append);
   console.log(`dbgWrt: wrote debug data: dpath: [${dpath}], writeData res: [${res}]`);
   return res;
 }
@@ -409,11 +474,11 @@ export function compareArrays(arr1: [], arr2: []) {
  * @return string - the path written to
  */
 //export function writeData(arg: any, fpath?:string, append: boolean = false) {
-export function writeData(arg: any, fpath:string, append: boolean = false):string {
+export function writeData(arg: any, fpath: string, append: boolean = false): string {
   if (!fpath) {
-    throw new PkError(`In writeData: No 'fpath' provided for arg:`, {arg});
+    throw new PkError(`In writeData: No 'fpath' provided for arg:`, { arg });
   }
-//export function writeData(arg: any, fpath = '.', append: boolean = false) {
+  //export function writeData(arg: any, fpath = '.', append: boolean = false) {
   if (arg === undefined) {
     arg = "undefned";
   } else if (arg === null) {
@@ -429,9 +494,9 @@ export function writeData(arg: any, fpath:string, append: boolean = false):strin
   if (isDirectory(fpath)) {
     fpath = slashPath(fpath, defaultName);
   }
-  let { name, ext, base}  = path.parse(fpath);
+  let { name, ext, base } = path.parse(fpath);
   if (!ext) {
-     fpath = fpath+defaultExt;
+    fpath = fpath + defaultExt;
   }
   let flag = append ? 'a' : 'w';
   let opts = { flag };
@@ -511,7 +576,7 @@ export function logMsg(msg: any, lpath?: string) {
     data.msg = msg;
   }
   try {
-    let res = writeData(data, lpath,  true);
+    let res = writeData(data, lpath, true);
     return res;
   } catch (err) {
     console.error(`Whoops! Exception logging error!`, { msg, lpath, data, err });

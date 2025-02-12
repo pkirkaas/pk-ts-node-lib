@@ -43,6 +43,22 @@ export declare function getOsType(): false | "linux" | "windows";
 export declare function isWindows(): boolean;
 export declare function isLinux(): boolean;
 export declare function slashPath(...parts: any[]): string;
+/**
+ * Converts a string into a valid filename for both Windows and Linux systems.
+ *
+ * Rules implemented:
+ * - Removes/replaces invalid characters
+ * - Handles Windows reserved names
+ * - Prevents leading/trailing spaces and dots
+ * - Enforces maximum length
+ * - Handles empty or invalid inputs
+ *
+ * @param {string} str - The input string to convert to a valid filename
+ * @param {string} [rep='_'] - The replacement character for invalid characters
+ * @returns {string} A valid filename string
+ * @throws {TypeError} If input parameters are invalid
+ */
+export declare function safeFile(str: string, rep?: string): string;
 export declare function isDirectory(apath: any): any;
 export declare function isFile(apath: any): any;
 /**

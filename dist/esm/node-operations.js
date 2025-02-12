@@ -114,6 +114,63 @@ export function slashPath(...parts) {
     }
     return tstPath;
 }
+/**
+ * Converts a string into a valid filename for both Windows and Linux systems.
+ *
+ * Rules implemented:
+ * - Removes/replaces invalid characters
+ * - Handles Windows reserved names
+ * - Prevents leading/trailing spaces and dots
+ * - Enforces maximum length
+ * - Handles empty or invalid inputs
+ *
+ * @param {string} str - The input string to convert to a valid filename
+ * @param {string} [rep='_'] - The replacement character for invalid characters
+ * @returns {string} A valid filename string
+ * @throws {TypeError} If input parameters are invalid
+ */
+export function safeFile(str, rep = '_') {
+    // Input validation
+    if (typeof str !== 'string') {
+        throw new TypeError('Input must be a string');
+    }
+    if (typeof rep !== 'string' || rep.length !== 1) {
+        throw new TypeError('Replacement must be a single character');
+    }
+    // Constants
+    const MAX_LENGTH = 255; // Maximum filename length for most filesystems
+    const WINDOWS_RESERVED = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])$/i;
+    // Replace invalid characters
+    // Includes: Control characters, <>:"/\|?*, and other special characters
+    let osafe = str
+        .replace(/[\x00-\x1F\x7F<>:"/\\|?*]/g, rep) // Control chars and illegal chars
+        .replace(/[\s.]+$/g, '') // Remove trailing spaces and dots
+        .replace(/^[\s.]+/g, '') // Remove leading spaces and dots
+        .replace(/\s+/g, rep); // Replace spaces with replacement char
+    // Replace invalid characters
+    let safe = str
+        // Replace control chars (including tabs, newlines) and illegal chars
+        .replace(/[\x00-\x1F\x7F<>:"/\\|?*]/g, rep)
+        // Replace all whitespace sequences (including tabs, newlines, etc.) with single replacement
+        .replace(/\s+/g, rep)
+        // Remove trailing spaces, dots, and replacement chars
+        .replace(/[\s._-]+$/g, '')
+        // Remove leading spaces, dots, and replacement chars
+        .replace(/^[\s._-]+/g, '');
+    // Handle Windows reserved names by prefixing with replacement character
+    if (WINDOWS_RESERVED.test(safe)) {
+        safe = rep + safe;
+    }
+    // Handle empty string case
+    if (!safe) {
+        safe = 'unnamed';
+    }
+    // Truncate if too long, being careful not to cut in the middle of a surrogate pair
+    if (safe.length > MAX_LENGTH) {
+        safe = safe.slice(0, MAX_LENGTH).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]?$/, '');
+    }
+    return safe;
+}
 export function isDirectory(apath) {
     return fs.existsSync(apath) && fs.lstatSync(apath).isDirectory();
 }
