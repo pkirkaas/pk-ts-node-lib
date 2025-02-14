@@ -30,6 +30,7 @@
   "dependencies": {
     "@inquirer/prompts": "*",
     "@types/node": "*",
+    "chalk": "^5.4.1",
     "commander": "*",
     "cross-env": "*",
     "dotenv": "*",

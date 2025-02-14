@@ -3,6 +3,7 @@
 import path from "path";
 import { stdin as input, stdout as output } from 'node:process';
 import * as readline from 'node:readline/promises';
+import chalk from "chalk";
 import * as dotenv from 'dotenv';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
@@ -94,6 +95,8 @@ export async function ask(message, opts) {
         throw new PkError(`Invalid opts param:`, { opts });
     }
     //let inqObj: GenObj = { message, name: _.uniqueId('inc_name_') };
+    // Experiment w. chalk styling
+    message = chalk.red.bold(message);
     let inqObj = { message, };
     let type;
     //let name = _.uniqueId('inc_name_');

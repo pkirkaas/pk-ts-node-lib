@@ -6,6 +6,7 @@ import { stdin as input, stdout as output } from 'node:process';
 import * as readline from 'node:readline/promises';
 
 import _ from "lodash";
+import chalk from "chalk";
 import * as dotenv from 'dotenv';
 import https from "https";
 import axios from "axios";
@@ -124,6 +125,8 @@ export async function ask(message: string, opts?: GenObj | any[]) {
 		throw new PkError(`Invalid opts param:`, { opts });
 	}
 	//let inqObj: GenObj = { message, name: _.uniqueId('inc_name_') };
+	// Experiment w. chalk styling
+	message = chalk.red.bold(message);
 	let inqObj: GenObj = { message, };
 	let type: string;
 	//let name = _.uniqueId('inc_name_');
