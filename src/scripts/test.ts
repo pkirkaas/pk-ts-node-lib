@@ -16,7 +16,7 @@ import { mergeAndConcat, isEmpty, typeOf } from 'pk-ts-common-lib';
 
 import {
 //	ask2,
-	getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, isFile, getOsType, isWindows, isLinux, runCommand, stdOut, winBashes, parseArgs, getArrArgs, getObjArg, getFiles, getAllExts,
+	getFilePaths, slashPath, dbgWrt, ask, runCli, sassMapStringToJson, sassMapStringToObj, saveData, isFile, getOsType, isWindows, isLinux, runCommand, stdOut, winBashes, parseArgs, getArrArgs, getObjArg, getFiles, getAllExts, listRoot,
 	writeData,
 } from '../index.js';
 
@@ -39,6 +39,10 @@ let scssMap = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, v
 let scssMapr = '(disp: (prop: display, vals: (inline: inline-block, flex: flex, vflex: (flex, (flex-direction: column)), block: block))';
 
 let testsFs = {
+	listRoot() {
+		let rootContents = listRoot();
+		console.log({rootContents});
+	},
 	tstWrt() {
 		let fpaths = [undefined,  "./tmp/tst", "./tmp", "outf", "outf.ext",
 		];

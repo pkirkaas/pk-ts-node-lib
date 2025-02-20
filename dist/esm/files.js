@@ -1,6 +1,7 @@
 /**
  * Node File  System functions/utilities
  */
+import { execSync } from 'child_process';
 import fsPath from 'fs-path';
 import path from 'path';
 import fs from "fs-extra";
@@ -12,7 +13,7 @@ import { dirname } from 'path';
 //import { GenericObject, OptArrStr, cwd, path, JSON5,  bsetpath, appDefaults } from '../common';
 //here changing in cdc
 import { uniqueVals, mkArray, PkError, } from 'pk-ts-common-lib';
-import { slashPath, isDirectory, } from './index.js';
+import { slashPath, isDirectory, isWindows, } from './index.js';
 /** THIS ASSUMES WE ARE IN A MODULE SYSTEM
  * Replaces __dirname & __filename
  * TODO: Investigate further - like - what is 'import.meta.url'?
@@ -143,5 +144,23 @@ export function getAllExts(folder, types) {
     let exts = files.map(file => path.extname(file).toLowerCase());
     let uexts = Array.from(new Set(exts));
     return uexts;
+}
+/// Coping with Windows
+/**
+ * Returns string array of the contents of the current file system root entries.
+ * For linux, contents of '/'
+ * For Windows, array of mounted drive letters - like: [ 'C:', 'O:', 'Q:', ]
+ */
+export function listRoot() {
+    if (isWindows()) {
+        const output = execSync('wmic logicaldisk get name', { encoding: 'utf8' });
+        return output
+            .split('\n') // Split by new lines
+            .map(line => line.trim()) // Trim spaces
+            .filter(line => /^[A-Z]:$/.test(line)); // Match drive letters
+    }
+    else {
+        return fs.readdirSync('/');
+    }
 }
 //# sourceMappingURL=files.js.map

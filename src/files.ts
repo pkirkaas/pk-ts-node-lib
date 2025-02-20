@@ -4,6 +4,8 @@
 
 // NPM Imports
 import urlStatus from 'url-status-code';
+import { execSync } from 'child_process';
+
 import fsPath from 'fs-path';
 import path from 'path';
 import util from 'util';
@@ -27,7 +29,7 @@ import { GenericObject, GenObj, uniqueVals, Strings, mkArray, OptArrStr, JSON5, 
 
 // Local Imports
 import { cwd } from './index.js';
-import { slashPath, isDirectory, } from './index.js';
+import { slashPath, isDirectory, isWindows,} from './index.js';
 
 /** THIS ASSUMES WE ARE IN A MODULE SYSTEM
  * Replaces __dirname & __filename
@@ -170,4 +172,22 @@ export  function getAllExts(folder:string, types?: Strings):string[] {
 	let exts = files.map(file => path.extname(file).toLowerCase());
 	let uexts = Array.from(new Set(exts));
 	return uexts;
+}
+
+/// Coping with Windows
+/**
+ * Returns string array of the contents of the current file system root entries. 
+ * For linux, contents of '/'
+ * For Windows, array of mounted drive letters - like: [ 'C:', 'O:', 'Q:', ]
+ */
+export function listRoot():string[] {
+	if (isWindows()) {
+		const output = execSync('wmic logicaldisk get name', { encoding: 'utf8' });
+		return output
+				.split('\n')   // Split by new lines
+				.map(line => line.trim()) // Trim spaces
+				.filter(line => /^[A-Z]:$/.test(line)); // Match drive letters
+	} else {
+		return fs.readdirSync('/');
+	}
 }

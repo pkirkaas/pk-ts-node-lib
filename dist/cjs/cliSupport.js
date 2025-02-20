@@ -11,7 +11,8 @@ import * as inq from '@inquirer/prompts';
 // PK Lib Imports
 import { PkError, getProps, isSimpleObject, trueVal, } from 'pk-ts-common-lib';
 // Local Imports
-import { cwd } from './index.js';
+import { cwd, setInspectLevels, } from './index.js';
+setInspectLevels();
 //@ts-ignore
 // Covered w. envInit()?
 //dotenv.config(path.join(cwd, ".env"));

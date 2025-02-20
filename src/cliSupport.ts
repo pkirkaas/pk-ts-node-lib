@@ -26,7 +26,11 @@ import {
 } from 'pk-ts-common-lib';
 
 // Local Imports
-import { cwd } from './index.js';
+import { cwd,
+ setInspectLevels,
+} from './index.js';
+
+setInspectLevels();
 
 //@ts-ignore
 // Covered w. envInit()?

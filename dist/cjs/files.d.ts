@@ -49,4 +49,10 @@ export declare function getFiles(folder: string, types?: Strings): string[];
  * @return array of file extensions found
  */
 export declare function getAllExts(folder: string, types?: Strings): string[];
+/**
+ * Returns string array of the contents of the current file system root entries.
+ * For linux, contents of '/'
+ * For Windows, array of mounted drive letters - like: [ 'C:', 'O:', 'Q:', ]
+ */
+export declare function listRoot(): string[];
 //# sourceMappingURL=files.d.ts.map
