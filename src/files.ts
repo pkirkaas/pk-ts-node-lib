@@ -186,7 +186,9 @@ export function listRoot():string[] {
 		return output
 				.split('\n')   // Split by new lines
 				.map(line => line.trim()) // Trim spaces
-				.filter(line => /^[A-Z]:$/.test(line)); // Match drive letters
+				.filter(line => /^[A-Z]:$/.test(line)) // Match drive letters
+				//.map(drive => `${drive}/`) // No, because Linux doesn't return sep
+				;
 	} else {
 		return fs.readdirSync('/');
 	}

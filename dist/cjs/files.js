@@ -157,7 +157,8 @@ export function listRoot() {
         return output
             .split('\n') // Split by new lines
             .map(line => line.trim()) // Trim spaces
-            .filter(line => /^[A-Z]:$/.test(line)); // Match drive letters
+            .filter(line => /^[A-Z]:$/.test(line)) // Match drive letters
+        ;
     }
     else {
         return fs.readdirSync('/');

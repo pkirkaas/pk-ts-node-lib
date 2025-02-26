@@ -26,8 +26,9 @@ import {
 } from 'pk-ts-common-lib';
 
 // Local Imports
-import { cwd,
- setInspectLevels,
+import {
+	cwd, listRoot,
+	setInspectLevels,
 } from './index.js';
 
 setInspectLevels();
@@ -125,184 +126,84 @@ export const ask2types = [
  * @return answer
  */
 export async function ask(message: string, opts?: GenObj | any[]) {
-	if (opts && !Array.isArray(opts) && !isSimpleObject(opts)) {
-		throw new PkError(`Invalid opts param:`, { opts });
-	}
-	//let inqObj: GenObj = { message, name: _.uniqueId('inc_name_') };
-	// Experiment w. chalk styling
-	message = chalk.red.bold(message);
-	let inqObj: GenObj = { message, };
-	let type: string;
-	//let name = _.uniqueId('inc_name_');
-	//let choices:any[];
-
-	let isChoices = (arg: unknown) => (Array.isArray(arg) ||
-		(isSimpleObject(arg) && (!('choices' in arg) && (!('type' in arg) || !ask2types.includes(arg.type)))));
-	let choicesAsArr = (arg: GenObj | any[]): any[] =>
-		Array.isArray(arg) ? arg as any[] : Object.keys(arg).map((name) => { return { name, value: arg[name] }; }) as any[];
-
-	/*
-		for (let name in opts) {
-			let value=opts[name];
-			choices.push({name,value});
+	try {
+		if (opts && !Array.isArray(opts) && !isSimpleObject(opts)) {
+			throw new PkError(`Invalid opts param:`, { opts });
 		}
-	} 
-}
-	*/
+		// Experiment w. chalk styling
+		message = chalk.red.bold(message);
+		let inqObj: GenObj = { message, };
+		let type: string;
+		let isChoices = (arg: unknown) => (Array.isArray(arg) ||
+			(isSimpleObject(arg) && (!('choices' in arg) && (!('type' in arg) || !ask2types.includes(arg.type)))));
+		let choicesAsArr = (arg: GenObj | any[]): any[] =>
+			Array.isArray(arg) ? arg as any[] : Object.keys(arg).map((name) => { return { name, value: arg[name] }; }) as any[];
 
-	if (!opts) {
-		type = 'input';
-	} else if (isChoices(opts)) { // Opts are choices, type is 'select'
-		type = 'select';
-		inqObj.choices = choicesAsArr(opts);
-		/*
-		if (Array.isArray(opts)) {
-			choices = opts;
-		} else { // simple object, convert keys->values to [{name:?,value:?},...]
-			for (let name in opts) {
-				let value=opts[name];
-				choices.push({name,value});
-			}
-		} 
-			*/
-	} else if (isSimpleObject(opts)) { // General object 
-		if (opts.choices) {
-
-			inqObj.choices = choicesAsArr(opts.choices);
-			delete opts.choices;
-			type = opts.type || 'select';
-		} else {
-			type = opts.type || 'input';
-		}
-		delete opts.type;
-		inqObj = { ...inqObj, ...opts };
-		if (type === 'editor' && !inqObj.postfix) {
-			inqObj.postfix = '.md';
-		}
-	}
-	if (inqObj.choices && !inqObj.pageSize) {
-		inqObj.pageSize=40;
-	}
-	let answer: any;
-	if (type === 'multi') {
-		let answer = await multiAsk(message);
-	} else {
-
-		if (type === 'input') {
-			inqObj.message += `('multi' or 'editor' to switch)`;
-			//@ts-ignore
-			answer = await inq.input(inqObj);
-			if (!answer) {
-				//let toa = typeOf(answer);
-				//console.log(`In ask, type = 'input' - Falsy answer: toa: [${toa}]`, {answer});
-				//let conf = await ask('Sure you want to exit? ', { type: 'confirm', def: false });
-				let conf = await inq.confirm({ message: 'Sure you want to exit? ', default: false });
-				if (conf) {
-					return answer;
-				} else {
-					//answer = await ask(origMsg, { type: 'input', def: def });
-					//@ts-ignore
-					answer = await await inq.input(inqObj);
-				}
-			}
-			if ((typeof answer === 'string') && answer) {
-				let trimmed = answer.trim();
-				if (trimmed === 'multi') {
-					answer = await multiAsk(message);
-				} else if (trimmed === 'editor') {
-					answer = await inq.editor({ ...inqObj, message, postfix: '.md' });
-				}
-			}
-		} else {
-			//console.log(`\n\nIn Ask2:`, {message, opts, type, inqObj},`\n\n`);
-			answer = await inq[type](inqObj);
-		}
-		return answer;
-	}
-
-
-
-
-
-
-
-
-
-}
-/**
- * Uses inquirer for one question, and answer
- * Real inquirer accepts an ARRAY of question objects in a single argument, & returns an object of answers keyed by 'name'
- * "ask" takes some parameters & returns a single answer
- * 
- * @param string msg - the message to show/prompt
- * @param object w. optional keys/values:
- *   name: string - the name to use for the answer - not required since only one answer per ask
- *   type: one of the incTypes above. If not defined, defaults to string 'input', unless the choices array exists
- *      if type==='list', single item returned, if 'checkbox', array of selected items returned.
- *      if type='input', allows switch to 'editor' or 'multi' for multi-line input
- *   def: string|int - default, if any. If type === 'list', default can be value or index
- *   choices: opt array - type empty & choices NOT empty, type changes to "list" 
- *   **choices** can be a simple array of strings, or an array of objects with 'name' & 'value' properties - name is what is displayed, value is the value returned
- * 
- * @return "answer" value - 
- */
-/*
-export async function askOld(msg: string, { name = '', type = '', def = null, choices = [], pageSize = 40 } = {}) {
-	let origMsg = msg;
-	if (!name) {
-		name = _.uniqueId('inc_name_');
-	}
-	//if (type === '') {
-	if (!type) {
-		if (choices.length) {
-			type = 'list';
-		} else {
+		if (!opts) {
 			type = 'input';
+		} else if (isChoices(opts)) { // Opts are choices, type is 'select'
+			type = 'select';
+			inqObj.choices = choicesAsArr(opts);
+		} else if (isSimpleObject(opts)) { // General object 
+			if (opts.choices) {
+
+				inqObj.choices = choicesAsArr(opts.choices);
+				delete opts.choices;
+				type = opts.type || 'select';
+			} else {
+				type = opts.type || 'input';
+			}
+			delete opts.type;
+			inqObj = { ...inqObj, ...opts };
+			if (type === 'editor' && !inqObj.postfix) {
+				inqObj.postfix = '.md';
+			}
 		}
-	} else if (type === 'multi') {
-		let ans = await multiAsk(msg);
-		return ans;
-	} else if (type === 'editor') {
-		let ans = await editor({ message: msg, default: def, postfix: '.md' });
-		return ans;
-	//} else if (type === 'confirm') {
-		//let ans = await askConfirm(msg);
-		//return ans;
-	} else if (type == 'none') {
+		if (inqObj.choices && !inqObj.pageSize) {
+			inqObj.pageSize = 40;
+		}
+		let answer: any;
+		if (type === 'multi') {
+			let answer = await multiAsk(message);
+		} else {
+
+			if (type === 'input') {
+				inqObj.message += `('multi' or 'editor' to switch)`;
+				//@ts-ignore
+				answer = await inq.input(inqObj);
+				if (!answer) {
+					//let toa = typeOf(answer);
+					//console.log(`In ask, type = 'input' - Falsy answer: toa: [${toa}]`, {answer});
+					//let conf = await ask('Sure you want to exit? ', { type: 'confirm', def: false });
+					let conf = await inq.confirm({ message: 'Sure you want to exit? ', default: false });
+					if (conf) {
+						return answer;
+					} else {
+						//answer = await ask(origMsg, { type: 'input', def: def });
+						//@ts-ignore
+						answer = await await inq.input(inqObj);
+					}
+				}
+				if ((typeof answer === 'string') && answer) {
+					let trimmed = answer.trim();
+					if (trimmed === 'multi') {
+						answer = await multiAsk(message);
+					} else if (trimmed === 'editor') {
+						answer = await inq.editor({ ...inqObj, message, postfix: '.md' });
+					}
+				}
+			} else {
+				//console.log(`\n\nIn Ask2:`, {message, opts, type, inqObj},`\n\n`);
+				answer = await inq[type](inqObj);
+			}
+			return answer;
+		}
+	} catch (e) {
+		console.error(`Exception in 'ask':`,e);
 		return null;
 	}
-
-
-	if (type === 'input') { // Allow switch to 'multi' or 'editor'
-		msg += `('multi' or 'editor' to switch)`;
-	}
-	let qArr = [makeQuestion(msg, { name, type, def, choices, pageSize })];
-	//@ts-ignore
-	let answers = await inquirer.prompt(qArr);
-	let answer = answers[name];
-	if (type === 'input') { // Allow switch to 'multi' or 'editor'
-		if (!answer) {
-			//let toa = typeOf(answer);
-			//console.log(`In ask, type = 'input' - Falsy answer: toa: [${toa}]`, {answer});
-			let conf = await ask('Sure you want to exit? ', { type: 'confirm', def: false });
-			if (conf) {
-				return answer;
-			} else {
-				answer = await ask(origMsg, { type: 'input', def: def });
-			}
-		}
-		if ((typeof answer === 'string') && answer) {
-			let trimmed = answer.trim();
-			if (trimmed === 'multi') {
-				answer = await multiAsk(origMsg);
-			} else if (trimmed === 'editor') {
-				answer = await editor({ message: origMsg, default: def, postfix: '.md' });
-			}
-		}
-	}
-	return answer;
 }
-*/
+
 /**
  * Multi-line input, similar to "ask" above, but returns a string of all lines entered. End input with <Ctl-D>
  */
@@ -344,6 +245,15 @@ export async function multiAsk(prompt?: string): Promise<string> {
 export async function askConfirm(cMsg = 'Do It?', def = true) {
 	let answer = await ask(cMsg, { type: 'confirm', def });
 	return answer;
+}
+export interface FsBrowseParams {
+	root?: string, // The browsing root. Empty for top
+
+}
+
+
+export async function fsBrowse({ root }): Promise<string> {
+	return 'testing';
 }
 
 
