@@ -38,6 +38,7 @@
     "fs-extra": "*",
     "fs-path": "*",
     "is-glob": "^4.0.3",
+    "mime": "*",
     "pk-ts-common-lib": "github:pkirkaas/pk-ts-common-lib#working",
     "ts-morph": "*",
     "yargs": "latest"
