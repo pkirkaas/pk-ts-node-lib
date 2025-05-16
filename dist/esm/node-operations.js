@@ -47,15 +47,15 @@ export function invalidPath(str) {
         // Characters that are invalid in file paths across most file systems
         // Windows specifically forbids: < > " | ? * and control chars
         // We don't include ":" here as we've already handled the drive letter case
-        // Note: Backslashes will be converted to forward slashes before validation
-        const invalidCharsRegex = /[\x00-\x1F\x7F<>"\/|?*]/;
+        // Forward slashes are valid in paths
+        const invalidCharsRegex = /[\x00-\x1F\x7F<>"|?*]/;
         return invalidCharsRegex.test(pathWithoutDrive);
     }
     else {
         // For non-drive letter paths, check the entire path
         // Include ":" as invalid for non-Windows paths
-        // Note: Backslashes will be converted to forward slashes before validation
-        const invalidCharsRegex = /[\x00-\x1F\x7F<>:"\/|?*]/;
+        // Forward slashes are valid in paths
+        const invalidCharsRegex = /[\x00-\x1F\x7F<>:"|?*]/;
         return invalidCharsRegex.test(str);
     }
 }
