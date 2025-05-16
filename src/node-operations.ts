@@ -21,7 +21,8 @@ import {
  * Very rough test for invalid characters in a file path.
  */
 export function invalidPath(str: string) {
-  var re = /[‘“!#$%&+^<=>`]/;
+  //var re = /[‘“!#$%&+^<=>`]/; // Uh, some of these characters are fine!
+  var re = /[‘“!#%&^<>`]/;
   return !str || (typeof str !== 'string') || isGlob(str) || re.test(str);
 };
 
