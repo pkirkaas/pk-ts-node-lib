@@ -7,7 +7,7 @@
  *
  * Detects:
  * - Empty strings or non-strings
- * - Glob patterns (using is-glob)
+ * - Glob patterns (using is-glob), but allows square brackets in filenames
  * - Invalid characters for cross-platform file paths
  * - Allows Windows drive letters (e.g., C:/, D:/)
  *

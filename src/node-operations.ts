@@ -25,7 +25,7 @@ import {
  *
  * Detects:
  * - Empty strings or non-strings
- * - Glob patterns (using is-glob)
+ * - Glob patterns (using is-glob), but allows square brackets in filenames
  * - Invalid characters for cross-platform file paths
  * - Allows Windows drive letters (e.g., C:/, D:/)
  *
@@ -38,30 +38,33 @@ export function invalidPath(str: string): boolean {
     return true;
   }
   
-  // Check if it's a glob pattern
-  if (isGlob(str)) {
-    return true;
-  }
-  
   // Handle Windows drive letters (allow colon after a single letter at the start)
   const hasDriveLetter = /^[a-zA-Z]:[\\/]/.test(str);
+  
+  // Check if it's a glob pattern, but exclude paths with square brackets in filenames
+  // which might be incorrectly identified as glob patterns
+  const hasSquareBrackets = /\[[^\]]*\]/.test(str);
+  if (isGlob(str) && !hasSquareBrackets) {
+    return true;
+  }
   
   // For paths with drive letters, we need to exclude the colon from the first position
   // from our validation
   if (hasDriveLetter) {
     // Check the rest of the path (after the drive letter) for invalid characters
     const pathWithoutDrive = str.substring(2);
-    // Characters that are invalid in file paths across most file systems
+    
+    // Only these characters are truly invalid in modern file systems
     // Windows specifically forbids: < > " | ? * and control chars
     // We don't include ":" here as we've already handled the drive letter case
-    // Forward slashes are valid in paths
+    // Square brackets, parentheses, and other special characters are valid in filenames
     const invalidCharsRegex = /[\x00-\x1F\x7F<>"|?*]/;
     
     return invalidCharsRegex.test(pathWithoutDrive);
   } else {
     // For non-drive letter paths, check the entire path
     // Include ":" as invalid for non-Windows paths
-    // Forward slashes are valid in paths
+    // Square brackets, parentheses, and other special characters are valid in filenames
     const invalidCharsRegex = /[\x00-\x1F\x7F<>:"|?*]/;
     
     return invalidCharsRegex.test(str);
