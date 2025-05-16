@@ -22,7 +22,7 @@ import {
  */
 export function invalidPath(str: string) {
   //var re = /[‘“!#$%&+^<=>`]/; // Uh, some of these characters are fine!
-  var re = /[‘“!#%&^<>`]/;
+  var re = /[‘“!#%^<>`]/;
   return !str || (typeof str !== 'string') || isGlob(str) || re.test(str);
 };
 
