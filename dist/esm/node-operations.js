@@ -16,10 +16,48 @@ import { stamp, stackParse, PkError, } from 'pk-ts-common-lib';
  * Cribbed from old version of is-invalid-path 1.0
  * Very rough test for invalid characters in a file path.
  */
+/**
+ * Checks if a string is an invalid file system path.
+ *
+ * Detects:
+ * - Empty strings or non-strings
+ * - Glob patterns (using is-glob)
+ * - Invalid characters for cross-platform file paths
+ * - Allows Windows drive letters (e.g., C:/, D:/)
+ *
+ * @param str The string to check
+ * @returns true if the path is invalid, false if it's valid
+ */
 export function invalidPath(str) {
-    //var re = /[‘“!#$%&+^<=>`]/; // Uh, some of these characters are fine!
-    var re = /‘“!#%^<>`/;
-    return !str || (typeof str !== 'string') || isGlob(str) || re.test(str);
+    // Check for empty strings or non-strings
+    if (!str || typeof str !== 'string') {
+        return true;
+    }
+    // Check if it's a glob pattern
+    if (isGlob(str)) {
+        return true;
+    }
+    // Handle Windows drive letters (allow colon after a single letter at the start)
+    const hasDriveLetter = /^[a-zA-Z]:[\\/]/.test(str);
+    // For paths with drive letters, we need to exclude the colon from the first position
+    // from our validation
+    if (hasDriveLetter) {
+        // Check the rest of the path (after the drive letter) for invalid characters
+        const pathWithoutDrive = str.substring(2);
+        // Characters that are invalid in file paths across most file systems
+        // Windows specifically forbids: < > " | ? * and control chars
+        // We don't include ":" here as we've already handled the drive letter case
+        // Note: Backslashes will be converted to forward slashes before validation
+        const invalidCharsRegex = /[\x00-\x1F\x7F<>"\/|?*]/;
+        return invalidCharsRegex.test(pathWithoutDrive);
+    }
+    else {
+        // For non-drive letter paths, check the entire path
+        // Include ":" as invalid for non-Windows paths
+        // Note: Backslashes will be converted to forward slashes before validation
+        const invalidCharsRegex = /[\x00-\x1F\x7F<>:"\/|?*]/;
+        return invalidCharsRegex.test(str);
+    }
 }
 ;
 export function setInspectLevels(depth = null, maxArrayLength = null, breakLength = 200, colors = true, maxStringLength = null, getters = true) {

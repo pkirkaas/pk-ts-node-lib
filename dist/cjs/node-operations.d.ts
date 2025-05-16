@@ -2,7 +2,19 @@
  * Cribbed from old version of is-invalid-path 1.0
  * Very rough test for invalid characters in a file path.
  */
-export declare function invalidPath(str: string): any;
+/**
+ * Checks if a string is an invalid file system path.
+ *
+ * Detects:
+ * - Empty strings or non-strings
+ * - Glob patterns (using is-glob)
+ * - Invalid characters for cross-platform file paths
+ * - Allows Windows drive letters (e.g., C:/, D:/)
+ *
+ * @param str The string to check
+ * @returns true if the path is invalid, false if it's valid
+ */
+export declare function invalidPath(str: string): boolean;
 export declare function setInspectLevels(depth?: any, maxArrayLength?: any, breakLength?: number, colors?: boolean, maxStringLength?: any, getters?: boolean): void;
 import { GenericObject, GenObj } from 'pk-ts-common-lib';
 export declare const cwd: string;
