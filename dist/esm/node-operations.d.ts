@@ -41,7 +41,7 @@ export declare function objInspect(arg: any, opts?: GenericObject): string;
  *
  */
 export declare function getOsDets(): {
-    arch: string;
+    arch: NodeJS.Architecture;
     machine: string;
     platform: NodeJS.Platform;
     release: string;
