@@ -24,7 +24,7 @@ setInspectLevels();
 export const argv = yargs(hideBin(process.argv)).argv;
 export function envInit(envPath = ".env") {
     //@ts-ignore - why is this needed?
-    dotenv.config(path.join(cwd, envPath));
+    dotenv.config({ path: path.join(cwd, envPath) });
 }
 envInit();
 export const inqTypes = ['input', 'number', 'confirm', 'list', 'rawlist', ' expand', 'checkbox', 'password', 'editor', 'multi', 'multiline',];
